@@ -1,0 +1,1 @@
+C:\My\Playground\Ecs\lucenenet\src\Lucene.Net.Memory\obj\Debug\Lucene.Net.Memory.csprojResolveAssemblyReference.cache
