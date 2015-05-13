@@ -1,4 +1,4 @@
-namespace CodeVision
+namespace CodeVision.Model
 {
     public class Offset
     {

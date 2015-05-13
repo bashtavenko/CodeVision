@@ -46,6 +46,7 @@
     <None Include="Content\Lucene.Net.Memory\MemoryIndex.cs" />
     <None Include="Content\Lucene.Net.Memory\MemoryIndexNormDocValues.cs" />
     <None Include="Content\Lucene.Net.Memory\Properties\AssemblyInfo.cs" />
+    <Compile Include="CSharpParserTests.cs" />
     <Compile Include="IndexerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using CodeVision.Model;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
