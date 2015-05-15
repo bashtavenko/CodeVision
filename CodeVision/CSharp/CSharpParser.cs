@@ -3,15 +3,14 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace CodeVision.CSharp
 {
     public class CSharpParser
     {
-        public ParseResult Parse(string filePath)
+        public CSharpFileSyntax Parse(string filePath)
         {
-            var result = new ParseResult();
+            var result = new CSharpFileSyntax();
             string text;
             using (var sr = new StreamReader(filePath))
             {
@@ -19,24 +18,23 @@ namespace CodeVision.CSharp
             }
 
             SyntaxTree tree = CSharpSyntaxTree.ParseText(text);
-            var root = (CompilationUnitSyntax) tree.GetRoot();
+            var root = (CompilationUnitSyntax)tree.GetRoot();
 
             foreach (var usingDirective in root.Usings)
             {
-                result.Usings.Add(usingDirective.Name.ToFullString());
+                result.Usings.Add(usingDirective.Name.ToFullLowerCaseString());
             }
             
             foreach (var cls in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
             {
-                var @class = new CSharpClass();
-                @class.ClassName = cls.Identifier.Text;
+                var @class = new CSharpClass {ClassName = cls.Identifier.Text.ToLower()};
                 foreach (var methodDeclarationSyntax in cls.DescendantNodes().OfType<MethodDeclarationSyntax>())
                 {
                     var method = new CSharpMethod()
                     {
-                        MethodName = methodDeclarationSyntax.Identifier.Text,
-                        Body = methodDeclarationSyntax.Body.ToFullString(),
-                        ReturnType = methodDeclarationSyntax.ReturnType.ToFullString()
+                        MethodName = methodDeclarationSyntax.Identifier.Text.ToLower(),
+                        Body = methodDeclarationSyntax.Body.ToFullLowerCaseString(),
+                        ReturnType = methodDeclarationSyntax.ReturnType.ToFullLowerCaseString()
                     };
                     
                     foreach (var param in methodDeclarationSyntax.ParameterList.Parameters)

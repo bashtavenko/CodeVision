@@ -11,6 +11,7 @@ namespace CodeVision.CSharp
 
         public CSharpClass()
         {
+            Interfaces = new List<string>();
             Methods = new List<CSharpMethod>();
         }
     }

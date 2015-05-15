@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IO;
 using CodeVision.Model;
 using Lucene.Net.Analysis.Standard;
@@ -15,8 +16,10 @@ namespace CodeVision
     {
         public List<Hit> Search(string searchExpression)
         {
-            var analyzer = new StandardAnalyzer(Version.LUCENE_30);
-            var query = new QueryParser(Version.LUCENE_30, "contents", analyzer).Parse(searchExpression);
+            string defaultFieldName = Fields.Code;
+            searchExpression = searchExpression.ToLower();
+            var query = new QueryParser(Version.LUCENE_30, defaultFieldName, new CSharpAnalyzer()).Parse(searchExpression);
+            var termQuery = ((TermQuery) query);
             
             const int hitsPerPage = 10;
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo("Index"));
@@ -29,11 +32,11 @@ namespace CodeVision
                 foreach (var scoreDoc in collector.TopDocs().ScoreDocs)
                 {
                     int docId = scoreDoc.Doc;
-                    var hit = new Hit {FilePath = searcher.Doc(docId).Get("path") , Score = scoreDoc.Score};
-                    var tv = reader.GetTermFreqVector(docId, "contents");
+                    var hit = new Hit {FilePath = searcher.Doc(docId).Get(Fields.Path) , Score = scoreDoc.Score};
+                    var tv = reader.GetTermFreqVector(docId, termQuery.Term.Field);
                     var tpv = tv as TermPositionVector;
 
-                    int termIndex = tv.IndexOf(searchExpression);
+                    int termIndex = tv.IndexOf(termQuery.Term.Text);
                     if (termIndex != -1 && tpv != null)
                     {
                         hit.Offsets = new List<Offset>();
