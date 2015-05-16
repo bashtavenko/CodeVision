@@ -12,7 +12,7 @@ namespace CodeVision.Tests
         [TestFixtureSetUp]
         public void Setup()
         {
-            _indexer = new Indexer();
+            _indexer = new Indexer(null);
             _indexer.Index(GetCompletePath("Lucene.Net.Memory"));
         }
         
