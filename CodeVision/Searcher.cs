@@ -36,31 +36,38 @@ namespace CodeVision
                     var hit = new Hit {FilePath = searcher.Doc(docId).Get(Fields.Path) , Score = scoreDoc.Score};
                     
                     // Get offsets
-                    var termQuery = new TermQuery(new Term(Fields.Content, searchExpression.ToLower()));
+                    var primitiveQuery = query.Rewrite(reader);
+                    var terms = new HashSet<Term>();
+                    primitiveQuery.ExtractTerms(terms);
+
                     var termFreqVector = reader.GetTermFreqVector(docId, Fields.Content);
                     var termPositionVector = termFreqVector as TermPositionVector;
                     if (termFreqVector == null || termPositionVector == null)
                     {
                         throw new ArgumentException("Must have term frequencies and postiions vectors");
                     }
-                    int termIndex = termFreqVector.IndexOf(termQuery.Term.Text);
-                    if (termIndex != -1)
+
+                    foreach (var term in terms)
                     {
-                        hit.Offsets = new List<Offset>();
-                        foreach (var offset in termPositionVector.GetOffsets(termIndex))
+                        int termIndex = termFreqVector.IndexOf(term.Text);
+                        if (termIndex != -1)
                         {
-                            hit.Offsets.Add(new Offset
+                            foreach (var offset in termPositionVector.GetOffsets(termIndex))
                             {
-                                StartOffset = offset.StartOffset,
-                                EndOffset = offset.EndOffset
-                            });
+                                hit.Offsets.Add(new Offset
+                                {
+                                    StartOffset = offset.StartOffset,
+                                    EndOffset = offset.EndOffset
+                                });
+                            }
                         }
                     }
 
                     // Highlighter from contrib package
                     var tokenStream = TokenSources.GetTokenStream(termPositionVector);
 
-                    var scorer = new QueryScorer(termQuery, Fields.Content);
+                    //var scorer = new QueryScorer(termQuery, Fields.Content);
+                    var scorer = new QueryScorer(primitiveQuery, Fields.Content);
                     var fragmenter = new SimpleSpanFragmenter(scorer);
                     var highlighter = new Highlighter(scorer) { TextFragmenter = fragmenter };
 

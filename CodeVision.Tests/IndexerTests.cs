@@ -33,7 +33,7 @@ namespace CodeVision.Tests
             var hits = searcher.Search(searchExpression);
             Assert.IsNotEmpty(hits);
             Assert.IsFalse(hits.Any(s => string.IsNullOrEmpty(s.BestFragment)), "Must have best fragment for all hits");
-            Assert.IsFalse(hits.Any(s => s.Offsets == null), "Must have offsets for all hits");
+            Assert.IsFalse(hits.Any(s => s.Offsets.Count == 0), "Must have offsets for all hits");
         }
 
         internal string GetCompletePath(string contentPath)

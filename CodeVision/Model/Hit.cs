@@ -10,5 +10,10 @@ namespace CodeVision.Model
         public float Score { get; set; }
         public string BestFragment { get; set; }
         public List<Offset> Offsets { get; set; }
+
+        public Hit()
+        {
+            Offsets = new List<Offset>();
+        }
     }
 }
