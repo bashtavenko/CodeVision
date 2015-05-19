@@ -11,5 +11,6 @@ namespace CodeVision
         public static string Parameter = "parameter";
         public static string Interface = "interface";
         public static string Path = "path";
+        public static string Content = "content";
     }
 }

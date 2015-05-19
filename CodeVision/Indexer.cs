@@ -60,6 +60,7 @@ namespace CodeVision
             }
             Log(file.FullName);
             var doc = new Document();
+            doc.Add(new Field(Fields.Content, file.OpenText(), Field.TermVector.WITH_OFFSETS));
             var parser = new CSharpParser();
             var syntax = parser.Parse(file.FullName);
             AddUsings(doc, syntax);

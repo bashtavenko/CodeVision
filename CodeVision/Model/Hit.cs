@@ -8,6 +8,7 @@ namespace CodeVision.Model
         public string FilePath { get; set; }
         public string FileName { get { return Path.GetFileName(FilePath);}}
         public float Score { get; set; }
+        public string BestFragment { get; set; }
         public List<Offset> Offsets { get; set; }
     }
 }
