@@ -8,6 +8,9 @@ namespace CodeVision.Console
         [Option('c', "content", Required = true, HelpText = "Content path")]
         public string ContentPath { get; set; }
 
+        [Option('i', "index", Required = false, HelpText = "Index path")]
+        public string IndexPath { get; set; }
+
         [ParserState]
         public IParserState LastParserState { get; set; }
 

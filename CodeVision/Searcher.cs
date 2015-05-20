@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.IO;
+using System.Linq;
 using CodeVision.Model;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -44,7 +45,7 @@ namespace CodeVision
                     var termPositionVector = termFreqVector as TermPositionVector;
                     if (termFreqVector == null || termPositionVector == null)
                     {
-                        throw new ArgumentException("Must have term frequencies and postiions vectors");
+                        throw new ArgumentException("Must have term frequencies and positions vectors");
                     }
 
                     foreach (var term in terms)
@@ -66,8 +67,8 @@ namespace CodeVision
                     // Highlighter from contrib package
                     var tokenStream = TokenSources.GetTokenStream(termPositionVector);
 
-                    //var scorer = new QueryScorer(termQuery, Fields.Content);
-                    var scorer = new QueryScorer(primitiveQuery, Fields.Content);
+                    string field = terms.First().Field; // TODO: There can be multiple term fields, like code: and method:
+                    var scorer = new QueryScorer(primitiveQuery, field);
                     var fragmenter = new SimpleSpanFragmenter(scorer);
                     var highlighter = new Highlighter(scorer) { TextFragmenter = fragmenter };
 

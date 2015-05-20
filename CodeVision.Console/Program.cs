@@ -6,7 +6,6 @@ namespace CodeVision.Console
     {
         static void Main(string[] args)
         {
-
             var config = new CommandLineConfiguration();
             if (!CommandLine.Parser.Default.ParseArguments(args, config))
             {
@@ -17,7 +16,7 @@ namespace CodeVision.Console
             var indexer = new Indexer(logger);
             try
             {
-                indexer.Index(config.ContentPath);
+                indexer.Index(config.ContentPath, config.IndexPath);
             }
             catch (Exception ex)
             {

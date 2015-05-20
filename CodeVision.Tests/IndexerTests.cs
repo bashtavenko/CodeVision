@@ -19,14 +19,16 @@ namespace CodeVision.Tests
         
         [TestCase("TryGetValue")]
         [TestCase("start = ArrayUtil.grow(start, ord.Length);")]
+        [TestCase("HashMapHelperClass")]
         [TestCase("class:HashMapHelperClass")]
         [TestCase("Apache")]
         [TestCase("Software")]
         [TestCase("Apache Software")]
         [TestCase("method:GetValueOrNull")]
-        //[TestCase("using:System.Collection.Generic")] this fails
         [TestCase("parameter:dictionary")]
-        //[TestCase("return:TokenStream")] TODO:
+        // TODO
+        //[TestCase("using:System.Collection.Generic")]
+        //[TestCase("return:TokenStream")]
         public void Indexer_CanSearch(string searchExpression)
         {
             var searcher = new Searcher();

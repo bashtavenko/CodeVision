@@ -20,9 +20,9 @@ namespace CodeVision
             _logger = logger;
         }
 
-        public void Index(string contentPath)
+        public void Index(string contentPath, string indexPath = "Index")
         {
-            var indexDirectory = new SimpleFSDirectory(new DirectoryInfo("Index"));
+            var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(indexPath));
             Log(string.Format("Begining to index {0}. Index location: {1}", contentPath, indexDirectory.Directory.FullName));
             using (var writer = new IndexWriter(indexDirectory, new CSharpAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED))
             {
@@ -73,7 +73,7 @@ namespace CodeVision
         {
             foreach (var @using in syntax.Usings)
             {
-                doc.Add(new Field(Fields.Using, @using, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_OFFSETS));
+                doc.Add(new Field(Fields.Using, @using, Field.Store.YES, Field.Index.NOT_ANALYZED));
             }
         }
 
@@ -81,10 +81,10 @@ namespace CodeVision
         {
             foreach (var @class in syntax.Classes)
             {
-                doc.Add(new Field(Fields.Class, @class.ClassName, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_OFFSETS));
+                doc.Add(new Field(Fields.Class, @class.ClassName, Field.Store.YES, Field.Index.NOT_ANALYZED));
                 foreach (var @interface in @class.Interfaces)
                 {
-                    doc.Add(new Field(Fields.Interface, @interface, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_OFFSETS));    
+                    doc.Add(new Field(Fields.Interface, @interface, Field.Store.YES, Field.Index.NOT_ANALYZED));    
                 }
                 AddMethods(doc, @class);
             }
@@ -94,13 +94,13 @@ namespace CodeVision
         {
             foreach (var method in @class.Methods)
             {
-                doc.Add(new Field(Fields.Method, method.MethodName, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_OFFSETS));
-                doc.Add(new Field(Fields.Return, method.ReturnType, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_OFFSETS));
+                doc.Add(new Field(Fields.Method, method.MethodName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field(Fields.Return, method.ReturnType, Field.Store.YES, Field.Index.NOT_ANALYZED));
                 foreach (var parameter in method.Parameters)
                 {
-                    doc.Add(new Field(Fields.Parameter, parameter, Field.Store.YES, Field.Index.NOT_ANALYZED, Field.TermVector.WITH_OFFSETS));
+                    doc.Add(new Field(Fields.Parameter, parameter, Field.Store.YES, Field.Index.NOT_ANALYZED));
                 }
-                doc.Add(new Field(Fields.Code, method.Body, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.WITH_OFFSETS));
+                doc.Add(new Field(Fields.Code, method.Body, Field.Store.NO, Field.Index.ANALYZED));
             }
         }
 
