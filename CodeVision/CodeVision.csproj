@@ -140,8 +140,10 @@
     <Compile Include="CSharp\CSharpMethod.cs" />
     <Compile Include="CSharp\CSharpFileSyntax.cs" />
     <Compile Include="ILogger.cs" />
+    <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\Hit.cs" />
     <Compile Include="Indexer.cs" />
+    <Compile Include="Model\ReadOnlyHitCollection.cs" />
     <Compile Include="Model\Offset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Searcher.cs" />

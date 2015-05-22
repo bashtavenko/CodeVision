@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using CodeVision.Model;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
@@ -18,20 +14,22 @@ namespace CodeVision
 {
     public class Searcher
     {
-        public List<Hit> Search(string searchExpression)
+        public int MaxNumberOfHits { get { return 10000; } }
+
+        public ReadOnlyHitCollection Search(string searchExpression, int page = 1, int hitsPerPage = 10)
         {
             string defaultFieldName = Fields.Content;
             var query = new QueryParser(Version.LUCENE_30, defaultFieldName, new CSharpAnalyzer()).Parse(searchExpression.ToLower());
             
-            const int hitsPerPage = 10;
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo("Index"));
             var hits = new List<Hit>();
+            int totalHits;
             using (var reader = IndexReader.Open(indexDirectory, true))
             {
                 var searcher = new IndexSearcher(reader);
-                var collector = TopScoreDocCollector.Create(hitsPerPage, true);
-                searcher.Search(query, collector);
-                foreach (var scoreDoc in collector.TopDocs().ScoreDocs)
+                ScoreDoc[] scoreDocs = searcher.Search(query, MaxNumberOfHits).ScoreDocs;
+                totalHits = scoreDocs.Length;
+                foreach (var scoreDoc in scoreDocs)
                 {
                     int docId = scoreDoc.Doc;
                     var hit = new Hit {FilePath = searcher.Doc(docId).Get(Fields.Path) , Score = scoreDoc.Score};
@@ -82,7 +80,9 @@ namespace CodeVision
                     hits.Add(hit);
                 }
             }
-            return hits;
+
+            var hitsOnOnePage = hits.GetPage(page, hitsPerPage).ToList();
+            return new ReadOnlyHitCollection(hitsOnOnePage, totalHits);
         }
     }
 }

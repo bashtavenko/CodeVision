@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
+using CodeVision.Model;
 using NUnit.Framework;
 
 namespace CodeVision.Tests
@@ -32,10 +33,26 @@ namespace CodeVision.Tests
         public void Indexer_CanSearch(string searchExpression)
         {
             var searcher = new Searcher();
-            var hits = searcher.Search(searchExpression);
-            Assert.IsNotEmpty(hits);
-            Assert.IsFalse(hits.Any(s => string.IsNullOrEmpty(s.BestFragment)), "Must have best fragment for all hits");
-            Assert.IsFalse(hits.Any(s => s.Offsets.Count == 0), "Must have offsets for all hits");
+            var hitCollection = searcher.Search(searchExpression);
+            Assert.IsNotEmpty(hitCollection);
+            Assert.IsFalse(hitCollection.Any(s => string.IsNullOrEmpty(s.BestFragment)), "Must have best fragment for all hits");
+            Assert.IsFalse(hitCollection.Any(s => s.Offsets.Count == 0), "Must have offsets for all hits");
+        }
+
+        [Test]
+        public void Indexer_CanSearch_WithPaging()
+        {
+            var searcher = new Searcher();
+            const string searchExpression = "is";
+            
+            var hitCollection = searcher.Search(searchExpression);
+            Assert.That(hitCollection.TotalHits, Is.GreaterThanOrEqualTo(3));
+
+            hitCollection = searcher.Search(searchExpression, 1, 1);
+            Assert.That(hitCollection.Count, Is.EqualTo(1));
+
+            hitCollection = searcher.Search(searchExpression, 2, 1);
+            Assert.That(hitCollection.Count, Is.EqualTo(1));
         }
 
         internal string GetCompletePath(string contentPath)
