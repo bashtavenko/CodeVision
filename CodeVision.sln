@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeVision.Tests", "CodeVis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeVision.Console", "CodeVision.Console\CodeVision.Console.csproj", "{C1871D98-3338-420B-BEA3-AEBDB03C0D24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeVision.Web", "CodeVision.Web\CodeVision.Web.csproj", "{F68D52B3-D6F6-488A-BE08-A2805930A950}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C1871D98-3338-420B-BEA3-AEBDB03C0D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1871D98-3338-420B-BEA3-AEBDB03C0D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1871D98-3338-420B-BEA3-AEBDB03C0D24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F68D52B3-D6F6-488A-BE08-A2805930A950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F68D52B3-D6F6-488A-BE08-A2805930A950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F68D52B3-D6F6-488A-BE08-A2805930A950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F68D52B3-D6F6-488A-BE08-A2805930A950}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
