@@ -1,4 +1,18 @@
 ﻿@{
     ViewBag.Title = "Home";
 }
-<h2>@ViewBag.Title</h2>
+
+<style>
+    input.big-input {
+        width: 500px;
+    }
+</style>
+
+
+<div class="container">
+    @using (Html.BeginForm("Search", "Home", FormMethod.Post, new {@class="form-inline"}))
+    {
+        @Html.TextBox("searchExpression", null, new {@class="big-input"})
+        <button type="submit" class="btn btn-primary">Search</button>
+    }
+</div>

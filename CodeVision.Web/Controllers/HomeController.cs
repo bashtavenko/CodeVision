@@ -13,6 +13,11 @@ namespace CodeVision.Web.Controllers
             return View();
         }
 
+        public ActionResult Search(string searchExpression)
+        {
+            return View("Index");
+        }
+
         public ActionResult Help()
         {
             return View();

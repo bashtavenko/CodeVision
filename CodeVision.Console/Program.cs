@@ -13,10 +13,10 @@ namespace CodeVision.Console
             }
             
             var logger = new Logger();
-            var indexer = new Indexer(logger);
+            var indexer = new Indexer(logger, new CodeVisionConfigurationSection());
             try
             {
-                indexer.Index(config.ContentPath, config.IndexPath);
+                indexer.Index(config.ContentPath);
             }
             catch (Exception ex)
             {

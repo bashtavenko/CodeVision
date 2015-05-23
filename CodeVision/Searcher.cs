@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CodeVision.Model;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
@@ -16,12 +17,24 @@ namespace CodeVision
     {
         public int MaxNumberOfHits { get { return 10000; } }
 
+        private readonly IConfiguration _configuration;
+
+        public Searcher()
+            : this(CodeVisionConfigurationSection.Load())
+        {
+        }
+
+        public Searcher(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public ReadOnlyHitCollection Search(string searchExpression, int page = 1, int hitsPerPage = 10)
         {
             string defaultFieldName = Fields.Content;
             var query = new QueryParser(Version.LUCENE_30, defaultFieldName, new CSharpAnalyzer()).Parse(searchExpression.ToLower());
             
-            var indexDirectory = new SimpleFSDirectory(new DirectoryInfo("Index"));
+            var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             var hits = new List<Hit>();
             int totalHits;
             using (var reader = IndexReader.Open(indexDirectory, true))
@@ -32,7 +45,7 @@ namespace CodeVision
                 foreach (var scoreDoc in scoreDocs)
                 {
                     int docId = scoreDoc.Doc;
-                    var hit = new Hit {FilePath = searcher.Doc(docId).Get(Fields.Path) , Score = scoreDoc.Score};
+                    var hit = new Hit(_configuration.ContentRootPath, searcher.Doc(docId).Get(Fields.Path)) { Score = scoreDoc.Score};
                     
                     // Get offsets
                     var primitiveQuery = query.Rewrite(reader);
@@ -83,6 +96,33 @@ namespace CodeVision
 
             var hitsOnOnePage = hits.GetPage(page, hitsPerPage).ToList();
             return new ReadOnlyHitCollection(hitsOnOnePage, totalHits);
+        }
+
+        public string GetFileContent(Hit hit)
+        {
+            string sourceString;
+            using (var sr = new StreamReader(hit.FilePath))
+            {
+                sourceString =  sr.ReadToEnd();
+            }
+
+            var result = new StringBuilder();
+            int prevIndex = 0;
+            foreach (var offset in hit.Offsets)
+            {
+                if (offset.StartOffset > sourceString.Length - 1 || offset.EndOffset > sourceString.Length - 1)
+                {
+                    throw new ArgumentException("Invoid offsets");
+                }
+                result.Append(sourceString.Substring(prevIndex, offset.StartOffset));
+                result.Append("<b>");
+                result.Append(sourceString.Substring(offset.StartOffset, offset.EndOffset - offset.StartOffset));
+                result.Append("</b>");
+                prevIndex += offset.EndOffset;
+            }
+
+            result.Append(sourceString.Substring(prevIndex, sourceString.Length - prevIndex));
+            return result.ToString();
         }
     }
 }

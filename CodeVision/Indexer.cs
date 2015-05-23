@@ -1,28 +1,37 @@
 using System;
+using System.Configuration;
 using System.IO;
-using System.IO.Pipes;
 using CodeVision.CSharp;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
-using Lucene.Net.Util;
 
 namespace CodeVision
 {
     public class Indexer
     {
         private readonly ILogger _logger;
-        
+        private readonly IConfiguration _configuration;
+
         public Indexer(ILogger logger)
+            : this(logger, CodeVisionConfigurationSection.Load())
         {
-            _logger = logger;
         }
 
-        public void Index(string contentPath, string indexPath = "Index")
+        public Indexer(ILogger logger, IConfiguration configuration)
         {
-            var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(indexPath));
+            _logger = logger;
+            _configuration = configuration;
+        }
+
+        public void Index()
+        {
+            Index((_configuration.ContentRootPath));
+        }
+
+        public void Index(string contentPath)
+        {
+            var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             Log(string.Format("Begining to index {0}. Index location: {1}", contentPath, indexDirectory.Directory.FullName));
             using (var writer = new IndexWriter(indexDirectory, new CSharpAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED))
             {

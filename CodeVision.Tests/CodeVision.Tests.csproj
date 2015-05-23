@@ -42,10 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="Content\Lucene.Net.Memory\HashMapHelperClass.cs" />
     <None Include="Content\Lucene.Net.Memory\MemoryIndex.cs" />
     <None Include="Content\Lucene.Net.Memory\MemoryIndexNormDocValues.cs" />
     <Compile Include="CSharpParserTests.cs" />
+    <Compile Include="HitTests.cs" />
     <Compile Include="IndexerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

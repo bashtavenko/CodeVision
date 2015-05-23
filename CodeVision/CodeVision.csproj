@@ -121,6 +121,7 @@
     <Reference Include="System.Composition.TypedParts">
       <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reflection.Metadata">
       <HintPath>..\packages\System.Reflection.Metadata.1.0.18-beta\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
@@ -133,12 +134,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSharp\Extensions.cs" />
+    <Compile Include="CodeVisionConfigurationSection.cs" />
     <Compile Include="Fields.cs" />
     <Compile Include="CSharpAnalyzer.cs" />
     <Compile Include="CSharp\CSharpClass.cs" />
     <Compile Include="CSharp\CSharpParser.cs" />
     <Compile Include="CSharp\CSharpMethod.cs" />
     <Compile Include="CSharp\CSharpFileSyntax.cs" />
+    <Compile Include="IConfiguration.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\Hit.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Searcher.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

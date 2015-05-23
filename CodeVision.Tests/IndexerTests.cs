@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Tracing;
+﻿using System;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using CodeVision.Model;
@@ -53,6 +54,33 @@ namespace CodeVision.Tests
 
             hitCollection = searcher.Search(searchExpression, 2, 1);
             Assert.That(hitCollection.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Indexer_GetFileContent()
+        {
+            // Arrange
+            var searcher = new Searcher();
+            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\HashMapHelperClass.cs"));
+            hit.Offsets.Add(new Offset {StartOffset = 1000, EndOffset = 1011});
+
+            // Act
+            var result = searcher.GetFileContent(hit);
+
+            // Assert
+            Assert.IsNotNullOrEmpty(result);
+        }
+
+        [Test]
+        public void Indexer_GetFileContent_InvalidOffsets()
+        {
+            // Arrange
+            var searcher = new Searcher();
+            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\HashMapHelperClass.cs"));
+            hit.Offsets.Add(new Offset { StartOffset = 5000, EndOffset = 5011 });
+            
+            // Act/Assert
+            Assert.Throws<ArgumentException>(() => searcher.GetFileContent(hit));
         }
 
         internal string GetCompletePath(string contentPath)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CodeVision.Model
 {
@@ -21,21 +20,6 @@ namespace CodeVision.Model
         }
 
         public int TotalHits { get { return _totalHits; }  }
-
-        public ReadOnlyHitCollection GetPage(int pageNumber, int pageSize)
-        {
-            if (pageNumber < 1)
-            {
-                throw new ArgumentOutOfRangeException("pageNumber", pageNumber, "PageNumber cannot be below 1.");
-            }
-            if (pageSize < 1)
-            {
-                throw new ArgumentOutOfRangeException("pageSize", pageSize, "PageSize cannot be less than 1.");
-            }
-
-            var hits = pageNumber == 1 ? this.Take(pageSize) : this.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-            return new ReadOnlyHitCollection(hits.ToList(), this.TotalHits);
-        }
 
         public IEnumerator<Hit> GetEnumerator()
         {
