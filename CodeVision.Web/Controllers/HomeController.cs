@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.IO;
 using System.Web.Mvc;
+using AutoMapper;
+using CodeVision.Model;
+using CodeVision.Web.ViewModels;
 
 namespace CodeVision.Web.Controllers
 {
@@ -10,12 +10,16 @@ namespace CodeVision.Web.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return View(new SearchResult());
         }
 
         public ActionResult Search(string searchExpression)
         {
-            return View("Index");
+            var configuration = WebConfiguration.Load(Server);
+            var searcher = new Searcher(configuration);
+            ReadOnlyHitCollection hitCollection = searcher.Search(searchExpression);
+            SearchResult model = Mapper.Map<SearchResult>(hitCollection);
+            return View("Index", model);
         }
 
         public ActionResult Help()

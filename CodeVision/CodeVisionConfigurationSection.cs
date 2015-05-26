@@ -1,4 +1,5 @@
 using System.Configuration;
+using System.Runtime.Remoting.Channels;
 
 namespace CodeVision
 {

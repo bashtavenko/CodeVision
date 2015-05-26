@@ -61,8 +61,10 @@ namespace CodeVision.Tests
         {
             // Arrange
             var searcher = new Searcher();
-            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\HashMapHelperClass.cs"));
-            hit.Offsets.Add(new Offset {StartOffset = 1000, EndOffset = 1011});
+            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"));
+            hit.Offsets.Add(new Offset { StartOffset = 90, EndOffset = 96 });
+            hit.Offsets.Add(new Offset { StartOffset = 347, EndOffset = 353 });
+            hit.Offsets.Add(new Offset { StartOffset = 545, EndOffset = 551 });
 
             // Act
             var result = searcher.GetFileContent(hit);
@@ -76,8 +78,8 @@ namespace CodeVision.Tests
         {
             // Arrange
             var searcher = new Searcher();
-            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\HashMapHelperClass.cs"));
-            hit.Offsets.Add(new Offset { StartOffset = 5000, EndOffset = 5011 });
+            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"));
+            hit.Offsets.Add(new Offset { StartOffset = 1000, EndOffset = 2000 });
             
             // Act/Assert
             Assert.Throws<ArgumentException>(() => searcher.GetFileContent(hit));

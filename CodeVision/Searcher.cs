@@ -107,21 +107,21 @@ namespace CodeVision
             }
 
             var result = new StringBuilder();
-            int prevIndex = 0;
+            int currentIndex = 0;
             foreach (var offset in hit.Offsets)
             {
                 if (offset.StartOffset > sourceString.Length - 1 || offset.EndOffset > sourceString.Length - 1)
                 {
-                    throw new ArgumentException("Invoid offsets");
+                    throw new ArgumentException("Invalid offsets");
                 }
-                result.Append(sourceString.Substring(prevIndex, offset.StartOffset));
+                result.Append(sourceString.Substring(currentIndex, offset.StartOffset - currentIndex));
                 result.Append("<b>");
                 result.Append(sourceString.Substring(offset.StartOffset, offset.EndOffset - offset.StartOffset));
                 result.Append("</b>");
-                prevIndex += offset.EndOffset;
+                currentIndex = offset.EndOffset;
             }
 
-            result.Append(sourceString.Substring(prevIndex, sourceString.Length - prevIndex));
+            result.Append(sourceString.Substring(currentIndex, sourceString.Length - currentIndex));
             return result.ToString();
         }
     }

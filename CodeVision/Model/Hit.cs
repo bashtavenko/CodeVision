@@ -7,8 +7,9 @@ namespace CodeVision.Model
     public class Hit
     {
         public string FilePath { get { return _filePath; } }
+        public string ContentRootPath { get { return _contentRootPath; } }
         public string FileName { get { return Path.GetFileName(FilePath);}}
-
+        
         public string FriendlyFileName
         {
             get
@@ -27,6 +28,14 @@ namespace CodeVision.Model
 
         private readonly string _contentRootPath;
         private readonly string _filePath;
+
+        public Hit(string filePath, string contentRootPath, float score, string bestFragment, List<Offset> offsets) 
+            : this (contentRootPath, filePath)
+        {
+            this.Score = score;
+            this.BestFragment = bestFragment;
+            this.Offsets = offsets;
+        }
 
         public Hit(string contentRootPath, string filePath)
         {

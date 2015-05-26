@@ -1,4 +1,7 @@
-﻿@{
+﻿@using CodeVision.Web.ViewModels
+@model CodeVision.Web.ViewModels.SearchResult
+
+@{
     ViewBag.Title = "Home";
 }
 
@@ -14,5 +17,21 @@
     {
         @Html.TextBox("searchExpression", null, new {@class="big-input"})
         <button type="submit" class="btn btn-primary">Search</button>
+    }  
+    
+    
+    @if (Model.Hits.Count > 0)
+    {
+        <div>Total hits:@Model.Hits.Count</div>
+    }
+
+    @foreach (SearchHit hit in Model.Hits)
+    {
+        <p>
+            <div>
+                @Html.ActionLink(hit.FriendlyFileName, "Details", "Content", new {hit = @hit.ToString()}, null)
+            </div>
+            <div>@Html.Raw(hit.BestFragment)</div>
+        </p>
     }
 </div>
