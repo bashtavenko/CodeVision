@@ -31,6 +31,10 @@ namespace CodeVision
 
         public ReadOnlyHitCollection Search(string searchExpression, int page = 1, int hitsPerPage = 10)
         {
+            if (string.IsNullOrEmpty(searchExpression))
+            {
+                throw new NullReferenceException("Must have searchExpression");
+            }
             string defaultFieldName = Fields.Content;
             var query = new QueryParser(Version.LUCENE_30, defaultFieldName, new CSharpAnalyzer()).Parse(searchExpression.ToLower());
             
@@ -81,7 +85,8 @@ namespace CodeVision
                     string field = terms.First().Field; // TODO: There can be multiple term fields, like code: and method:
                     var scorer = new QueryScorer(primitiveQuery, field);
                     var fragmenter = new SimpleSpanFragmenter(scorer);
-                    var highlighter = new Highlighter(scorer) { TextFragmenter = fragmenter };
+                    var formatter = new SimpleHTMLFormatter("<kbd>", "</kbd>");
+                    var highlighter = new Highlighter(formatter, scorer) { TextFragmenter = fragmenter };
 
                     string text;
                     using (var sr = new StreamReader(hit.FilePath))
@@ -115,9 +120,9 @@ namespace CodeVision
                     throw new ArgumentException("Invalid offsets");
                 }
                 result.Append(sourceString.Substring(currentIndex, offset.StartOffset - currentIndex));
-                result.Append("<b>");
+                result.Append("<kbd>");
                 result.Append(sourceString.Substring(offset.StartOffset, offset.EndOffset - offset.StartOffset));
-                result.Append("</b>");
+                result.Append("</kbd>");
                 currentIndex = offset.EndOffset;
             }
 

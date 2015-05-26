@@ -1,5 +1,8 @@
 ﻿@using CodeVision.Web.ViewModels
+@using PagedList.Mvc
 @model CodeVision.Web.ViewModels.SearchResult
+           
+<link href="/Content/PagedList.css" />
 
 @{
     ViewBag.Title = "Home";
@@ -7,7 +10,8 @@
 
 <style>
     input.big-input {
-        width: 500px;
+        width: 600px;
+        height:37px
     }
 </style>
 
@@ -22,7 +26,7 @@
     
     @if (Model.Hits.Count > 0)
     {
-        <div>Total hits:@Model.Hits.Count</div>
+        <h5>Total hits:@Model.TotalHits</h5>
     }
 
     @foreach (SearchHit hit in Model.Hits)
@@ -31,7 +35,9 @@
             <div>
                 @Html.ActionLink(hit.FriendlyFileName, "Details", "Content", new {hit = @hit.ToString()}, null)
             </div>
-            <div>@Html.Raw(hit.BestFragment)</div>
+            <pre>@Html.Raw(hit.BestFragment)</pre>
         </p>
     }
+    
+    @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpression = Model.SearchExpression,  Page = page }))
 </div>

@@ -46,12 +46,21 @@
     <None Include="Content\Lucene.Net.Memory\HashMapHelperClass.cs" />
     <None Include="Content\Lucene.Net.Memory\MemoryIndex.cs" />
     <None Include="Content\Lucene.Net.Memory\MemoryIndexNormDocValues.cs" />
+    <None Include="Content\Lucene.Net.Expressions\Bindings.cs" />
+    <None Include="Content\Lucene.Net.Expressions\Expression.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ExpressionComparator.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ExpressionFunctionValues.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ExpressionRescorer.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ExpressionSortField.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ExpressionValueSource.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ScoreFunctionValues.cs" />
+    <None Include="Content\Lucene.Net.Expressions\ScoreValueSource.cs" />
+    <None Include="Content\Lucene.Net.Expressions\SimpleBindings.cs" />
     <Compile Include="CSharpParserTests.cs" />
     <Compile Include="HitTests.cs" />
     <Compile Include="IndexerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

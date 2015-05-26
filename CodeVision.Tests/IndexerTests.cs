@@ -16,7 +16,7 @@ namespace CodeVision.Tests
         public void Setup()
         {
             _indexer = new Indexer(null);
-            _indexer.Index(GetCompletePath("Lucene.Net.Memory"));
+            _indexer.Index(GetCompletePath("."));
         }
         
         [TestCase("TryGetValue")]
@@ -44,7 +44,7 @@ namespace CodeVision.Tests
         public void Indexer_CanSearch_WithPaging()
         {
             var searcher = new Searcher();
-            const string searchExpression = "is";
+            const string searchExpression = "int";
             
             var hitCollection = searcher.Search(searchExpression);
             Assert.That(hitCollection.TotalHits, Is.GreaterThanOrEqualTo(3));

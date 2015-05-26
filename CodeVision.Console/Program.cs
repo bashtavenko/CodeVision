@@ -13,7 +13,7 @@ namespace CodeVision.Console
             }
             
             var logger = new Logger();
-            var indexer = new Indexer(logger, new CodeVisionConfigurationSection());
+            var indexer = new Indexer(logger, CodeVisionConfigurationSection.Load());
             try
             {
                 indexer.Index(config.ContentPath);
