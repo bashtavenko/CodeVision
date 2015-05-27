@@ -16,7 +16,7 @@ namespace CodeVision.Web
             Mapper.CreateMap<ViewModels.SearchOffset, Model.Offset>();
 
             Mapper.CreateMap<ViewModels.SearchHit, Model.Hit>()
-                .ConstructUsing(x => new Hit(x.FilePath, x.ContentRootPath, x.Score, x.BestFragment, MapOffsets(x.Offsets)));
+                .ConstructUsing(x => new Hit(x.DocId, x.FilePath, x.ContentRootPath, x.Score, x.BestFragment, MapOffsets(x.Offsets)));
         }
 
         private static List<Model.Offset> MapOffsets(List<ViewModels.SearchOffset> offsets)

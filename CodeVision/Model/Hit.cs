@@ -6,6 +6,7 @@ namespace CodeVision.Model
 {
     public class Hit
     {
+        public int DocId { get; set; }
         public string FilePath { get { return _filePath; } }
         public string ContentRootPath { get { return _contentRootPath; } }
         public string FileName { get { return Path.GetFileName(FilePath);}}
@@ -29,15 +30,14 @@ namespace CodeVision.Model
         private readonly string _contentRootPath;
         private readonly string _filePath;
 
-        public Hit(string filePath, string contentRootPath, float score, string bestFragment, List<Offset> offsets) 
-            : this (contentRootPath, filePath)
+        public Hit(int docId, string filePath, string contentRootPath, float score, string bestFragment, List<Offset> offsets) 
+            : this (docId, contentRootPath, filePath, score)
         {
-            this.Score = score;
             this.BestFragment = bestFragment;
             this.Offsets = offsets;
         }
 
-        public Hit(string contentRootPath, string filePath)
+        public Hit(int docId, string contentRootPath, string filePath, float score)
         {
             if (string.IsNullOrEmpty(contentRootPath))
             {
@@ -47,7 +47,9 @@ namespace CodeVision.Model
             {
                 throw new NullReferenceException("Must have content file path");
             }
-            Offsets = new List<Offset>();
+            this.Offsets = new List<Offset>();
+            this.Score = score;
+            this.DocId = docId;
             _contentRootPath = contentRootPath;
             _filePath = filePath;
         }

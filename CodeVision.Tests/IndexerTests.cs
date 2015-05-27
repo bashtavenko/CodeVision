@@ -30,7 +30,7 @@ namespace CodeVision.Tests
         [TestCase("parameter:dictionary")]
         // TODO
         //[TestCase("using:System.Collection.Generic")]
-        //[TestCase("return:TokenStream")]
+        //[TestCase("return:void")]
         public void Indexer_CanSearch(string searchExpression)
         {
             var searcher = new Searcher();
@@ -38,6 +38,15 @@ namespace CodeVision.Tests
             Assert.IsNotEmpty(hitCollection);
             Assert.IsFalse(hitCollection.Any(s => string.IsNullOrEmpty(s.BestFragment)), "Must have best fragment for all hits");
             Assert.IsFalse(hitCollection.Any(s => s.Offsets.Count == 0), "Must have offsets for all hits");
+        }
+
+        [TestCase("Apa*")]
+        public void Indexer_CanSearchWithWildcard(string searchExpression)
+        {
+            var searcher = new Searcher();
+            var hitCollection = searcher.Search(searchExpression);
+            Assert.IsNotEmpty(hitCollection);
+            Assert.IsFalse(hitCollection.Any(s => string.IsNullOrEmpty(s.BestFragment)), "Must have best fragment for all hits");
         }
 
         [Test]
@@ -61,7 +70,7 @@ namespace CodeVision.Tests
         {
             // Arrange
             var searcher = new Searcher();
-            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"));
+            var hit = new Hit(1, "..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"), 1f);
             hit.Offsets.Add(new Offset { StartOffset = 90, EndOffset = 96 });
             hit.Offsets.Add(new Offset { StartOffset = 347, EndOffset = 353 });
             hit.Offsets.Add(new Offset { StartOffset = 545, EndOffset = 551 });
@@ -78,7 +87,7 @@ namespace CodeVision.Tests
         {
             // Arrange
             var searcher = new Searcher();
-            var hit = new Hit("..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"));
+            var hit = new Hit(1, "..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"), 1f);
             hit.Offsets.Add(new Offset { StartOffset = 1000, EndOffset = 2000 });
             
             // Act/Assert

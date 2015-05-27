@@ -37,56 +37,85 @@ namespace CodeVision
             }
             string defaultFieldName = Fields.Content;
             var query = new QueryParser(Version.LUCENE_30, defaultFieldName, new CSharpAnalyzer()).Parse(searchExpression.ToLower());
-            
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
-            var hits = new List<Hit>();
+            
+            List<Hit> onePageOfHits;
             int totalHits;
             using (var reader = IndexReader.Open(indexDirectory, true))
             {
+                //  Get one page of hits
+                var hits = new List<Hit>();
                 var searcher = new IndexSearcher(reader);
                 ScoreDoc[] scoreDocs = searcher.Search(query, MaxNumberOfHits).ScoreDocs;
                 totalHits = scoreDocs.Length;
+
                 foreach (var scoreDoc in scoreDocs)
                 {
                     int docId = scoreDoc.Doc;
-                    var hit = new Hit(_configuration.ContentRootPath, searcher.Doc(docId).Get(Fields.Path)) { Score = scoreDoc.Score};
-                    
-                    // Get offsets
+                    string filePath = searcher.Doc(docId).Get(Fields.Path);
+                    var hit = new Hit(docId, _configuration.ContentRootPath, filePath, scoreDoc.Score);
+                    hits.Add(hit);
+                }
+
+                onePageOfHits = hits.GetPage(page, hitsPerPage).ToList();
+
+                // Get offsets and higlights on the page we are going to return
+                foreach (var hit in onePageOfHits)
+                {
                     var primitiveQuery = query.Rewrite(reader);
                     var terms = new HashSet<Term>();
                     primitiveQuery.ExtractTerms(terms);
+                    string searchField = string.Empty;
+                    if (terms.Count == 0)
+                    {
+                        // There can be all kinds of queires
+                        var prefixQuery = query as PrefixQuery;
+                        if (prefixQuery != null)
+                        {
+                            searchField = prefixQuery.Prefix.Field;
+                            primitiveQuery = prefixQuery;
+                        }
+                    }
+                    else
+                    {
+                        // TODO: There can be multiple term fields, like code: and method:
+                        searchField = terms.First().Field;
+                    }
 
-                    var termFreqVector = reader.GetTermFreqVector(docId, Fields.Content);
+                    var termFreqVector = reader.GetTermFreqVector(hit.DocId, Fields.Content);
                     var termPositionVector = termFreqVector as TermPositionVector;
                     if (termFreqVector == null || termPositionVector == null)
                     {
                         throw new ArgumentException("Must have term frequencies and positions vectors");
                     }
 
+                    // No offsets for prefix and other non-term based queries
+                    const int maxOffsetNumber = 10;
                     foreach (var term in terms)
                     {
-                        int termIndex = termFreqVector.IndexOf(term.Text);
+                        int termIndex = termFreqVector.IndexOf(term.Text); // Meaning get me this term, not text yet.
                         if (termIndex != -1)
                         {
                             foreach (var offset in termPositionVector.GetOffsets(termIndex))
                             {
-                                hit.Offsets.Add(new Offset
+                                if (hit.Offsets.Count < maxOffsetNumber)
                                 {
-                                    StartOffset = offset.StartOffset,
-                                    EndOffset = offset.EndOffset
-                                });
+                                    hit.Offsets.Add(new Offset
+                                    {
+                                        StartOffset = offset.StartOffset,
+                                        EndOffset = offset.EndOffset
+                                    });
+                                }
                             }
                         }
                     }
 
                     // Highlighter from contrib package
                     var tokenStream = TokenSources.GetTokenStream(termPositionVector);
-
-                    string field = terms.First().Field; // TODO: There can be multiple term fields, like code: and method:
-                    var scorer = new QueryScorer(primitiveQuery, field);
+                    var scorer = new QueryScorer(primitiveQuery, searchField);
                     var fragmenter = new SimpleSpanFragmenter(scorer);
                     var formatter = new SimpleHTMLFormatter("<kbd>", "</kbd>");
-                    var highlighter = new Highlighter(formatter, scorer) { TextFragmenter = fragmenter };
+                    var highlighter = new Highlighter(formatter, scorer) {TextFragmenter = fragmenter};
 
                     string text;
                     using (var sr = new StreamReader(hit.FilePath))
@@ -94,13 +123,10 @@ namespace CodeVision
                         text = sr.ReadToEnd();
                     }
                     hit.BestFragment = highlighter.GetBestFragment(tokenStream, text);
-                    
-                    hits.Add(hit);
                 }
             }
-
-            var hitsOnOnePage = hits.GetPage(page, hitsPerPage).ToList();
-            return new ReadOnlyHitCollection(hitsOnOnePage, totalHits);
+      
+            return new ReadOnlyHitCollection(onePageOfHits, totalHits);
         }
 
         public string GetFileContent(Hit hit)
@@ -113,7 +139,7 @@ namespace CodeVision
 
             var result = new StringBuilder();
             int currentIndex = 0;
-            foreach (var offset in hit.Offsets)
+            foreach (var offset in hit.Offsets.OrderBy(s => s.StartOffset))
             {
                 if (offset.StartOffset > sourceString.Length - 1 || offset.EndOffset > sourceString.Length - 1)
                 {

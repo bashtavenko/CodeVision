@@ -39,7 +39,7 @@ namespace CodeVision.CSharp
                     
                     foreach (var param in methodDeclarationSyntax.ParameterList.Parameters)
                     {
-                        method.Parameters.Add(param.Identifier.Text);
+                        method.Parameters.Add(param.Identifier.Text.ToLower());
                     }
                     @class.Methods.Add(method);
                 }

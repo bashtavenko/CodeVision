@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using CodeVision.Model;
 using Newtonsoft.Json;
 
 namespace CodeVision.Web.ViewModels
 {
     public class SearchHit
     {
+        [JsonProperty(PropertyName = "id")]
+        public int DocId { get; set; }
+
         [JsonProperty(PropertyName = "fp")]
         public string FilePath { get; set; }
 

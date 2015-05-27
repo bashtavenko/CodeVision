@@ -13,7 +13,7 @@ namespace CodeVision.Tests
         [TestCase("c:\\jenkins\\workspace\\", "c:\\Account.cs", "Account.cs")]
         public void Hit_FriendlyName(string rootPath, string fullPath, string expected)
         {
-            var hit = new Hit(rootPath, fullPath);
+            var hit = new Hit(1, rootPath, fullPath, 1.1f);
             Assert.That(hit.FriendlyFileName, Is.EqualTo(expected));
         }
     }
