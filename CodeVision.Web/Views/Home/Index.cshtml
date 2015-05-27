@@ -39,5 +39,5 @@
         </p>
     }
     
-    @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpression = Model.SearchExpression,  Page = page }))
+    @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpressionEncoded = Model.SearchExpressionEncoded,  Page = page }))
 </div>

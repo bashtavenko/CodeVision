@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace CodeVision.Web
+namespace CodeVision.Web.Common
 {
     public class WebConfiguration : IConfiguration
     {

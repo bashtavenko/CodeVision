@@ -8,22 +8,26 @@ namespace CodeVision.Web.ViewModels
 {
     public class SearchHit
     {
+        [JsonProperty(PropertyName = "fp")]
         public string FilePath { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty(PropertyName = "fn")]
         public string FileName { get; set; }
-        
+
+        [JsonProperty(PropertyName = "ffn")]
         public string FriendlyFileName { get; set; }
 
+        [JsonProperty(PropertyName = "c")]
         public string ContentRootPath { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty(PropertyName = "s")]
         public float Score { get; set; }
 
         [JsonIgnore]
         public string BestFragment { get; set; }
 
-        public List<Offset> Offsets { get; set; }
+        [JsonProperty(PropertyName = "o")]
+        public List<SearchOffset> Offsets { get; set; }
 
         public override string ToString()
         {

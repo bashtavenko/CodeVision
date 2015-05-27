@@ -15,7 +15,7 @@ namespace CodeVision.Web
 
             routes.MapRoute(
                 name: "TwoParams",
-                url: "{controller}/{action}/{searchExpression}/{page}");
+                url: "{controller}/{action}/{searchExpressionEncoded}/{page}");
     
             routes.MapRoute(
                 name: "Default",
