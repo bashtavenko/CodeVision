@@ -28,9 +28,15 @@ namespace CodeVision.Tests
         [TestCase("Apache Software")]
         [TestCase("method:GetValueOrNull")]
         [TestCase("parameter:dictionary")]
+        
         // TODO
         //[TestCase("using:System.Collection.Generic")]
-        //[TestCase("return:void")]
+
+        // Throws Lucene.Net.QueryParsers.QueryParser.LookaheadSuccess. Probably bug in Lucene 
+        //[TestCase("return:void")] 
+
+        // No highlits or offsets since these are stop words
+        //[TestCase("comment:try-catch")]
         public void Indexer_CanSearch(string searchExpression)
         {
             var searcher = new Searcher();

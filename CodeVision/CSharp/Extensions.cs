@@ -4,9 +4,14 @@ namespace CodeVision.CSharp
 {
     public static class Extensions
     {
-        public static string ToFullLowerCaseString(this CSharpSyntaxNode node)
+        public static string ToFullStringLowerNormalized(this CSharpSyntaxNode node)
         {
-            return node.ToFullString().ToLower();
+            if (node == null)
+            {
+                return null;
+            }
+            string identifer = node.ToFullString().Replace("\r\n", string.Empty);
+            return identifer.Trim().ToLowerInvariant();
         }
     }
 }

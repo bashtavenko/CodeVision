@@ -1,4 +1,73 @@
 ﻿@{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Help";
 }
-<h2>@ViewBag.Title</h2>
+
+<h1>How to search</h1>
+
+<h2>Basics</h2>
+Simply typing the word and clicking search button is often a good start. Surrond multiple words with double quotes, for example
+<blockquote>"Licensed to the Apache Software Foundation"</blockquote>. Boolean operators <mark>AND</mark>, <mark>OR</mark>, <mark>NOT</mark> and parenthesis
+are supported:
+
+<blockquote>
+    Licensed OR Software<br/>
+    +Licensed Software
+</blockquote>
+
+Use <mark>*</mark>, <mark>?</mark> for wildcard searches, for example:
+
+<blockquote>
+    Licen*<br />
+    sof?ware
+</blockquote>
+
+
+In these types of searches the content sources are treated as text and often produce quite a bit of hits.
+
+<h2>Beyond Basics</h2>
+Search expression consists of <em>field</em> and <em>term</em> separated by colon (<mark>:</mark>), for example <mark>content:lucene</mark>. If field is ommitted,
+the default field of <mark>content</mark> is used. These are currently supported search fields:
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Purpose</th>
+            <th>Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>class</strong></td>
+            <td>Find files where this class is declared and defined</td>
+            <td>class:Bindings</td>
+        </tr>
+        <tr>
+            <td><strong>method</strong></td>
+            <td>Find files with classes where this method is defined</td>
+            <td>method:GetValueOrNull</td>
+        </tr>
+        <tr>
+            <td><strong>parameter</strong></td>
+            <td>Find files with classes whose methods have this parameter <strong>name</strong></td>
+            <td>parameter:dictionary</td>
+        </tr>
+        <tr>
+            <td><strong>return</strong></td>
+            <td>Find files with classes whose methods returning this <strong>type</strong></td>
+            <td>return:double</td>
+        </tr>
+        <tr>
+            <td><strong>base</strong></td>
+            <td>Find files with classes derived for the given class</td>
+            <td>base:doubledocvalues</td>
+        </tr>
+        <tr>
+            <td><strong>comment</strong></td>
+            <td>Find files with the given search term used as multi-line or single-line comment</td>
+            <td>comment:todo</td>
+        </tr>
+    </tbody>
+</table>
+
+See Apache Lucene <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html">documentation</a> for more details.

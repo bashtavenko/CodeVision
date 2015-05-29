@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -22,20 +23,31 @@ namespace CodeVision.CSharp
 
             foreach (var usingDirective in root.Usings)
             {
-                result.Usings.Add(usingDirective.Name.ToFullLowerCaseString());
+                result.Usings.Add(usingDirective.Name.ToFullStringLowerNormalized());
             }
+
+            result.Comments =  GetComments(root.DescendantTrivia());
             
             foreach (var cls in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
             {
                 var @class = new CSharpClass {ClassName = cls.Identifier.Text.ToLower()};
+                
+                if (cls.BaseList != null && cls.BaseList.Types.Count >= 1)
+                {
+                    @class.BaseClassName = cls.BaseList.Types[0].ToFullStringLowerNormalized();
+                }
                 foreach (var methodDeclarationSyntax in cls.DescendantNodes().OfType<MethodDeclarationSyntax>())
                 {
                     var method = new CSharpMethod()
                     {
                         MethodName = methodDeclarationSyntax.Identifier.Text.ToLower(),
-                        Body = methodDeclarationSyntax.Body.ToFullLowerCaseString(),
-                        ReturnType = methodDeclarationSyntax.ReturnType.ToFullLowerCaseString()
+                        ReturnType = methodDeclarationSyntax.ReturnType.ToFullStringLowerNormalized()
                     };
+
+                    if (methodDeclarationSyntax.Body != null)
+                    {
+                        method.Body = methodDeclarationSyntax.Body.ToFullString().ToLower();
+                    }
                     
                     foreach (var param in methodDeclarationSyntax.ParameterList.Parameters)
                     {
@@ -47,6 +59,15 @@ namespace CodeVision.CSharp
             }        
 
             return result;
+        }
+
+        private List<string> GetComments(IEnumerable<SyntaxTrivia> syntaxTriva)
+        {
+            return syntaxTriva
+                .Where(x => x.Kind() == SyntaxKind.MultiLineCommentTrivia ||
+                            x.Kind() == SyntaxKind.SingleLineCommentTrivia)
+                .Select(s => s.ToFullString())
+                .ToList();
         }
     }
 }

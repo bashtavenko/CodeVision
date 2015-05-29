@@ -1,6 +1,8 @@
 using System;
 using System.Configuration;
 using System.IO;
+using System.Linq;
+using System.Text;
 using CodeVision.CSharp;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -12,6 +14,7 @@ namespace CodeVision
     {
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
+        private int _fileCount;
 
         public Indexer(ILogger logger)
             : this(logger, CodeVisionConfigurationSection.Load())
@@ -22,6 +25,7 @@ namespace CodeVision
         {
             _logger = logger;
             _configuration = configuration;
+            _fileCount = 0;
         }
 
         public void Index()
@@ -37,8 +41,10 @@ namespace CodeVision
             {
                 IndexDirectory(writer, new DirectoryInfo(contentPath));
             }
-            Log("Done.");
+            Log(string.Format("Indexed {0:N0} files.", _fileCount));
         }
+    
+    
 
         private void IndexDirectory(IndexWriter writer, DirectoryInfo dir)
         {
@@ -67,15 +73,26 @@ namespace CodeVision
             {
                 return;
             }
-            Log(file.FullName);
             var doc = new Document();
             doc.Add(new Field(Fields.Content, file.OpenText(), Field.TermVector.WITH_OFFSETS));
             var parser = new CSharpParser();
             var syntax = parser.Parse(file.FullName);
+            AddComments(doc, syntax);
             AddUsings(doc, syntax);
             AddClasses(doc, syntax);
             doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));
             writer.AddDocument(doc);
+            _fileCount++;
+        }
+
+        private void AddComments(Document doc, CSharpFileSyntax syntax)
+        {
+            if (syntax.Comments.Any())
+            {
+                var sb = new StringBuilder();
+                syntax.Comments.ForEach(c => sb.Append(c));    
+                doc.Add(new Field(Fields.Comment, sb.ToString(), Field.Store.YES, Field.Index.ANALYZED));
+            }
         }
 
         private void AddUsings(Document doc, CSharpFileSyntax syntax)
@@ -95,6 +112,10 @@ namespace CodeVision
                 {
                     doc.Add(new Field(Fields.Interface, @interface, Field.Store.YES, Field.Index.NOT_ANALYZED));    
                 }
+                if (!string.IsNullOrEmpty(@class.BaseClassName))
+                {
+                    doc.Add(new Field(Fields.Base, @class.BaseClassName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                }
                 AddMethods(doc, @class);
             }
         }
@@ -109,7 +130,10 @@ namespace CodeVision
                 {
                     doc.Add(new Field(Fields.Parameter, parameter, Field.Store.YES, Field.Index.NOT_ANALYZED));
                 }
-                doc.Add(new Field(Fields.Code, method.Body, Field.Store.NO, Field.Index.ANALYZED));
+                if (method.Body != null)
+                {
+                    doc.Add(new Field(Fields.Code, method.Body, Field.Store.NO, Field.Index.ANALYZED));
+                }
             }
         }
 

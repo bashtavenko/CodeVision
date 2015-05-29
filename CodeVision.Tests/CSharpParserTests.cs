@@ -14,18 +14,19 @@ namespace CodeVision.Tests
         {
             _parser = new CSharpParser();
         }
-
-
-        [Test]
-        public void Parser_CanParse()
+        
+        [TestCase("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs")]
+        [TestCase("Lucene.Net.Expressions\\Bindings.cs")]
+        [TestCase("Lucene.Net.Expressions\\SimpleBindings.cs")]
+        public void Parser_CanParse(string fileName)
         {
-            string filePath = GetCompleteFilePath("MemoryIndexNormDocValues.cs");
+            string filePath = GetCompleteFilePath(fileName);
             var result = _parser.Parse(filePath);
         }
 
         internal string GetCompleteFilePath(string fileName)
         {
-            return Path.Combine("..\\..\\Content\\Lucene.Net.Memory", fileName);
+            return Path.Combine("..\\..\\Content\\", fileName);
         }
     }
 }

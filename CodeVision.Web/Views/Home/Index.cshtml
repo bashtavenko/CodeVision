@@ -1,7 +1,7 @@
 ﻿@using CodeVision.Web.ViewModels
 @using PagedList.Mvc
 @model CodeVision.Web.ViewModels.SearchResult
-           
+
 <link href="/Content/PagedList.css" />
 
 @{
@@ -11,33 +11,44 @@
 <style>
     input.big-input {
         width: 600px;
-        height:37px
+        height: 37px;
     }
 </style>
 
 
 <div class="container">
-    @using (Html.BeginForm("Search", "Home", FormMethod.Post, new {@class="form-inline"}))
+    @using (Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "form-inline" }))
     {
-        @Html.TextBox("searchExpression", null, new {@class="big-input"})
+        @Html.TextBox("searchExpression", null, new { @class = "big-input" })
         <button type="submit" class="btn btn-primary">Search</button>
-    }  
-    
-    
+    }
+
+
     @if (Model.Hits.Count > 0)
     {
         <h5>Total hits:@Model.TotalHits</h5>
-    }
 
-    @foreach (SearchHit hit in Model.Hits)
-    {
-        <p>
-            <div>
-                @Html.ActionLink(hit.FriendlyFileName, "Details", "Content", new {hit = @hit.ToString()}, null)
-            </div>
-            <pre>@Html.Raw(hit.BestFragment)</pre>
-        </p>
+        foreach (SearchHit hit in Model.Hits)
+        {
+            <p>
+                <div>
+                    @Html.ActionLink(hit.FriendlyFileName, "Details", "Content", new { hit = @hit.ToString() }, null)
+                </div>
+                @if (!string.IsNullOrEmpty(hit.BestFragment))
+                {
+                    <pre>@Html.Raw(hit.BestFragment)</pre>
+                }
+                else
+                {
+                    <p></p>
+                }
+            </p>
+        }
+
+        @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new { SearchExpressionEncoded = Model.SearchExpressionEncoded, Page = page }))
     }
-    
-    @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpressionEncoded = Model.SearchExpressionEncoded,  Page = page }))
+    else if (!string.IsNullOrEmpty(Model.SearchExpression))
+    {
+        <h5>Nothing matches '@Model.SearchExpression' at this time</h5>
+    }
 </div>
