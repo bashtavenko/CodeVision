@@ -44,27 +44,33 @@ the default field of <mark>content</mark> is used. These are currently supported
         </tr>
         <tr>
             <td><strong>method</strong></td>
-            <td>Find files with classes where this method is defined</td>
+            <td>Where is this method defined?</td>
             <td>method:GetValueOrNull</td>
         </tr>
         <tr>
             <td><strong>parameter</strong></td>
-            <td>Find files with classes whose methods have this parameter <strong>name</strong></td>
+            <td>Show me methods for the given parameter <strong>name</strong></td>
             <td>parameter:dictionary</td>
         </tr>
         <tr>
             <td><strong>return</strong></td>
-            <td>Find files with classes whose methods returning this <strong>type</strong></td>
+            <td>Locate methods returning this <strong>type</strong></td>
             <td>return:double</td>
         </tr>
         <tr>
             <td><strong>base</strong></td>
-            <td>Find files with classes derived for the given class</td>
+            <td>Look for the classes derived from the given class</td>
             <td>base:doubledocvalues</td>
         </tr>
         <tr>
+            <td><strong>code</strong></td>
+            <td>Search within methods only. This can be helpful to ignore noice when too many hits are returned by general query.</td>
+            <td>code:"prime*result"</td>
+        </tr>
+
+        <tr>
             <td><strong>comment</strong></td>
-            <td>Find files with the given search term used as multi-line or single-line comment</td>
+            <td>I need to see where the given search term used as multi-line or single-line comment</td>
             <td>comment:todo</td>
         </tr>
     </tbody>

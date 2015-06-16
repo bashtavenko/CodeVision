@@ -81,7 +81,7 @@ namespace CodeVision
             AddUsings(doc, syntax);
             AddClasses(doc, syntax);
             doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));
-            writer.AddDocument(doc);
+            writer.AddDocument(doc); // here we can specify an analyzer
             _fileCount++;
         }
 
@@ -99,7 +99,7 @@ namespace CodeVision
         {
             foreach (var @using in syntax.Usings)
             {
-                doc.Add(new Field(Fields.Using, @using, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field(Fields.Using, @using, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
             }
         }
 
@@ -107,14 +107,14 @@ namespace CodeVision
         {
             foreach (var @class in syntax.Classes)
             {
-                doc.Add(new Field(Fields.Class, @class.ClassName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field(Fields.Class, @class.ClassName, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 foreach (var @interface in @class.Interfaces)
                 {
-                    doc.Add(new Field(Fields.Interface, @interface, Field.Store.YES, Field.Index.NOT_ANALYZED));    
+                    doc.Add(new Field(Fields.Interface, @interface, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));    
                 }
                 if (!string.IsNullOrEmpty(@class.BaseClassName))
                 {
-                    doc.Add(new Field(Fields.Base, @class.BaseClassName, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    doc.Add(new Field(Fields.Base, @class.BaseClassName, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 }
                 AddMethods(doc, @class);
             }
@@ -124,11 +124,11 @@ namespace CodeVision
         {
             foreach (var method in @class.Methods)
             {
-                doc.Add(new Field(Fields.Method, method.MethodName, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                doc.Add(new Field(Fields.Return, method.ReturnType, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                doc.Add(new Field(Fields.Method, method.MethodName, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+                doc.Add(new Field(Fields.Return, method.ReturnType, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 foreach (var parameter in method.Parameters)
                 {
-                    doc.Add(new Field(Fields.Parameter, parameter, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                    doc.Add(new Field(Fields.Parameter, parameter, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 }
                 if (method.Body != null)
                 {
