@@ -36,7 +36,8 @@ namespace CodeVision
                 throw new NullReferenceException("Must have searchExpression");
             }
             string defaultFieldName = Fields.Content;
-            var query = new QueryParser(Version.LUCENE_30, defaultFieldName, new CSharpAnalyzer()).Parse(searchExpression.ToLower());
+            var analyzer = AnalyzerBuilder.CreateAnalyzer();
+            var query = new QueryParser(Version.LUCENE_30, defaultFieldName, analyzer).Parse(searchExpression.ToLower());
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             
             List<Hit> onePageOfHits;

@@ -36,7 +36,8 @@ namespace CodeVision.Tests
         //[TestCase("return:void")] 
 
         // No highlits or offsets since these are stop words
-        //[TestCase("comment:try-catch")]
+        [TestCase("comment:try-catch")]
+        [TestCase("postLinkFn")] // js
         public void Indexer_CanSearch(string searchExpression)
         {
             var searcher = new Searcher();

@@ -1,10 +1,6 @@
 using System;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using CodeVision.CSharp;
-using Lucene.Net.Documents;
+using Lucene.Net.Analysis;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
 
@@ -14,8 +10,10 @@ namespace CodeVision
     {
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
-        private int _fileCount;
+        private readonly FileIndexer _fileIndexer;
 
+        private int _fileCount;
+        
         public Indexer(ILogger logger)
             : this(logger, CodeVisionConfigurationSection.Load())
         {
@@ -26,6 +24,8 @@ namespace CodeVision
             _logger = logger;
             _configuration = configuration;
             _fileCount = 0;
+            var jsFileIndexer = new JavaScriptFileIndexer();
+            _fileIndexer = new CSharpFileIndexer(jsFileIndexer);
         }
 
         public void Index()
@@ -37,22 +37,25 @@ namespace CodeVision
         {
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             Log(string.Format("Begining to index {0}. Index location: {1}", contentPath, indexDirectory.Directory.FullName));
-            using (var writer = new IndexWriter(indexDirectory, new CSharpAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED))
+            var analyzer = AnalyzerBuilder.CreateAnalyzer();
+            using (var writer = new IndexWriter(indexDirectory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 IndexDirectory(writer, new DirectoryInfo(contentPath));
             }
             Log(string.Format("Indexed {0:N0} files.", _fileCount));
         }
     
-    
-
         private void IndexDirectory(IndexWriter writer, DirectoryInfo dir)
         {
             foreach (var file in dir.GetFiles())
             {
                 try
                 {
-                    IndexFile(writer, file);
+                    bool indexed = _fileIndexer.Index(writer, file);
+                    if (indexed)
+                    {
+                        _fileCount++;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -63,77 +66,6 @@ namespace CodeVision
             foreach (var subDir in dir.GetDirectories())
             {
                 IndexDirectory(writer, subDir);
-            }
-        }
-
-        private void IndexFile(IndexWriter writer, FileInfo file)
-        {
-            if (writer == null || file == null || Path.GetExtension(file.Name) != ".cs" 
-                || !file.Exists || (file.Attributes & FileAttributes.Hidden) != 0)
-            {
-                return;
-            }
-            var doc = new Document();
-            doc.Add(new Field(Fields.Content, file.OpenText(), Field.TermVector.WITH_OFFSETS));
-            var parser = new CSharpParser();
-            var syntax = parser.Parse(file.FullName);
-            AddComments(doc, syntax);
-            AddUsings(doc, syntax);
-            AddClasses(doc, syntax);
-            doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));
-            writer.AddDocument(doc); // here we can specify an analyzer
-            _fileCount++;
-        }
-
-        private void AddComments(Document doc, CSharpFileSyntax syntax)
-        {
-            if (syntax.Comments.Any())
-            {
-                var sb = new StringBuilder();
-                syntax.Comments.ForEach(c => sb.Append(c));    
-                doc.Add(new Field(Fields.Comment, sb.ToString(), Field.Store.YES, Field.Index.ANALYZED));
-            }
-        }
-
-        private void AddUsings(Document doc, CSharpFileSyntax syntax)
-        {
-            foreach (var @using in syntax.Usings)
-            {
-                doc.Add(new Field(Fields.Using, @using, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-            }
-        }
-
-        private void AddClasses(Document doc, CSharpFileSyntax syntax)
-        {
-            foreach (var @class in syntax.Classes)
-            {
-                doc.Add(new Field(Fields.Class, @class.ClassName, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-                foreach (var @interface in @class.Interfaces)
-                {
-                    doc.Add(new Field(Fields.Interface, @interface, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));    
-                }
-                if (!string.IsNullOrEmpty(@class.BaseClassName))
-                {
-                    doc.Add(new Field(Fields.Base, @class.BaseClassName, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-                }
-                AddMethods(doc, @class);
-            }
-        }
-
-        private void AddMethods(Document doc, CSharpClass @class)
-        {
-            foreach (var method in @class.Methods)
-            {
-                doc.Add(new Field(Fields.Method, method.MethodName, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-                doc.Add(new Field(Fields.Return, method.ReturnType, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-                foreach (var parameter in method.Parameters)
-                {
-                    doc.Add(new Field(Fields.Parameter, parameter, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-                }
-                if (method.Body != null)
-                {
-                    doc.Add(new Field(Fields.Code, method.Body, Field.Store.NO, Field.Index.ANALYZED));
-                }
             }
         }
 

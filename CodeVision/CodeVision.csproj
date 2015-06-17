@@ -133,6 +133,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalyzerBuilder.cs" />
+    <Compile Include="CSharpFileIndexer.cs" />
     <Compile Include="CSharp\Extensions.cs" />
     <Compile Include="CodeVisionConfigurationSection.cs" />
     <Compile Include="Fields.cs" />
@@ -141,8 +143,10 @@
     <Compile Include="CSharp\CSharpParser.cs" />
     <Compile Include="CSharp\CSharpMethod.cs" />
     <Compile Include="CSharp\CSharpFileSyntax.cs" />
+    <Compile Include="FileIndexer.cs" />
     <Compile Include="IConfiguration.cs" />
     <Compile Include="ILogger.cs" />
+    <Compile Include="JavaScriptFileIndexer.cs" />
     <Compile Include="Model\Extensions.cs" />
     <Compile Include="Model\Hit.cs" />
     <Compile Include="Indexer.cs" />
