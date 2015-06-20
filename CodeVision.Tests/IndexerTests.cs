@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
@@ -65,10 +66,10 @@ namespace CodeVision.Tests
             var hitCollection = searcher.Search(searchExpression);
             Assert.That(hitCollection.TotalHits, Is.GreaterThanOrEqualTo(3));
 
-            hitCollection = searcher.Search(searchExpression, 1, 1);
+            hitCollection = searcher.Search(searchExpression, null, null, 1, 1);
             Assert.That(hitCollection.Count, Is.EqualTo(1));
 
-            hitCollection = searcher.Search(searchExpression, 2, 1);
+            hitCollection = searcher.Search(searchExpression, null, null, 2, 1);
             Assert.That(hitCollection.Count, Is.EqualTo(1));
         }
 
@@ -99,6 +100,39 @@ namespace CodeVision.Tests
             
             // Act/Assert
             Assert.Throws<ArgumentException>(() => searcher.GetFileContent(hit));
+        }
+
+        [Test]
+        public void Indexer_MoreThanOneLanguage()
+        {
+            var searcher = new Searcher();
+            var hitCollection = searcher.Search("remove");
+            Assert.That(hitCollection.Count, Is.AtLeast(3));
+        }
+
+        [Test]
+        public void Indexer_Filter()
+        {
+            var searcher = new Searcher();
+            var filter = new Filter(Fields.Language, new List<string>() {"js"});
+            var hitCollection = searcher.Search("remove", filter);
+            Assert.That(hitCollection.Count, Is.AtLeast(1));
+        }
+
+        [Test]
+        public void Indexer_LexicalError()
+        {
+            var searcher = new Searcher();
+            Assert.Throws<SearchException>(() => searcher.Search("return:void]"));
+        }
+
+        // This doesn't work because it thinks content:AND
+        //[Test]
+        public void Indexer_MoreThanOneLanguage_OneField()
+        {
+            var searcher = new Searcher();
+            var hitCollection = searcher.Search("content:remove AND language:js");
+            Assert.That(hitCollection.Count, Is.AtLeast(1));
         }
 
         internal string GetCompletePath(string contentPath)

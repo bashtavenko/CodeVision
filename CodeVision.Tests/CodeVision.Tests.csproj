@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JavaScriptFileIndexerTests.cs" />
     <Compile Include="Web\IntegrationTests.cs" />
     <None Include="App.config" />
     <None Include="Content\Lucene.Net.Memory\HashMapHelperClass.cs" />

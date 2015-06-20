@@ -1,4 +1,6 @@
-﻿@using CodeVision.Web.ViewModels
+﻿@using System.Web.Razor.Parser
+@using CodeVision.Web.ViewModels
+@using Ninject
 @using PagedList.Mvc
 @model CodeVision.Web.ViewModels.SearchResult
 
@@ -13,16 +15,27 @@
         width: 600px;
         height: 37px;
     }
+    div.second-row {
+        margin-top: 5px;
+    }
 </style>
 
 
 <div class="container">
-    @using (Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "form-inline" }))
+    @using (Html.BeginForm("Search", "Home", FormMethod.Post))
     {
-        @Html.TextBox("searchExpression", null, new { @class = "big-input" })
-        <button type="submit" class="btn btn-primary">Search</button>
-    }
+        <div>
+            @Html.TextBox("searchExpression", null, new { @class = "big-input" })
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+        <div class="second-row">
+            @Html.LabelFor(s => s.Language)
+            @Html.DropDownListFor(s => s.Language, Model.LanguageList)
 
+            @Html.LabelFor(s => s.Sort)
+            @Html.DropDownListFor(s => s.Sort, Model.SortList)
+        </div>
+    }
 
     @if (Model.Hits.Count > 0)
     {
@@ -42,13 +55,17 @@
                 {
                     <p></p>
                 }
-            </p>
+                </p>
         }
 
-        @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new { SearchExpressionEncoded = Model.SearchExpressionEncoded, Page = page }))
+        @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpressionEncoded = Model.SearchExpressionEncoded, Language = Model.Language, Sort = Model.Sort, Page = page}))
     }
-    else if (!string.IsNullOrEmpty(Model.SearchExpression))
+    else if (!Model.HasError)
     {
-        <h5>Nothing matches '@Model.SearchExpression' at this time</h5>
+        <h5>Couldn't find anything that matches '@Model.SearchExpression' at this time.</h5>
+    }
+    else
+    {
+        <h5>@Model.Error</h5>
     }
 </div>

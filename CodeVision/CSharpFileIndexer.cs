@@ -9,7 +9,7 @@ namespace CodeVision
 {
     public class CSharpFileIndexer : FileIndexer
     {
-        public CSharpFileIndexer(FileIndexer successor) : base(successor)
+        public CSharpFileIndexer(FileIndexer successor) : base(successor, null)
         {
         }
 
@@ -33,8 +33,8 @@ namespace CodeVision
                 AddComments(doc, syntax);
                 AddUsings(doc, syntax);
                 AddClasses(doc, syntax);
-                doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES,
-                    Field.Index.NO));
+                doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));
+                doc.Add(new Field(Fields.Language, Languages.CSharp, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 writer.AddDocument(doc); // here we can specify an analyzer
                 return true;
             }

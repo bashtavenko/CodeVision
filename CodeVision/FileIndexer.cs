@@ -6,14 +6,16 @@ namespace CodeVision
     public abstract class FileIndexer
     {
         public FileIndexer Successor { get; set; }
+        protected ILogger Logger;
 
-        public FileIndexer() : this (null)
+        public FileIndexer() : this (null, null)
         {
         }
 
-        public FileIndexer(FileIndexer successor)
+        public FileIndexer(FileIndexer successor, ILogger logger)
         {
-            Successor = successor;
+            this.Successor = successor;
+            this.Logger = logger;
         }
 
         protected virtual bool CanIndex(FileInfo file)

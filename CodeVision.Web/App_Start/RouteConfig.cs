@@ -13,10 +13,19 @@ namespace CodeVision.Web
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+
+            routes.MapRoute(
+                name: "FourParams",
+                url: "{controller}/{action}/{searchExpressionEncoded}/{language}/{sort}/{page}");
+
+            routes.MapRoute(
+                name: "ThreeParams",
+                url: "{controller}/{action}/{searchExpressionEncoded}/{language}/{page}");
+
             routes.MapRoute(
                 name: "TwoParams",
                 url: "{controller}/{action}/{searchExpressionEncoded}/{page}");
-    
+            
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

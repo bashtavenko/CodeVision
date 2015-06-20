@@ -24,7 +24,7 @@ namespace CodeVision
             _logger = logger;
             _configuration = configuration;
             _fileCount = 0;
-            var jsFileIndexer = new JavaScriptFileIndexer();
+            var jsFileIndexer = new JavaScriptFileIndexer(null, _logger);
             _fileIndexer = new CSharpFileIndexer(jsFileIndexer);
         }
 

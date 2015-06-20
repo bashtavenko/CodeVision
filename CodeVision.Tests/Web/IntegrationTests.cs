@@ -29,13 +29,13 @@ namespace CodeVision.Tests.Web
         [Test]
         public void Integration_CanSearch_and_ViewHit()
         {
-            var redirectToRouteResult = _homeController.Search("apache") as RedirectToRouteResult;
+            var redirectToRouteResult = _homeController.Search("apache", null, null) as RedirectToRouteResult;
             Assert.IsNotNull(redirectToRouteResult);
 
             var searchExpressionEncoded = redirectToRouteResult.RouteValues["searchExpressionEncoded"] as string;
             Assert.IsNotNull(searchExpressionEncoded);
 
-            var result = _homeController.Search(searchExpressionEncoded, 1) as ViewResult;
+            var result = _homeController.Search(searchExpressionEncoded, null, null, 1) as ViewResult;
             Assert.IsNotNull(result);
 
             var model = result.Model as SearchResult;

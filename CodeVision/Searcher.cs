@@ -29,15 +29,24 @@ namespace CodeVision
             _configuration = configuration;
         }
 
-        public ReadOnlyHitCollection Search(string searchExpression, int page = 1, int hitsPerPage = 10)
+        public ReadOnlyHitCollection Search(string searchExpression, Model.Filter filter = null, string sortField = null, int page = 1, int hitsPerPage = 10)
         {
             if (string.IsNullOrEmpty(searchExpression))
             {
-                throw new NullReferenceException("Must have searchExpression");
+                throw new SearchException("Must have searchExpression");
             }
             string defaultFieldName = Fields.Content;
             var analyzer = AnalyzerBuilder.CreateAnalyzer();
-            var query = new QueryParser(Version.LUCENE_30, defaultFieldName, analyzer).Parse(searchExpression.ToLower());
+            Query query;
+            try
+            {
+                query = new QueryParser(Version.LUCENE_30, defaultFieldName, analyzer).Parse(searchExpression.ToLower());
+            }
+            catch (ParseException ex)
+            {
+                throw new SearchException(string.Format("Sorry, '{0}' isn't something we can search for so far.", searchExpression), ex);
+            }
+            
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             
             List<Hit> onePageOfHits;
@@ -47,7 +56,13 @@ namespace CodeVision
                 //  Get one page of hits
                 var hits = new List<Hit>();
                 var searcher = new IndexSearcher(reader);
-                ScoreDoc[] scoreDocs = searcher.Search(query, MaxNumberOfHits).ScoreDocs;
+                var fieldCashTermsFilter = filter != null && !string.IsNullOrEmpty(filter.Field) 
+                    ? new FieldCacheTermsFilter(filter.Field, filter.Terms.ToArray())
+                    : null;
+                var sort = !string.IsNullOrEmpty(sortField)
+                    ? new Sort(new SortField(sortField, SortField.STRING))
+                    : Sort.RELEVANCE;
+                ScoreDoc[] scoreDocs = searcher.Search(query, fieldCashTermsFilter, MaxNumberOfHits, sort).ScoreDocs;
                 totalHits = scoreDocs.Length;
 
                 foreach (var scoreDoc in scoreDocs)
