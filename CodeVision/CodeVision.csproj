@@ -157,6 +157,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Searcher.cs" />
     <Compile Include="SearchException.cs" />
+    <Compile Include="SqlFileIndexer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

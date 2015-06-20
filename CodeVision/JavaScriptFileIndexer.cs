@@ -33,10 +33,6 @@ namespace CodeVision
         {
             if (CanIndex(file))
             {
-                if (Logger != null)
-                {
-                    Logger.Log(string.Format("Indexing '{0}'", file.FullName));
-                }
                 var doc = new Document();
                 doc.Add(new Field(Fields.Content, file.OpenText(), Field.TermVector.WITH_OFFSETS));
                 doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));

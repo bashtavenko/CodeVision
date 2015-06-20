@@ -60,7 +60,7 @@
 
         @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpressionEncoded = Model.SearchExpressionEncoded, Language = Model.Language, Sort = Model.Sort, Page = page}))
     }
-    else if (!Model.HasError)
+    else if (!string.IsNullOrEmpty(Model.SearchExpression) && !Model.HasError)
     {
         <h5>Couldn't find anything that matches '@Model.SearchExpression' at this time.</h5>
     }
