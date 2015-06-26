@@ -16,29 +16,7 @@ classes, methods, parameters and comments
 
 1. Run all unit tests. This will build the search index based on the included sample files
 2. Ctrl+F5 CodeVision.Web This should create initial IISExpress configuration.
-3. Add two virtual folders to IISExpress:
-
-    3.1 Open C:\Users\{user}\Documents\IISExpress\config\applicationhost.config
-
-    3.2 Locate configuration for CodeVision.Web and add `searchindex`
-and `searchcontent` virtual folders. May need to adjust the path:
-
-```
-            <site name="CodeVision.Web" id="83">
-                <application path="/" applicationPool="Clr4IntegratedAppPool">
-                    <virtualDirectory path="/" physicalPath="C:\My\Playground\CodeVision\CodeVision\CodeVision.Web" />
-                </application>
-                <application path="/searchindex" applicationPool="Clr4IntegratedAppPool">
-                    <virtualDirectory path="/" physicalPath="C:\My\Playground\CodeVision\CodeVision\CodeVision.Tests\bin\Debug\Index" />
-                </application>
-                <application path="/searchcontent" applicationPool="Clr4IntegratedAppPool">
-                    <virtualDirectory path="/" physicalPath="C:\My\Playground\CodeVision\CodeVision\CodeVision.Tests\Content" />
-                </application>
-                <bindings>
-                    <binding protocol="http" bindingInformation="*:3500:localhost" />
-                </bindings>
-            </site>
-```
+3. Run **CreateVdirsIISExpress.ps1** to add two virtual directories the IISExpress site.
 4. Start web site again. This time you should be able to search by say "Apache". See other search terms in the unit tests.
 
 ##Server Setup
@@ -57,7 +35,7 @@ $console='C:\CodeVision\Bin\CodeVision.Console.exe'
 ```
 
 * Deploy web site with MSWebDeploy or any other method
-* Setup two virtual folders `searchcontent` and `searchindex` and point them to the folders 
+* Setup two virtual directories `\searchcontent` and `\searchindex` and point them to the folders 
 with source files and index
 
 **Happy Searching!**
