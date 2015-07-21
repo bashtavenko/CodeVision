@@ -12,15 +12,15 @@ using log4net;
 namespace CodeVision.Web.Controllers
 {
     public class HomeController : Controller
-    {
-        private readonly HttpServerUtilityBase _server;
+    {        
         private readonly ILog _log;
+        private readonly WebConfiguration _configuration;
 
-        const int PageSize = 10;
+        const int PageSize = 10;        
 
-        public HomeController(HttpServerUtilityBase server, ILog log)
+        public HomeController(WebConfiguration configuration, ILog log)
         {
-            _server = server;
+            _configuration = configuration;
             _log = log;
         }
 
@@ -44,9 +44,8 @@ namespace CodeVision.Web.Controllers
             var searchExpression = Encoding.UTF8.GetString(base64EncodedBytes);
             var languageParam = language == "-1" ? string.Empty : language;
             var sortParam = sort == "-1" ? string.Empty : language;
-
-            var configuration = WebConfiguration.Load(_server);
-            var searcher = new Searcher(configuration);
+                        
+            var searcher = new Searcher(_configuration);
             var filter = !string.IsNullOrEmpty(languageParam) ? new Model.Filter(Fields.Language, languageParam) : null;
             ReadOnlyHitCollection hitCollection;
             SearchResult model;
@@ -66,6 +65,11 @@ namespace CodeVision.Web.Controllers
         }
 
         public ActionResult Help()
+        {
+            return View();
+        }
+
+        public ActionResult Graph()
         {
             return View();
         }

@@ -5,16 +5,21 @@ namespace CodeVision.Console
 {
     public class Logger : ILogger
     {
-        public void Log(string message)
+        public void Log(string message) 
         {
-            System.Console.WriteLine(message);
+            Log(message, null);
         }
 
         public void Log(string message, Exception ex)
         {
-            var sb = new StringBuilder(message);
-            AppendException(sb, ex);
-            sb.Append(ex.StackTrace);
+            System.Console.WriteLine(message);
+            if (ex != null)
+            {
+                var sb = new StringBuilder(message);
+                AppendException(sb, ex);
+                sb.Append(ex.StackTrace);
+                System.Console.WriteLine("More details:" + sb.ToString());
+            }            
         }
 
         private static void AppendException(StringBuilder sb, Exception ex)
@@ -23,7 +28,7 @@ namespace CodeVision.Console
             {
                 return;
             }
-            sb.Append(ex.Message);
+            sb.Append(ex.Message);            
             AppendException(sb, ex.InnerException);
         }
     }

@@ -7,6 +7,7 @@ namespace CodeVision
     {
         const string IndexPathProperty = "IndexPath";
         const string ContentRootProperty = "ContentRoot";
+        const string DependencyGraphConnectionStringProperty = "DependencyGraphConnectionString";
         
         [ConfigurationProperty(IndexPathProperty, IsRequired = true)]
         public string IndexPath
@@ -23,6 +24,15 @@ namespace CodeVision
             get
             {
                 return (string)this[ContentRootProperty];
+            }
+        }
+
+        [ConfigurationProperty(DependencyGraphConnectionStringProperty, IsRequired = false)]
+        public string DependencyGraphConnectionString
+        {
+            get
+            {
+                return (string)this[DependencyGraphConnectionStringProperty];
             }
         }
 

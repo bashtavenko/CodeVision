@@ -9,16 +9,20 @@ namespace CodeVision.Console
         public CommandLineConfiguration()
         {
             FoldersToExclude = new List<string>();
+            SolutionPaths = new List<string>();
         }
 
-        [Option('c', "content", Required = true, HelpText = "Content path")]
+        [Option('c', "content", Required = false, HelpText = "Content path", MutuallyExclusiveSet = "index")]        
         public string ContentPath { get; set; }
 
-        [Option('i', "index", Required = false, HelpText = "Index path")]
+        [Option('i', "index", Required = false, HelpText = "Index path", MutuallyExclusiveSet = "index")]
         public string IndexPath { get; set; }
 
-        [OptionList('e', "exclude", Required = false, HelpText = "Colon(:) separated folders within content path to exclude from indexing")]
+        [OptionList('e', "exclude", Required = false, HelpText = "Colon(:) separated folders within content path to exclude from indexing", MutuallyExclusiveSet = "index")]
         public List<string> FoldersToExclude { get; set; }
+
+        [OptionList('s', "solutions", Required = false, HelpText = "Colon(:) separated absolute path to the solutions for dependency graph", MutuallyExclusiveSet = "dependency")]
+        public List<string> SolutionPaths { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }

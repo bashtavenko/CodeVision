@@ -6,6 +6,7 @@ namespace CodeVision.Web.Common
     {
         public string IndexPath { get; private set; }
         public string ContentRootPath { get; private set; }
+        public string DependencyGraphConnectionString { get; private set; }
 
         public static WebConfiguration Load(HttpServerUtilityBase server)
         {
@@ -14,6 +15,7 @@ namespace CodeVision.Web.Common
             {
                 ContentRootPath = server.MapPath(configuration.ContentRootPath),
                 IndexPath = server.MapPath(configuration.IndexPath),
+                DependencyGraphConnectionString = configuration.DependencyGraphConnectionString
             };
         }
     }

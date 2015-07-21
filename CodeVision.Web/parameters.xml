@@ -1,0 +1,9 @@
+﻿<parameters>
+  <parameter name="Dependency graph connection string" description="SQL Server connection string to get dependency graph"
+             defaultValue="Data Source=(localdb)\v11.0;Initial Catalog=DependencyGraphTEST;Integrated Security=True;">
+             <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/CodeVision/@DependencyGraphConnectionString" />
+  </parameter>
+  <parameter name="Log location" description="Log4net file path and location" defaultValue="CodeVision.log">
+             <parameterEntry kind="XmlFile" scope="Web.config" match="/configuration/log4net/appender[@name='RollingFile']/file/@value" />
+  </parameter>
+</parameters>

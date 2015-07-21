@@ -7,6 +7,8 @@ using CodeVision.Web.Controllers;
 using log4net;
 using Ninject;
 using Ninject.Web.Common;
+using CodeVision.CSharp.Semantic;
+using Ninject.Activation;
 
 namespace CodeVision.Web.Common
 {
@@ -33,8 +35,29 @@ namespace CodeVision.Web.Common
         private void AddBindings()
         {
             kernel.Bind<ILog>().ToMethod(ctx => LogManager.GetLogger(typeof(HomeController)));
-            kernel.Bind<IExceptionLogger>().To<ExceptionLogger>().InRequestScope();
-            kernel.Bind<HttpServerUtilityBase>().ToMethod(c => new HttpServerUtilityWrapper(HttpContext.Current.Server));
-        }        
+            kernel.Bind<IExceptionLogger>().To<Log4NetExceptionLogger>().InRequestScope();            
+
+            // These are singletons, watch out..
+            kernel.Bind<WebConfiguration>().ToMethod(GetWebConfiguration).InSingletonScope();
+            kernel.Bind<DependencyGraph>().ToMethod(GetDependencyGraph).InSingletonScope();
+        }
+
+        private WebConfiguration GetWebConfiguration(IContext context)
+        {
+            var configuration = WebConfiguration.Load(new HttpServerUtilityWrapper(HttpContext.Current.Server));
+            return configuration;
+        }
+
+        private DependencyGraph GetDependencyGraph (IContext context)
+        {
+            var configuration = GetWebConfiguration(context);
+            var repository = new DependencyGraphRepository(configuration.DependencyGraphConnectionString);
+            if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
+            {
+                throw new ArgumentNullException("Must have DependencyGraphConnectionString in web.config");
+            }
+            var graph = repository.LoadState();
+            return graph;
+        }
     }
 }

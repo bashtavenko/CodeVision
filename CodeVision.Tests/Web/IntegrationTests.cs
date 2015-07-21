@@ -6,6 +6,7 @@ using CodeVision.Web.ViewModels;
 using log4net;
 using Moq;
 using NUnit.Framework;
+using CodeVision.Web.Common;
 
 namespace CodeVision.Tests.Web
 {
@@ -22,9 +23,10 @@ namespace CodeVision.Tests.Web
 
             var server = new Mock<HttpServerUtilityBase>();
             server.Setup(s => s.MapPath(It.IsAny<string>())).Returns<string>(x => x);
-
-            _homeController = new HomeController(server.Object, new Mock<ILog>().Object);
-            _contentController = new ContentController(server.Object);
+            var configuration = WebConfiguration.Load(server.Object);
+            
+            _homeController = new HomeController(configuration, new Mock<ILog>().Object);
+            _contentController = new ContentController(configuration);
         }
 
         [Test]

@@ -1,4 +1,5 @@
 ﻿using System;
+using CodeVision.CSharp.Semantic;
 
 namespace CodeVision.Console
 {
@@ -6,17 +7,26 @@ namespace CodeVision.Console
     {
         static void Main(string[] args)
         {
-            var config = new CommandLineConfiguration();
-            if (!CommandLine.Parser.Default.ParseArguments(args, config))
+            var commandLine = new CommandLineConfiguration();
+            if (!CommandLine.Parser.Default.ParseArguments(args, commandLine))
             {
                 return;
             }
             
-            var logger = new Logger();
-            var indexer = new Indexer(logger, CodeVisionConfigurationSection.Load());
+            var logger = new Logger();            
             try
             {
-                indexer.Index(config.ContentPath, config.FoldersToExclude);
+                var configFile = CodeVisionConfigurationSection.Load();
+                if (commandLine.SolutionPaths.Count == 0)
+                {
+                    var indexer = new Indexer(logger, configFile);
+                    indexer.Index(commandLine.ContentPath, commandLine.FoldersToExclude);
+                }
+                else
+                {
+                    var collector = new DependencyGraphCollector(configFile.DependencyGraphConnectionString, logger);
+                    collector.CollectDependencies(commandLine.SolutionPaths);
+                }
             }
             catch (Exception ex)
             {
