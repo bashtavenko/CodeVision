@@ -18,6 +18,7 @@ namespace CodeVision.Tests
         [TestCase("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs")]
         [TestCase("Lucene.Net.Expressions\\Bindings.cs")]
         [TestCase("Lucene.Net.Expressions\\SimpleBindings.cs")]
+        [TestCase("Lucene.Net.Expressions\\Test.cs")]
         public void Parser_CanParse(string fileName)
         {
             string filePath = GetCompleteFilePath(fileName);

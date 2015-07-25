@@ -35,7 +35,10 @@ namespace CodeVision
             {
                 var doc = new Document();
                 doc.Add(new Field(Fields.Content, file.OpenText(), Field.TermVector.WITH_OFFSETS));
-                doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));
+
+                string path = Path.Combine(file.DirectoryName ?? string.Empty, file.Name);
+                doc.Add(new Field(Fields.Path, path, Field.Store.YES, Field.Index.NO));
+                doc.Add(new Field(Fields.Key, path, Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
                 doc.Add(new Field(Fields.Language, Languages.JavaScript, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 writer.AddDocument(doc); 
                 return true;

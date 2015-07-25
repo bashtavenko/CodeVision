@@ -14,5 +14,7 @@ namespace CodeVision
         public static string Content = "content";
         public static string Base = "base";
         public static string Language = "language";
+        public static string Key = "key";
+
     }
 }

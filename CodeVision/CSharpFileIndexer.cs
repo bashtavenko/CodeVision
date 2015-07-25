@@ -33,9 +33,23 @@ namespace CodeVision
                 AddComments(doc, syntax);
                 AddUsings(doc, syntax);
                 AddClasses(doc, syntax);
-                doc.Add(new Field(Fields.Path, Path.Combine(file.DirectoryName, file.Name), Field.Store.YES, Field.Index.NO));
+                string path = Path.Combine(file.DirectoryName ?? string.Empty, file.Name);
+                doc.Add(new Field(Fields.Path, path, Field.Store.YES, Field.Index.NO));
+
+                // Build a key based on file syntax
+                string key;
+                if (syntax.Classes.Any() && syntax.Usings.Any())
+                {
+                    key = string.Format("{0}.{1}", syntax.Usings.First(), syntax.Classes.First().ClassName);
+                }
+                else
+                {
+                    key = path;
+                }
+                doc.Add(new Field(Fields.Key, key, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 doc.Add(new Field(Fields.Language, Languages.CSharp, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
                 writer.AddDocument(doc); // here we can specify an analyzer
+                writer.Flush(false,true, true); // If we need to produce muttiple index segments
                 return true;
             }
             else

@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalyzerBuilder.cs" />
+    <Compile Include="ChainedFilter.cs" />
     <Compile Include="CSharpFileIndexer.cs" />
     <Compile Include="CSharp\Extensions.cs" />
     <Compile Include="CodeVisionConfigurationSection.cs" />

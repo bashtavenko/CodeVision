@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CodeVision.Model;
+using Lucene.Net.Analysis;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Search.Highlight;
 using Lucene.Net.Store;
+using SpellChecker.Net.Search.Spell;
 using Version = Lucene.Net.Util.Version;
 
 namespace CodeVision
@@ -56,13 +58,20 @@ namespace CodeVision
                 //  Get one page of hits
                 var hits = new List<Hit>();
                 var searcher = new IndexSearcher(reader);
-                var fieldCashTermsFilter = filter != null && !string.IsNullOrEmpty(filter.Field) 
+                
+                var termsFilter = filter != null && !string.IsNullOrEmpty(filter.Field) 
                     ? new FieldCacheTermsFilter(filter.Field, filter.Terms.ToArray())
                     : null;
                 var sort = !string.IsNullOrEmpty(sortField)
                     ? new Sort(new SortField(sortField, SortField.STRING))
                     : Sort.RELEVANCE;
-                ScoreDoc[] scoreDocs = searcher.Search(query, fieldCashTermsFilter, MaxNumberOfHits, sort).ScoreDocs;
+
+                var duplicateFilter = new DuplicateFilter(Fields.Key) {KeepMode = DuplicateFilter.KM_USE_FIRST_OCCURRENCE};
+                var queryFilter = termsFilter == null
+                    ? duplicateFilter as Lucene.Net.Search.Filter
+                    : new ChainedFilter(new Lucene.Net.Search.Filter[] {duplicateFilter, termsFilter});
+
+                ScoreDoc[] scoreDocs = searcher.Search(query, queryFilter, MaxNumberOfHits, sort).ScoreDocs;
                 totalHits = scoreDocs.Length;
 
                 foreach (var scoreDoc in scoreDocs)

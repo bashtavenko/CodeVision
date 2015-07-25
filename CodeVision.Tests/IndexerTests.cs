@@ -135,6 +135,14 @@ namespace CodeVision.Tests
             Assert.That(hitCollection.Count, Is.AtLeast(1));
         }
 
+        [Test]
+        public void Indexer_Dups()
+        {
+            var searcher = new Searcher();
+            var hitCollection = searcher.Search("HashSet");
+            Assert.That(hitCollection.Count, Is.EqualTo(1));
+        }
+
         internal string GetCompletePath(string contentPath)
         {
             return Path.Combine("..\\..\\Content\\", contentPath);
