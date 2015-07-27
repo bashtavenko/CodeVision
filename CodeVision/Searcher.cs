@@ -66,12 +66,7 @@ namespace CodeVision
                     ? new Sort(new SortField(sortField, SortField.STRING))
                     : Sort.RELEVANCE;
 
-                var duplicateFilter = new DuplicateFilter(Fields.Key) {KeepMode = DuplicateFilter.KM_USE_FIRST_OCCURRENCE};
-                var queryFilter = termsFilter == null
-                    ? duplicateFilter as Lucene.Net.Search.Filter
-                    : new ChainedFilter(new Lucene.Net.Search.Filter[] {duplicateFilter, termsFilter});
-
-                ScoreDoc[] scoreDocs = searcher.Search(query, queryFilter, MaxNumberOfHits, sort).ScoreDocs;
+                ScoreDoc[] scoreDocs = searcher.Search(query, termsFilter, MaxNumberOfHits, sort).ScoreDocs;
                 totalHits = scoreDocs.Length;
 
                 foreach (var scoreDoc in scoreDocs)

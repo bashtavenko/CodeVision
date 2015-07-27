@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Lucene.Net.Analysis;
 using Lucene.Net.Index;
@@ -38,12 +39,15 @@ namespace CodeVision
         {
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             Log(string.Format("Begining to index {0}. Index location: {1}", contentPath, indexDirectory.Directory.FullName));
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var analyzer = AnalyzerBuilder.CreateAnalyzer();
             using (var writer = new IndexWriter(indexDirectory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 IndexDirectory(writer, new DirectoryInfo(contentPath));
             }
-            Log(string.Format("Indexed {0:N0} files.", _fileCount));
+            stopWatch.Stop();
+            Log(string.Format("Indexed {0:N0} files in {1:00}:{2:00}.{3:00}", _fileCount, stopWatch.Elapsed.Hours, stopWatch.Elapsed.Minutes, stopWatch.Elapsed.Seconds));
         }
     
         private void IndexDirectory(IndexWriter writer, DirectoryInfo dir)
