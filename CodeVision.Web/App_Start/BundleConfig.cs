@@ -25,7 +25,8 @@ namespace CodeVision.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap-cerulean.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/prism.css"));
         }
     }
 }

@@ -28,8 +28,9 @@ namespace CodeVision.Web.Controllers
             var configuration = WebConfiguration.Load(_server);
             var searcher = new Searcher(configuration);
             string text = searcher.GetFileContent(domainHit);
-            
-            var viewModel = new Document {Name = modelHit.FriendlyFileName, Text = text};
+
+            var viewModel = Mapper.Map<ViewModels.Document>(modelHit);
+            viewModel.Text = text;
             return View((object)viewModel);
         }
     }

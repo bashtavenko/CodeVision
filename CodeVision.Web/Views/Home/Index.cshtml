@@ -15,6 +15,7 @@
         width: 600px;
         height: 37px;
     }
+
     div.second-row {
         margin-top: 5px;
     }
@@ -49,16 +50,16 @@
                 </div>
                 @if (!string.IsNullOrEmpty(hit.BestFragment))
                 {
-                    <pre>@Html.Raw(hit.BestFragment)</pre>
+                    <pre class="@hit.PrismCssClassName" data-keep-tags="kbd"><code class="@hit.PrismCssClassName">@Html.Raw(hit.BestFragment)</code></pre>
                 }
                 else
                 {
-                    <p></p>
+                <p></p>
                 }
                 </p>
         }
 
-        @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new {SearchExpressionEncoded = Model.SearchExpressionEncoded, Language = Model.Language, Sort = Model.Sort, Page = page}))
+        @Html.PagedListPager(Model.Hits, page => Url.Action("Search", new { SearchExpressionEncoded = Model.SearchExpressionEncoded, Language = Model.Language, Sort = Model.Sort, Page = page }))
     }
     else if (!string.IsNullOrEmpty(Model.SearchExpression) && !Model.HasError)
     {

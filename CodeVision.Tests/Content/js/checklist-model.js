@@ -29,6 +29,10 @@ angular.module('checklist-model', [])
         return arr;
     }
 
+    function select() {
+        // just to check search
+    }
+
     // remove
     function remove(arr, item) {
         if (angular.isArray(arr)) {

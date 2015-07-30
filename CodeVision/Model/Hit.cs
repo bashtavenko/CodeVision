@@ -10,7 +10,8 @@ namespace CodeVision.Model
         public string FilePath { get { return _filePath; } }
         public string ContentRootPath { get { return _contentRootPath; } }
         public string FileName { get { return Path.GetFileName(FilePath);}}
-        
+        public string Language { get { return _language; } }
+
         public string FriendlyFileName
         {
             get
@@ -29,15 +30,16 @@ namespace CodeVision.Model
 
         private readonly string _contentRootPath;
         private readonly string _filePath;
+        private readonly string _language;
 
-        public Hit(int docId, string filePath, string contentRootPath, float score, string bestFragment, List<Offset> offsets) 
-            : this (docId, contentRootPath, filePath, score)
+        public Hit(int docId, string filePath, string contentRootPath, float score, string bestFragment, List<Offset> offsets, string language) 
+            : this (docId, contentRootPath, filePath, score, language)
         {
             this.BestFragment = bestFragment;
             this.Offsets = offsets;
         }
 
-        public Hit(int docId, string contentRootPath, string filePath, float score)
+        public Hit(int docId, string contentRootPath, string filePath, float score, string language)
         {
             if (string.IsNullOrEmpty(contentRootPath))
             {
@@ -52,6 +54,7 @@ namespace CodeVision.Model
             this.DocId = docId;
             _contentRootPath = contentRootPath;
             _filePath = filePath;
+            _language = language;
         }
     }
 }

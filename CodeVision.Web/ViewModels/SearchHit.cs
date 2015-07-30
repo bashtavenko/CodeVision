@@ -31,6 +31,12 @@ namespace CodeVision.Web.ViewModels
         [JsonProperty(PropertyName = "o")]
         public List<SearchOffset> Offsets { get; set; }
 
+        [JsonProperty(PropertyName = "l")]
+        public string Language { get; set; }
+
+        [JsonProperty(PropertyName = "p")]
+        public string PrismCssClassName { get; set; }
+
         public override string ToString()
         {
             var json = JsonConvert.SerializeObject(this);

@@ -73,7 +73,8 @@ namespace CodeVision
                 {
                     int docId = scoreDoc.Doc;
                     string filePath = searcher.Doc(docId).Get(Fields.Path);
-                    var hit = new Hit(docId, _configuration.ContentRootPath, filePath, scoreDoc.Score);
+                    string language = searcher.Doc(docId).Get(Fields.Language);
+                    var hit = new Hit(docId, _configuration.ContentRootPath, filePath, scoreDoc.Score, language);
                     hits.Add(hit);
                 }
 

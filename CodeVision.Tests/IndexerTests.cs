@@ -78,7 +78,7 @@ namespace CodeVision.Tests
         {
             // Arrange
             var searcher = new Searcher();
-            var hit = new Hit(1, "..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"), 1f);
+            var hit = new Hit(1, "..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"), 1f, Languages.CSharp);
             hit.Offsets.Add(new Offset { StartOffset = 90, EndOffset = 96 });
             hit.Offsets.Add(new Offset { StartOffset = 347, EndOffset = 353 });
             hit.Offsets.Add(new Offset { StartOffset = 545, EndOffset = 551 });
@@ -95,7 +95,7 @@ namespace CodeVision.Tests
         {
             // Arrange
             var searcher = new Searcher();
-            var hit = new Hit(1, "..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"), 1f);
+            var hit = new Hit(1, "..\\..\\Content\\", GetCompletePath("Lucene.Net.Memory\\MemoryIndexNormDocValues.cs"), 1f, Languages.CSharp);
             hit.Offsets.Add(new Offset { StartOffset = 1000, EndOffset = 2000 });
             
             // Act/Assert
@@ -109,6 +109,24 @@ namespace CodeVision.Tests
             var hitCollection = searcher.Search("remove");
             Assert.That(hitCollection.Count, Is.AtLeast(3));
         }
+
+        [Test]
+        public void Indexer_ThreeLanguages()
+        {
+            var searcher = new Searcher();
+            var hitCollection = searcher.Search("select");
+            Assert.That(hitCollection.Count, Is.AtLeast(3));
+
+            hitCollection = searcher.Search("select", new Filter(Fields.Language, new List<string>{"sql"}));
+            Assert.That(hitCollection.Count, Is.AtLeast(1));
+
+            hitCollection = searcher.Search("select", new Filter(Fields.Language, new List<string> {"cs"}));
+            Assert.That(hitCollection.Count, Is.AtLeast(1));
+
+            hitCollection = searcher.Search("select", new Filter(Fields.Language, new List<string> { "js" }));
+            Assert.That(hitCollection.Count, Is.AtLeast(1));
+        }
+
 
         [Test]
         public void Indexer_Filter()
