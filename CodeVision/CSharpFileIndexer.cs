@@ -31,14 +31,17 @@ namespace CodeVision
                 var syntax = parser.Parse(file.FullName);
 
                 // Build a key based on the file syntax 
-                // TODO: Need semantic model in order to get full class name, i.e. namespace.className
+                // TODO: Need semantic model in order to get full class name, i.e. namespace.className.
                 // The original reason for having key field was to use DuplicateFilter. It however cannot be used
                 // if index has multiple segments, not at least in version 3.0.1. Once this bug is fixed, key field
                 // can be added to other indexers to be used by DuplicateFilter, which requires all documents to have it.
                 string key;
-                if (syntax.Classes.Any() && syntax.Usings.Any())
+                if (syntax.Classes.Any())
                 {
-                    key = string.Format("{0}.{1}", syntax.Usings.First(), syntax.Classes.First().ClassName);
+                    var firstClassNameInTheFile = syntax.Classes.First().ClassName;
+                    key = !string.IsNullOrEmpty(syntax.Namespace)
+                        ? string.Format("{0}.{1}", syntax.Namespace, firstClassNameInTheFile)
+                        : firstClassNameInTheFile; // Classes in global (default) namespace
                     using (var reader = writer.GetReader()) // We want to get a new reader once per document
                     {
                         var term = new Term(Fields.Key, key);

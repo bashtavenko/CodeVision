@@ -7,6 +7,7 @@ namespace CodeVision.CSharp
         public List<string> Usings { get; set; }
         public List<CSharpClass> Classes { get; set; }
         public List<string> Comments { get; set; }
+        public string Namespace { get; set; }
 
         public CSharpFileSyntax()
         {

@@ -27,6 +27,13 @@ namespace CodeVision.CSharp
             }
 
             result.Comments =  GetComments(root.DescendantTrivia());
+
+            // TODO: this is a very crude method because namespaces can be nested.
+            var ns = root.DescendantNodes().OfType<NamespaceDeclarationSyntax>().FirstOrDefault();
+            if (ns != null)
+            {
+                result.Namespace = ns.Name.ToFullStringLowerNormalized();
+            }
             
             foreach (var cls in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
             {
