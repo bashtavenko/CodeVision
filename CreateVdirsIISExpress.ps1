@@ -2,6 +2,13 @@
 # Creates two virtual directories for CodeVision web site on IISExpress.
 # Assumes initial IISEexpress configuration is done and the site is up on a given port.
 #
+
+function CreateVirtualDirectory($path, $physicalPath)
+{    
+   .$appcmd add APP /site.name:$siteName /path:$path /physicalPath:$physicalPath
+   .$appcmd set app /app.name:$siteName$path /applicationPool:"Clr4IntegratedAppPool"
+}
+
 $appcmd = "c:\Program Files (x86)\IIS Express\appcmd.exe"
 
 # Find site name on a given port
@@ -37,12 +44,6 @@ $rootSolutionPath = $Matches[0]
 #Created virtual directories
 CreateVirtualDirectory -path /searchindex -physicalPath $rootSolutionPath\CodeVision.Tests\bin\Debug\Index
 CreateVirtualDirectory -path /searchcontent -physicalPath $rootSolutionPath\CodeVision.Tests\Content
-
-function CreateVirtualDirectory($path, $physicalPath)
-{    
-   .$appcmd add APP /site.name:$siteName /path:$path /physicalPath:$physicalPath
-   .$appcmd set app /app.name:$siteName$path /applicationPool:"Clr4IntegratedAppPool"
-}
 
 Write-Host Done:
 .$appcmd list apps /site.name:$siteName

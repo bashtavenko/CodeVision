@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using CodeVision.Model;
-using Lucene.Net.Analysis;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Search.Highlight;
 using Lucene.Net.Store;
-using SpellChecker.Net.Search.Spell;
 using Version = Lucene.Net.Util.Version;
 
 namespace CodeVision
@@ -174,7 +173,13 @@ namespace CodeVision
             }
 
             result.Append(sourceString.Substring(currentIndex, sourceString.Length - currentIndex));
-            return result.ToString();
+
+            // Cases like <summary> and also generics
+            // List<<kbd>Account</kbd>> => List&lt;<kbd>Account</kbd>&gt;
+            var resultString = result.ToString();
+            resultString = Regex.Replace(resultString, "<(?!kbd|/kbd)", "&lt;");
+            resultString = Regex.Replace(resultString, "(?<!kbd)>", "&gt;");
+            return resultString;
         }
     }
 }
