@@ -87,6 +87,7 @@
   <ItemGroup>
     <None Include="Content\AnotherCSharpProjectDuplicateTest\Lucene.Net.Memory\HashMapHelperClass.cs" />
     <Compile Include="JavaScriptFileIndexerTests.cs" />
+    <Compile Include="SearcherTests.cs" />
     <Compile Include="Web\IntegrationTests.cs" />
     <None Include="App.config" />
     <None Include="Content\Lucene.Net.Memory\HashMapHelperClass.cs" />

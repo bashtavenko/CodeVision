@@ -142,7 +142,8 @@ namespace CodeVision
                     {
                         text = sr.ReadToEnd();
                     }
-                    hit.BestFragment = highlighter.GetBestFragment(tokenStream, text);
+                    string bestFragment = highlighter.GetBestFragment(tokenStream, text);
+                    hit.BestFragment = EscapeHtmlMarkup(bestFragment);
                 }
             }
       
@@ -174,10 +175,15 @@ namespace CodeVision
 
             result.Append(sourceString.Substring(currentIndex, sourceString.Length - currentIndex));
 
-            // Cases like <summary> and also generics
-            // List<<kbd>Account</kbd>> => List&lt;<kbd>Account</kbd>&gt;
-            var resultString = result.ToString();
-            resultString = Regex.Replace(resultString, "<(?!kbd|/kbd)", "&lt;");
+            var resultString = EscapeHtmlMarkup(result.ToString());
+            return resultString;
+        }
+
+        // Cases like <summary> and also generics
+        // List<<kbd>Account</kbd>> => List&lt;<kbd>Account</kbd>&gt;
+        public string EscapeHtmlMarkup(string source)
+        {
+            string resultString = Regex.Replace(source, "<(?!kbd|/kbd)", "&lt;");
             resultString = Regex.Replace(resultString, "(?<!kbd)>", "&gt;");
             return resultString;
         }
