@@ -143,7 +143,10 @@ namespace CodeVision
                         text = sr.ReadToEnd();
                     }
                     string bestFragment = highlighter.GetBestFragment(tokenStream, text);
-                    hit.BestFragment = EscapeHtmlMarkup(bestFragment);
+                    if (!string.IsNullOrEmpty(bestFragment))
+                    {
+                        hit.BestFragment = EscapeHtmlMarkup(bestFragment);
+                    }
                 }
             }
       
@@ -183,6 +186,11 @@ namespace CodeVision
         // List<<kbd>Account</kbd>> => List&lt;<kbd>Account</kbd>&gt;
         public string EscapeHtmlMarkup(string source)
         {
+            if (string.IsNullOrEmpty(source))
+            {
+                return source;
+            }
+
             string resultString = Regex.Replace(source, "<(?!kbd|/kbd)", "&lt;");
             resultString = Regex.Replace(resultString, "(?<!kbd)>", "&gt;");
             return resultString;
