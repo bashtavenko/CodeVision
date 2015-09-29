@@ -16,7 +16,7 @@ namespace CodeVision.Console
             var indexer = new Indexer(logger, CodeVisionConfigurationSection.Load());
             try
             {
-                indexer.Index(config.ContentPath);
+                indexer.Index(config.ContentPath, config.FoldersToExclude);
             }
             catch (Exception ex)
             {

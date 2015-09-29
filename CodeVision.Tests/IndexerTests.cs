@@ -161,6 +161,18 @@ namespace CodeVision.Tests
             Assert.That(hitCollection.Count, Is.EqualTo(1));
         }
 
+        // May alter state of shared index, it should probably be in a separate file
+        //[Test]
+        public void Indexer_WithExcludedFiles()
+        {
+            var indexer = new Indexer(null);
+            indexer.Index(GetCompletePath("."), new List<string> { "sql" });
+
+            var searcher = new Searcher();
+            var hitCollection = searcher.Search("SalesByCategory");
+            Assert.False(hitCollection.Any(s => s.Language == Languages.Sql), "Must not have any SQL files");            
+        }
+
         internal string GetCompletePath(string contentPath)
         {
             return Path.Combine("..\\..\\Content\\", contentPath);

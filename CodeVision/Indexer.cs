@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Lucene.Net.Analysis;
+using System.Collections.Generic;
+using System.Linq;
+
 using Lucene.Net.Index;
 using Lucene.Net.Store;
 
@@ -32,11 +34,20 @@ namespace CodeVision
 
         public void Index()
         {
-            Index((_configuration.ContentRootPath));
+            Index(_configuration.ContentRootPath);
         }
 
         public void Index(string contentPath)
         {
+            Index(_configuration.ContentRootPath, new List<string>());
+        }
+
+        public void Index(string contentPath, List<string> foldersToExclude)
+        {
+            if (foldersToExclude == null)
+            {
+                throw new ArgumentException ("Must not have null collection of folders", "foldersToExclude");
+            }
             var indexDirectory = new SimpleFSDirectory(new DirectoryInfo(_configuration.IndexPath));
             Log(string.Format("Begining to index {0}. Index location: {1}", contentPath, indexDirectory.Directory.FullName));
             var stopWatch = new Stopwatch();
@@ -44,14 +55,15 @@ namespace CodeVision
             var analyzer = AnalyzerBuilder.CreateAnalyzer();
             using (var writer = new IndexWriter(indexDirectory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED))
             {
-                IndexDirectory(writer, new DirectoryInfo(contentPath));
+                IndexDirectory(writer, new DirectoryInfo(contentPath), foldersToExclude);
             }
             stopWatch.Stop();
             Log(string.Format("Indexed {0:N0} files in {1:00}:{2:00}.{3:00}", _fileCount, stopWatch.Elapsed.Hours, stopWatch.Elapsed.Minutes, stopWatch.Elapsed.Seconds));
         }
     
-        private void IndexDirectory(IndexWriter writer, DirectoryInfo dir)
+        private void IndexDirectory(IndexWriter writer, DirectoryInfo dir, List<string> foldersToExclude)
         {
+            // Assuming that root folder cannot be excluded
             foreach (var file in dir.GetFiles())
             {
                 try
@@ -70,7 +82,13 @@ namespace CodeVision
             
             foreach (var subDir in dir.GetDirectories())
             {
-                IndexDirectory(writer, subDir);
+                if (foldersToExclude.FirstOrDefault(s => s.Equals(subDir.Name, StringComparison.InvariantCultureIgnoreCase)) != null)
+                {
+                    Log(string.Format("Excluded {0} folder", subDir.Name));
+                    continue;
+                }               
+
+                IndexDirectory(writer, subDir, foldersToExclude);
             }
         }
 
