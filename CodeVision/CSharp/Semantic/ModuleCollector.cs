@@ -26,9 +26,10 @@ namespace CodeVision.CSharp.Semantic
                         continue;
                     }
 
-                    var projectTarget = project.OutputFilePath;
-                    string version = GetAssemblyVersion(projectTarget);
-                    var module = new Module(Path.GetFileName(projectTarget), version);
+                    var projectModulePath = project.OutputFilePath;
+                    var projectModuleName = Path.GetFileNameWithoutExtension(projectModulePath);
+                    var reflectionPropeties = GetAssemblyReflectionProperties(projectModulePath);
+                    var module = new Module(projectModuleName, reflectionPropeties.Version, reflectionPropeties.Description);
 
                     // Build the list of all dlls referenced by the project, both assembly(metadata) and project references.
                     List<string> dllPaths = project.MetadataReferences.Select(s => s.Display).ToList();
@@ -40,13 +41,13 @@ namespace CodeVision.CSharp.Semantic
                                         
                     foreach (var dllPath in dllPaths)
                     {                        
-                        string fileName = Path.GetFileName(dllPath);
+                        string fileName = Path.GetFileNameWithoutExtension(dllPath);
                         if (_excludedModuleNames.Any(w => fileName.ToLower().Contains(w.ToLower())))
                         {
                             continue;
                         }
-                        version = GetAssemblyVersion(dllPath);
-                        module.AddReference(new Module(fileName, version));                                                
+                        var reflectionProperties = GetAssemblyReflectionProperties(dllPath);
+                        module.AddReference(new Module(fileName, reflectionProperties.Version, reflectionProperties.Description));                                                
                     }
                     modules.Add(module);
                 }
@@ -55,20 +56,32 @@ namespace CodeVision.CSharp.Semantic
             }
         }
 
-        private string GetAssemblyVersion (string filePath)
+        private ReflectionProperties GetAssemblyReflectionProperties (string filePath)
         {
-            string version;            
             try
             {
                 var assembly = Assembly.LoadFrom(filePath);
-                version = assembly.GetName().Version.ToString();
+                var descriptionAttribute = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
+                return new ReflectionProperties
+                {
+                    Version = assembly.GetName().Version.ToString(),
+                    Description = descriptionAttribute != null ? descriptionAttribute.Description : string.Empty                    
+                };
             }
             catch (FileLoadException)
             {
-                // "Mixed mode assembly is built against version 'v2.0.50727' of the runtime and cannot be loaded in the 4.0 runtime
-                version = "Unknown";
+                // Example: mixed mode assembly is built against version 'v2.0.50727' of the runtime and cannot be loaded in the 4.0 runtime
+                return new ReflectionProperties
+                {
+                    Version = "Unknown"
+                };
             }
-            return version;
         }
+    }
+
+    internal class ReflectionProperties
+    {
+        public string Version { get; set; }
+        public string Description { get; set; }
     }
 }

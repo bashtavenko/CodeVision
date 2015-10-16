@@ -23,6 +23,8 @@ namespace CodeVision.Web
 
             Mapper.CreateMap<ViewModels.SearchHit, ViewModels.Document>()
                 .ForMember(s => s.Name, opt => opt.MapFrom(src => src.FriendlyFileName));
+
+            Mapper.CreateMap<CodeVision.CSharp.Semantic.Module, ViewModels.Module>();
         }
         
         private static List<Model.Offset> MapOffsets(List<ViewModels.SearchOffset> offsets)

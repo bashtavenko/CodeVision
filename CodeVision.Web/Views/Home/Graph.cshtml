@@ -15,7 +15,7 @@
             <label for="moduleInput" class="col-sm-2 control-label">Module</label>
             <div class="col-sm-10">
                 <input id="moduleInput" type="text" ng-model="selectedModule"
-                       typeahead="module for module in getModuleNames($viewValue)"                       
+                       typeahead="module as module.name + ' ' + module.version for module in getModuleNames($viewValue)"                       
                        typeahead-editable="false" typeahead-on-select="onSelected($item, $model, $label)"
                        placeholder="Start typing here" class="form-control">                
             </div>
@@ -41,9 +41,18 @@
         </div>
     </form>
     <p></p>
-    <table ng-show="modules" class="table">        
+    <table ng-show="modules" class="table">
+        <thead>
+            <tr>
+                <th>Module</th>
+                <th>Version</th>
+                <th>Description</th>
+            </tr>
+        </thead>
         <tr ng-repeat="module in modules">
-            <td>{{module}}</td>
+            <td>{{module.name}}</td>
+            <td>{{module.version}}</td>
+            <td>{{module.description}}</td>
         </tr>
     </table>
     <div ng-show="modules.length == 0">No dependencies found.</div>

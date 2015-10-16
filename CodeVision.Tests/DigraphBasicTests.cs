@@ -3,6 +3,7 @@
 using CodeVision.CSharp.Semantic;
 
 using NUnit.Framework;
+using System;
 
 namespace CodeVision.Tests
 {
@@ -36,6 +37,18 @@ namespace CodeVision.Tests
             Assert.That(digraph.V, Is.EqualTo(3));
             Assert.That(digraph.E, Is.EqualTo(2));
             Assert.That(digraph.GetAdjList(0).Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Digraph_OutOfRange()
+        {
+            var digraph = new Digraph();
+            digraph.AddVertex(0);
+            digraph.AddEdge(0, 1);
+            digraph.AddEdge(0, 2);
+
+            Assert.Throws<ArgumentException>(() => digraph.GetAdjList(-1));
+            Assert.Throws<ArgumentException>(() => digraph.GetAdjList(5));
         }
 
         [Test]

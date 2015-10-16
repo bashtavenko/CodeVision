@@ -49,7 +49,7 @@ namespace CodeVision.CSharp.Semantic
 
         public IEnumerable<int> GetAdjList(int v)
         {
-            if (!(v < _adj.Count()))
+            if ((v >= V || v < 0))
             {
                 throw new ArgumentException(nameof(v));
             }

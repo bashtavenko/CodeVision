@@ -26,7 +26,7 @@ namespace CodeVision.Tests
         {
             string solutionPath = @"..\..\..\CodeVision.sln";            
             _collector.CollectDependencies(new List<string> { solutionPath });
-            _loggerMock.Verify(v => v.Log(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never());
+            _loggerMock.Verify(v => v.Log(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never);
         }
     }
 }

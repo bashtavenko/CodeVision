@@ -27,13 +27,12 @@ namespace CodeVision.CSharp.Semantic
                     _logger.Log(string.Format("Geting modules for {0}...", Path.GetFileName(solutionPath)));
 
                     var modules = collector.GetModulesBySolution(solutionPath);
-                    foreach (var module in modules)
+                    foreach (var v in modules)
                     {
-                        string v = module.Key;
                         graph.AddModule(v);
-                        foreach (var w in module.References)
+                        foreach (var w in v.References)
                         {
-                            graph.AddDependency(v, w.Key);
+                            graph.AddDependency(v, w);
                         }
                     }
                 }

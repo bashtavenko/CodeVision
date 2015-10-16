@@ -15,7 +15,7 @@ namespace CodeVision.CSharp.Semantic
 
         public void SaveState(DependencyGraph dg)
         {
-            string[] symbolTable = dg.CreateMemento().State;
+            Module[] symbolTable = dg.CreateMemento().State;
             int[][] jaggedArray = dg.Digraph.CreateMemento().State;
 
             // Save
@@ -24,9 +24,9 @@ namespace CodeVision.CSharp.Semantic
                 ctx.Database.ExecuteSqlCommand("TRUNCATE TABLE DependencyGraphModule;");
                 ctx.Database.ExecuteSqlCommand("TRUNCATE TABLE DependencyGraph;");
 
-                for (int i = 0; i < symbolTable.Length; i++)
+                foreach (var module in symbolTable)
                 {
-                    ctx.Modules.Add(new SqlStorage.Module { ModuleId = i, ModuleKey = symbolTable[i] });
+                    ctx.Modules.Add(new SqlStorage.Module { ModuleId = module.Id.Value, Name = module.Name, Version = module.Version, Description = module.Description });
                 }
 
                 for (int i = 0; i < jaggedArray.Length; i++)
@@ -41,7 +41,7 @@ namespace CodeVision.CSharp.Semantic
         public DependencyGraph LoadState()
         {
             int[][] jaggedArray;
-            string[] symbolTable;
+            Module[] symbolTable;
 
             // Load
             using (var ctx = new DependencyGraphContext(_connectionString))
@@ -54,11 +54,13 @@ namespace CodeVision.CSharp.Semantic
                     jaggedArray[i] = adjencencyList;                    
                 }
 
-                symbolTable = ctx.Modules.Select(s => s.ModuleKey).ToArray();
+                symbolTable = ctx.Modules
+                    .ToList()
+                    .Select(s => new Module(s.Name, s.Version, s.Description, s.ModuleId)).ToArray();
             }
             
             var g = new Digraph(new Memento<int[][]>(jaggedArray));
-            var dg = new DependencyGraph(new Memento<string[]>(symbolTable), g);
+            var dg = new DependencyGraph(new Memento<Module[]>(symbolTable), g);
             return dg;
         }
     }

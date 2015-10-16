@@ -14,7 +14,7 @@ graphModule.controller("GraphController", function ($scope, graphService, $log) 
     };
 
     $scope.getDependencies = function () {
-        graphService.getDependencies($scope.selectedModule, $scope.direction, $scope.levels)
+        graphService.getDependencies($scope.selectedModule.id, $scope.direction, $scope.levels)
             .$promise.then(function (response) {
                 $scope.modules = response;
         });

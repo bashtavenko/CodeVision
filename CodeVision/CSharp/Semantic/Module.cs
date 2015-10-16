@@ -1,29 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace CodeVision.CSharp.Semantic
-{    
+{
     public class Module
     {
-        public string Key { get; private set;} 
-        public string Name
-        {
-            get
-            {
-                return string.IsNullOrEmpty(FileName) ? null : Path.GetFileNameWithoutExtension(FileName);
-            }
-        }
-        public string FileName { get; private set; }
+        public int? Id { get; set; }
+        public string Name { get; private set; }      
         public string Version { get; private set; }        
+        public string Description { get; private set; }        
         public List<Module> References { get; private set; }
 
-        public Module(string fileName, string version)
+        public Module(string name, string version)
+            : this(name, version, null, null)
         {
-            this.FileName = fileName;
+        }
+
+        public Module(string name, string version, string description)
+            : this (name, version, description, null)
+        {            
+        }
+
+        public Module(string name, string version, string description, int? id)
+        {
+            this.Name = name;
             this.Version = version;
+            this.Description = description;
             this.References = new List<Module>();
-            BuildKey(fileName, version);
+            this.Id = id;
         }
 
         public void AddReference (Module module)
@@ -35,25 +39,26 @@ namespace CodeVision.CSharp.Semantic
             this.References.Add(module);
         }              
         
-
         public override bool Equals(object obj)
         {
             var otherModule = obj as Module;
             if (otherModule == null)
             {
-                throw new ArgumentException(nameof(obj));
+                return false;
             }
-            return this.Key.Equals(otherModule.Key, StringComparison.InvariantCultureIgnoreCase);
+            var thisKey = BuildUniqueKey(Name, Version);
+            var otherKey = BuildUniqueKey(otherModule.Name, otherModule.Version);
+            return thisKey.Equals(otherKey, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override int GetHashCode()
         {
-            return this.Key.GetHashCode();
+            return BuildUniqueKey(Name, Version).GetHashCode();
         }
 
-        private void BuildKey(string fileName, string version)
+        private string BuildUniqueKey(string name, string version)
         {
-            Key = string.Format("{0} {1}", fileName, version);
+            return string.Format("{0} {1}", name, version);
         }
     }
 }

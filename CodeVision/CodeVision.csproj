@@ -147,7 +147,7 @@
     <Compile Include="CodeVisionConfigurationSection.cs" />
     <Compile Include="CSharp\Semantic\DependencyDirection.cs" />
     <Compile Include="CSharp\Semantic\DependencyGraphCollector.cs" />
-    <Compile Include="CSharp\Semantic\DependencyLevels.cs" />
+    <Compile Include="CSharp\Semantic\DependencyLevelcs.cs" />
     <Compile Include="CSharp\Semantic\DigraphDfs.cs" />
     <Compile Include="CSharp\Semantic\Digraph.cs" />
     <Compile Include="CSharp\Semantic\DependencyGraphRepository.cs" />
@@ -175,6 +175,7 @@
     <Compile Include="Model\Filter.cs" />
     <Compile Include="Model\Hit.cs" />
     <Compile Include="Indexer.cs" />
+    <Compile Include="Model\Module.cs" />
     <Compile Include="Model\ReadOnlyHitCollection.cs" />
     <Compile Include="Model\Offset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

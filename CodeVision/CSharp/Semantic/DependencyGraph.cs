@@ -6,11 +6,11 @@ namespace CodeVision.CSharp.Semantic
 {
     public class DependencyGraph
     {
-        private Dictionary<string, int> _st;
-        private Dictionary<int, string> _keys;
-        private Digraph _g;
+        private readonly Dictionary<Module, int> _st;
+        private readonly Dictionary<int, Module> _keys;
+        private readonly Digraph _g;
 
-        public IEnumerable<string> Modules
+        public IEnumerable<Module> Modules
         {
             get
             {
@@ -24,10 +24,10 @@ namespace CodeVision.CSharp.Semantic
         {            
         }
 
-        public DependencyGraph(Memento<string[]> memento, Digraph g)
+        public DependencyGraph(Memento<Module[]> memento, Digraph g)
         {
-            _st = new Dictionary<string, int>();
-            _keys = new Dictionary<int, string>();
+            _st = new Dictionary<Module, int>();
+            _keys = new Dictionary<int, Module>();
 
             if (memento != null)
             {
@@ -36,74 +36,87 @@ namespace CodeVision.CSharp.Semantic
             _g = g;
         }
 
-        public void AddModule(string name)
+        public void AddModule(Module module)
         {
-            int vertexIndex = AddVertexInternal(name);
+            int vertexIndex = AddVertexInternal(module);
             _g.AddVertex(vertexIndex);
         }
 
-        public void AddDependency(string fromModule, string toModule)
+        public void AddDependency(Module fromModule, Module toModule)
         {
             int vi = AddVertexInternal(fromModule);
             int wi = AddVertexInternal(toModule);
             _g.AddEdge(vi, wi);
         } 
 
-        public List<string> GetDependencies (string moduleName, DependencyDirection direction, DependencyLevels levels)
-        {            
-            if (!_st.ContainsKey(moduleName)) // Supposed to have correct case
+        public List<Module> GetDependencies (Module module, DependencyDirection direction, DependencyLevel level)
+        {
+            if (!_st.ContainsKey(module))
             {
-                return new List<string>();
+                throw new ArgumentException(nameof(module));
             }
-
+            return GetDependencies(_st[module], direction, level);
+        }
+ 
+        public List<Module> GetDependencies (int moduleId, DependencyDirection direction, DependencyLevel level)
+        {
+            if (moduleId < 0 || moduleId >= _st.Count)
+            {
+                throw new ArgumentException(nameof(moduleId));
+            }
             Digraph g = direction == DependencyDirection.Downstream ? _g : _g.Reverse();
-            int moduleInex = _st[moduleName];
             IEnumerable<int> dependencyIndices;
-            if (levels == DependencyLevels.DirectOnly)
+            if (level == DependencyLevel.DirectOnly)
             {
                 // That's easy
-                dependencyIndices = g.GetAdjList(moduleInex);
+                dependencyIndices = g.GetAdjList(moduleId);
             }
             else
             {
                 // Run DFS to find out
-                DigraphDfs dfs = new DigraphDfs(g, moduleInex);
+                DigraphDfs dfs = new DigraphDfs(g, moduleId);
                 dependencyIndices = dfs.ReachableVertices;
             }
 
-            List<string> r = new List<string>();
+            List<Module> r = new List<Module>();
             foreach (var i in dependencyIndices)
             {
                 r.Add(_keys[i]);
             }
                                               
-            return r;
+            return r
+                .OrderBy(o => o.Name)
+                .ToList();
         }
 
-        public List<string> GetModulesBeginsWith (string name)
+        public List<Module> GetModulesBeginsWith (string name)
         {
-            return _st.Keys.Where(w => w.StartsWith(name, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            return _st.Keys
+                .Where(w => w.Name.StartsWith(name, StringComparison.InvariantCultureIgnoreCase))
+                .OrderBy(o => o.Name)
+                .ThenBy(o => o.Version)
+                .ToList();
         }
 
-        public Memento<string[]> CreateMemento()
+        public Memento<Module[]> CreateMemento()
         {            
-            return new Memento<string[]>(_st.Keys.ToArray());
+            return new Memento<Module[]>(_st.Keys.ToArray());
         }
 
-        public void SetMemento(Memento<string[]> memento)
+        public void SetMemento(Memento<Module[]> memento)
         {   
             if (memento == null)
             {
                 throw new ArgumentNullException(nameof(memento));
             }
                      
-            foreach (string module in memento.State)
+            foreach (Module module in memento.State)
             {
                 AddKey(module);
             }
         }
 
-        private int AddVertexInternal (string v)
+        private int AddVertexInternal (Module v)
         {
             int vertexIndex;
             if (!_st.ContainsKey(v))
@@ -117,9 +130,10 @@ namespace CodeVision.CSharp.Semantic
             return vertexIndex;
         }
 
-        private int AddKey(string v)
+        private int AddKey(Module v)
         {
             int vertexIndex = _st.Count;
+            v.Id = vertexIndex;
             _st.Add(v, vertexIndex);
             _keys.Add(vertexIndex, v);
             return vertexIndex;

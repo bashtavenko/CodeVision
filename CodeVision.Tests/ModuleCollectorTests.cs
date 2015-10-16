@@ -15,11 +15,11 @@ namespace CodeVision.Tests
             var modules = moduleCollector.GetModulesBySolution(solutionPath);
             Assert.IsNotNull(modules);
 
-            var console = modules.SingleOrDefault(s => s.FileName == "CodeVision.Console.exe");
+            var console = modules.SingleOrDefault(s => s.Name == "CodeVision.Console");
             Assert.IsNotNull(console);
 
-            Assert.IsNotNull(console.References.SingleOrDefault(s => s.FileName == "CommandLine.dll"), "Assembly reference");
-            Assert.IsNotNull(console.References.SingleOrDefault(s => s.FileName == "CodeVision.dll"), "Project reference");
+            Assert.IsNotNull(console.References.SingleOrDefault(s => s.Name == "CommandLine"), "Assembly reference");
+            Assert.IsNotNull(console.References.SingleOrDefault(s => s.Name == "CodeVision"), "Project reference");
         }
     }
 }

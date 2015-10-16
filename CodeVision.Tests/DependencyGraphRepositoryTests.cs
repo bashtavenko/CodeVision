@@ -23,11 +23,16 @@ namespace CodeVision.Tests
             //  B1   B2  B3   
             //  C1    
             _g = new DependencyGraph();
-            _g.AddModule("A");
-            _g.AddDependency("A", "B1");
-            _g.AddDependency("A", "B2");
-            _g.AddDependency("A", "B3");
-            _g.AddDependency("B1", "C1");
+            var moduleA = new Module("A", "1");
+            var moduleB1 = new Module("B1", "1");
+            var moduleB2 = new Module("B2", "1");
+            var moduleB3 = new Module("B3", "1");
+            var moduleC1 = new Module("C1", "1");
+            _g.AddModule(moduleA);
+            _g.AddDependency(moduleA, moduleB1);
+            _g.AddDependency(moduleA, moduleB2);
+            _g.AddDependency(moduleA, moduleB3);
+            _g.AddDependency(moduleB1, moduleC1);
         }
 
         [Test]
@@ -40,12 +45,16 @@ namespace CodeVision.Tests
             Assert.That(anothergraph.Digraph.V, Is.EqualTo(5));
             Assert.That(anothergraph.Digraph.E, Is.EqualTo(4));
 
-            var result = anothergraph.GetDependencies("A", DependencyDirection.Downstream, DependencyLevels.DirectOnly);
+            var moduleA = anothergraph.GetModulesBeginsWith("A").Single(s => s.Name == "A");
+            var moduleB1 = anothergraph.GetModulesBeginsWith("B1").Single(s => s.Name == "B1");
+            var moduleB2 = anothergraph.GetModulesBeginsWith("B2").Single(s => s.Name == "B2");
+            var moduleB3 = anothergraph.GetModulesBeginsWith("B3").Single(s => s.Name == "B3");
+
+            var result = anothergraph.GetDependencies(moduleA.Id.Value, DependencyDirection.Downstream, DependencyLevel.DirectOnly);
             Assert.That(result.Count, Is.EqualTo(3));
-            CollectionAssert.Contains(result, "B1");
-            CollectionAssert.Contains(result, "B2");
-            CollectionAssert.Contains(result, "B3");
-            
+            Assert.IsNotNull(result.SingleOrDefault(s => s.Name == "B1"));
+            Assert.IsNotNull(result.SingleOrDefault(s => s.Name == "B2"));
+            Assert.IsNotNull(result.SingleOrDefault(s => s.Name == "B3"));            
         }
     }
 }

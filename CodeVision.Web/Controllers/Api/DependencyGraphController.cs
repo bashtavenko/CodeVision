@@ -2,7 +2,7 @@
 using System.Web.Http;
 
 using CodeVision.CSharp.Semantic;
-
+using AutoMapper;
 
 namespace CodeVision.Web.Controllers.Api
 {
@@ -16,17 +16,17 @@ namespace CodeVision.Web.Controllers.Api
         }
         
         [Route("api/modules")]
-        public IList<string> Get (string name)
+        public IList<ViewModels.Module> Get (string name)
         {
-            var items = _graph.GetModulesBeginsWith(name);            
-            return items;
+            var items = _graph.GetModulesBeginsWith(name);
+            return Mapper.Map<List<ViewModels.Module>>(items);
         }
 
-        [Route("api/graph/{direction}/{levels}")]
-        public IList<string> Get(string key, DependencyDirection direction, DependencyLevels levels)
+        [Route("api/graph/{moduleId}/{direction}/{level}")]
+        public IList<ViewModels.Module> Get(int moduleId, DependencyDirection direction, DependencyLevel level)
         {
-            var items = _graph.GetDependencies(key, direction, levels);
-            return items;
+            var items = _graph.GetDependencies(moduleId, direction, level);
+            return Mapper.Map<List<ViewModels.Module>>(items);
         }
     }
 }
