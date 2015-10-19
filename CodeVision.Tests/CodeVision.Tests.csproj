@@ -156,6 +156,7 @@
     <None Include="Content\AnotherCSharpProjectDuplicateTest\Lucene.Net.Memory\HashMapHelperClass.cs" />
     <Compile Include="CSharpSemanticModelTests.cs" />
     <Compile Include="DependencyGraphTests.cs" />
+    <Compile Include="DigraphBfsTests.cs" />
     <Compile Include="DigraphDfsTests.cs" />
     <Compile Include="DigraphBasicTests.cs" />
     <Compile Include="DependencyGraphRepositoryTests.cs" />
@@ -202,6 +203,7 @@
   <ItemGroup>
     <Content Include="Content\js\checklist-model.js" />
     <Content Include="Content\Sql\SalesByCategory.sql" />
+    <Content Include="Content\TinyGraph.png" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />

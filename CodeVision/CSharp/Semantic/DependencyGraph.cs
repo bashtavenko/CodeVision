@@ -65,28 +65,24 @@ namespace CodeVision.CSharp.Semantic
                 throw new ArgumentException(nameof(moduleId));
             }
             Digraph g = direction == DependencyDirection.Downstream ? _g : _g.Reverse();
-            IEnumerable<int> dependencyIndices;
+            IEnumerable<int> moduleIndices;
             if (level == DependencyLevel.DirectOnly)
             {
                 // That's easy
-                dependencyIndices = g.GetAdjList(moduleId);
+                moduleIndices = g.GetAdjList(moduleId);
             }
             else
             {
-                // Run DFS to find out
-                DigraphDfs dfs = new DigraphDfs(g, moduleId);
-                dependencyIndices = dfs.ReachableVertices;
+                // Run BFS to find out
+                var bfs = new DigraphBfs(g, moduleId);
+                moduleIndices = bfs.Preorder;
             }
 
-            List<Module> r = new List<Module>();
-            foreach (var i in dependencyIndices)
-            {
-                r.Add(_keys[i]);
-            }
-                                              
-            return r
-                .OrderBy(o => o.Name)
+            List<Module> modules = moduleIndices
+                .Select(i => _keys[i])
                 .ToList();
+
+            return modules;
         }
 
         public List<Module> GetModulesBeginsWith (string name)

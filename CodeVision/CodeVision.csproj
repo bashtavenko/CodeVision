@@ -148,6 +148,7 @@
     <Compile Include="CSharp\Semantic\DependencyDirection.cs" />
     <Compile Include="CSharp\Semantic\DependencyGraphCollector.cs" />
     <Compile Include="CSharp\Semantic\DependencyLevelcs.cs" />
+    <Compile Include="CSharp\Semantic\DigraphBfs.cs" />
     <Compile Include="CSharp\Semantic\DigraphDfs.cs" />
     <Compile Include="CSharp\Semantic\Digraph.cs" />
     <Compile Include="CSharp\Semantic\DependencyGraphRepository.cs" />

@@ -24,7 +24,7 @@ namespace CodeVision.CSharp.Semantic
             {
                 try
                 {
-                    _logger.Log(string.Format("Geting modules for {0}...", Path.GetFileName(solutionPath)));
+                    _logger.Log($"Geting modules for {Path.GetFileName(solutionPath)}...");
 
                     var modules = collector.GetModulesBySolution(solutionPath);
                     foreach (var v in modules)
@@ -38,7 +38,7 @@ namespace CodeVision.CSharp.Semantic
                 }
                 catch (Exception ex)
                 {
-                    _logger.Log(string.Format("Failed to get modules for {0} solution - {1}", Path.GetFileName(solutionPath), ex.Message), ex);
+                    _logger.Log($"Failed to get modules for {Path.GetFileName(solutionPath)} solution - {ex.Message}", ex);
                 }
             }
             var repository = new DependencyGraphRepository(_connectionString);
