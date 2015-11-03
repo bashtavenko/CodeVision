@@ -21,5 +21,13 @@ namespace CodeVision.Tests
             Assert.IsNotNull(console.References.SingleOrDefault(s => s.Name == "CommandLine"), "Assembly reference");
             Assert.IsNotNull(console.References.SingleOrDefault(s => s.Name == "CodeVision"), "Project reference");
         }
+
+        [TestCase(@"C:\My\ProjectA\bin\Debug\stuff.dll", @"C:\My\ProjectA\bin\x86\Debug\stuff.dll")]
+        [TestCase(@"C:\My\ProjectA\whatever\Debug\stuff.dll", @"C:\My\ProjectA\whatever\Debug\stuff.dll")]
+        public void ModuleCollector_CanFixThePath(string originalPath, string expectedPath)
+        {
+            string result = ModuleCollector.Insertx86ToPath(originalPath);
+            Assert.AreEqual(expectedPath, result);
+        }
     }
 }
