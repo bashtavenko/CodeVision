@@ -46,7 +46,7 @@
         {
             <p>
                 <div>
-                    @Html.ActionLink(hit.FileName, "Details", "Content", new { hit = @hit.ToString() }, null)
+                    @Html.ActionLink(hit.FriendlyFileName, "Details", "Content", new { hit = @hit.ToString() }, null)
                 </div>
                 @if (!string.IsNullOrEmpty(hit.BestFragment))
                 {
