@@ -2,15 +2,14 @@
 using System.IO;
 using System.Reflection;
 using System.Linq;
-
 using Microsoft.CodeAnalysis.MSBuild;
 
 namespace CodeVision.CSharp.Semantic
 {
     public class ModuleCollector
     {
-        private string[] _excludedProjectNames = { "test" };
-        private string[] _excludedModuleNames = { "System", "Microsoft", "mscorlib" };
+        private readonly string[] _excludedProjectNames = { "test" };
+        private readonly string[] _excludedModuleNames = { "System", "Microsoft", "mscorlib" };
 
         public List<Module> GetModulesBySolution (string solutionPath)
         {
@@ -56,8 +55,36 @@ namespace CodeVision.CSharp.Semantic
             }
         }
 
-        private ReflectionProperties GetAssemblyReflectionProperties (string filePath)
+        // This is public for unit testing.
+        public static string Insertx86ToPath(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
+            
+            var pathParts = new List<string>(path.Split(Path.DirectorySeparatorChar));
+            var binIndex = pathParts.FindIndex(w => w == "bin");
+            if (binIndex == -1)
+            {
+                return path;
+            }
+            pathParts.Insert(binIndex + 1, "x86");
+            return string.Join(Path.DirectorySeparatorChar.ToString(), pathParts);
+        }
+        
+        internal ReflectionProperties GetAssemblyReflectionProperties (string filePath)
+        {
+            // If solution contains projects with different build configuration (AnyCpu and x86) Roslyn
+            // sets project.OutputFilePath to "..bin\Debug\output.dll" as opposed to "..bin\x86\Debug" as it
+            // specified in the default solution configuration (https://github.com/dotnet/roslyn/issues/6535#event-456527993) 
+            // Inserting x86 seems to be the only way to fix this until the bug is fixed.
+            if (!File.Exists(filePath))
+            {
+                filePath = Insertx86ToPath(filePath);
+                // Let it fail with FileNotFoundException if still missing
+            }
+
             try
             {
                 var assembly = Assembly.LoadFrom(filePath);
