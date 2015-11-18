@@ -8,13 +8,13 @@ namespace CodeVision.Dependencies.SqlStorage
     {   
         public DependencyGraphContext(string connectionString) : this (connectionString, new CreateDatabaseIfNotExists<DependencyGraphContext>())
         {
-            Database.SetInitializer(new CreateDatabaseIfNotExists<DependencyGraphContext>());        
+            System.Data.Entity.Database.SetInitializer(new CreateDatabaseIfNotExists<DependencyGraphContext>());        
         }
 
         public DependencyGraphContext(string connectionString, IDatabaseInitializer<DependencyGraphContext> initializer)
                 : base(nameOrConnectionString: connectionString)
         {
-            Database.SetInitializer(initializer);
+            System.Data.Entity.Database.SetInitializer(initializer);
         }
                         
         public DbSet<Module> Modules { get; set; }

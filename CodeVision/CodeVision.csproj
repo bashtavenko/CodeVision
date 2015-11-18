@@ -145,6 +145,11 @@
     <Compile Include="CSharpFileIndexer.cs" />
     <Compile Include="CSharp\Extensions.cs" />
     <Compile Include="CodeVisionConfigurationSection.cs" />
+    <Compile Include="Dependencies\Database\Column.cs" />
+    <Compile Include="Dependencies\Database\Database.cs" />
+    <Compile Include="Dependencies\Database\ForeignKey.cs" />
+    <Compile Include="Dependencies\Database\StoredProcedure.cs" />
+    <Compile Include="Dependencies\Database\Table.cs" />
     <Compile Include="Dependencies\DependencyDirection.cs" />
     <Compile Include="Dependencies\DependencyGraphCollector.cs" />
     <Compile Include="Dependencies\DependencyLevelcs.cs" />
