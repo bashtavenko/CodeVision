@@ -7,7 +7,7 @@ using CodeVision.Web.Controllers;
 using log4net;
 using Ninject;
 using Ninject.Web.Common;
-using CodeVision.CSharp.Semantic;
+using CodeVision.Dependencies;
 using Ninject.Activation;
 
 namespace CodeVision.Web.Common

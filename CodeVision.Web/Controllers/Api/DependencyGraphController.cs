@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
 
-using CodeVision.CSharp.Semantic;
 using AutoMapper;
+using CodeVision.Dependencies;
 
 namespace CodeVision.Web.Controllers.Api
 {

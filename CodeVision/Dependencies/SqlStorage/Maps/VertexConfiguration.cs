@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 
-namespace CodeVision.CSharp.Semantic.SqlStorage.Maps
+namespace CodeVision.Dependencies.SqlStorage.Maps
 {
     public class VertexConfiguration : EntityTypeConfiguration<Vertex>
     {

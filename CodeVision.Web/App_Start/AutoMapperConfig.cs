@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
+using CodeVision.Dependencies;
 using CodeVision.Model;
 
 namespace CodeVision.Web
@@ -24,7 +25,7 @@ namespace CodeVision.Web
             Mapper.CreateMap<ViewModels.SearchHit, ViewModels.Document>()
                 .ForMember(s => s.Name, opt => opt.MapFrom(src => src.FriendlyFileName));
 
-            Mapper.CreateMap<CodeVision.CSharp.Semantic.Module, ViewModels.Module>();
+            Mapper.CreateMap<Module, ViewModels.Module>();
         }
         
         private static List<Model.Offset> MapOffsets(List<ViewModels.SearchOffset> offsets)

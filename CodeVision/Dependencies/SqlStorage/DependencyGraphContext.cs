@@ -1,8 +1,8 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using CodeVision.CSharp.Semantic.SqlStorage.Maps;
+using CodeVision.Dependencies.SqlStorage.Maps;
 
-namespace CodeVision.CSharp.Semantic.SqlStorage
+namespace CodeVision.Dependencies.SqlStorage
 {
     public class DependencyGraphContext : DbContext
     {   

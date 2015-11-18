@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace CodeVision.CSharp.Semantic
+namespace CodeVision.Dependencies
 {
     public class ModuleCollector
     {

@@ -1,4 +1,4 @@
-﻿namespace CodeVision.CSharp.Semantic.SqlStorage
+﻿namespace CodeVision.Dependencies.SqlStorage
 {
     public class Module
     {

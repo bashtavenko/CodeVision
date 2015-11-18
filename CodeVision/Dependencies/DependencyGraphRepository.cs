@@ -1,8 +1,8 @@
 ﻿using System.Linq;
+using CodeVision.Dependencies.SqlStorage;
 using Newtonsoft.Json;
-using CodeVision.CSharp.Semantic.SqlStorage;
 
-namespace CodeVision.CSharp.Semantic
+namespace CodeVision.Dependencies
 {
     public class DependencyGraphRepository
     {
@@ -32,7 +32,7 @@ namespace CodeVision.CSharp.Semantic
                 for (int i = 0; i < jaggedArray.Length; i++)
                 {
                     var json = JsonConvert.SerializeObject(jaggedArray[i]);
-                    ctx.Vertices.Add(new SqlStorage.Vertex { VertexId = i, AdjacencyListJson = json });
+                    ctx.Vertices.Add(new Vertex { VertexId = i, AdjacencyListJson = json });
                 }
                 ctx.SaveChanges();
             }

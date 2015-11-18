@@ -1,4 +1,4 @@
-﻿namespace CodeVision.CSharp.Semantic
+﻿namespace CodeVision.Dependencies
 {
     public enum DependencyDirection
     {

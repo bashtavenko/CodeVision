@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace CodeVision.CSharp.Semantic
+namespace CodeVision.Dependencies
 {
     public class DigraphDfs
     {
-        private bool[] _marked;
+        private readonly bool[] _marked;
         private readonly int _s;
 
         public IEnumerable<int> ReachableVertices

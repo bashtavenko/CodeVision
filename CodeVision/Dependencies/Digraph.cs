@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CodeVision.CSharp.Semantic
+namespace CodeVision.Dependencies
 {
     public class Digraph
     {
@@ -11,7 +11,7 @@ namespace CodeVision.CSharp.Semantic
 
         private HashSet<int>[] _adj;
 
-        const int _initalCapacity = 100;
+        const int InitalCapacity = 100;
 
         public Digraph() : this (null)  
         {            
@@ -19,7 +19,7 @@ namespace CodeVision.CSharp.Semantic
 
         public Digraph(Memento<int[][]> memento)
         {
-            _adj = new HashSet<int>[_initalCapacity];
+            _adj = new HashSet<int>[InitalCapacity];
             if (memento != null)
             {
                 SetMemento(memento);

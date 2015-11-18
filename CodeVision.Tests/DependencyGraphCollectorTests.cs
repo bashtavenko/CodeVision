@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Moq;
 using NUnit.Framework;
-using CodeVision.CSharp.Semantic;
+using CodeVision.Dependencies;
 
 namespace CodeVision.Tests
 {

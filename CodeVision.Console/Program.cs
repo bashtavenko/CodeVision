@@ -1,5 +1,5 @@
 ﻿using System;
-using CodeVision.CSharp.Semantic;
+using CodeVision.Dependencies;
 
 namespace CodeVision.Console
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace CodeVision.CSharp.Semantic
+namespace CodeVision.Dependencies
 {
     public class DependencyGraphCollector
     {

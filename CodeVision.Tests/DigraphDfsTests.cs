@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using CodeVision.CSharp.Semantic;
+using CodeVision.Dependencies;
 
 namespace CodeVision.Tests
 {

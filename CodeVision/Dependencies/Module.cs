@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CodeVision.CSharp.Semantic
+namespace CodeVision.Dependencies
 {
     public class Module
     {
