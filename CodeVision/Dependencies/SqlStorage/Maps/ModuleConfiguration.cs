@@ -9,7 +9,7 @@ namespace CodeVision.Dependencies.SqlStorage.Maps
         {            
             HasKey(h => h.ModuleId);
             Property(p => p.ModuleId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            ToTable("DependencyGraphModule");
+            ToTable("Module");
         }
     }
 }

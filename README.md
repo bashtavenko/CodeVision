@@ -48,3 +48,9 @@ This part of the solution helps answering question of what dependencies a given 
 then added to digraph that is searched through front end. 
 
 Digraph is persisted in SQL database.
+
+
+##Data Dictionary
+Data dictionary is digraph of SQL Server objects (databases, tables, columns and stored procedures.) These objects are discovered from
+live version of SQL Server, addeded to digraph which then is persisted in database. Objects can be searched, but most importantly,
+they can be annotated with custom properties like comments and flags. 

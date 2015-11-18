@@ -6,10 +6,10 @@ namespace CodeVision.Dependencies
     public class Module
     {
         public int? Id { get; set; }
-        public string Name { get; private set; }      
-        public string Version { get; private set; }        
-        public string Description { get; private set; }        
-        public List<Module> References { get; private set; }
+        public string Name { get; }      
+        public string Version { get; }        
+        public string Description { get; }        
+        public List<Module> References { get; }
 
         public Module(string name, string version)
             : this(name, version, null, null)
@@ -58,7 +58,7 @@ namespace CodeVision.Dependencies
 
         private string BuildUniqueKey(string name, string version)
         {
-            return string.Format("{0} {1}", name, version);
+            return $"{name} {version}";
         }
     }
 }

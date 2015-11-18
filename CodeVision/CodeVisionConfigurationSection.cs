@@ -8,33 +8,19 @@ namespace CodeVision
         const string IndexPathProperty = "IndexPath";
         const string ContentRootProperty = "ContentRoot";
         const string DependencyGraphConnectionStringProperty = "DependencyGraphConnectionString";
+        const string TargetDatabaseConnectionStringProperty = "TargetDatabaseConnectionString";
         
         [ConfigurationProperty(IndexPathProperty, IsRequired = true)]
-        public string IndexPath
-        {
-            get
-            {
-                return (string)this[IndexPathProperty];
-            }
-        }
+        public string IndexPath => (string)this[IndexPathProperty];
 
         [ConfigurationProperty(ContentRootProperty, IsRequired = true)]
-        public string ContentRootPath
-        {
-            get
-            {
-                return (string)this[ContentRootProperty];
-            }
-        }
+        public string ContentRootPath => (string)this[ContentRootProperty];
 
         [ConfigurationProperty(DependencyGraphConnectionStringProperty, IsRequired = false)]
-        public string DependencyGraphConnectionString
-        {
-            get
-            {
-                return (string)this[DependencyGraphConnectionStringProperty];
-            }
-        }
+        public string DependencyGraphConnectionString => (string)this[DependencyGraphConnectionStringProperty];
+
+        [ConfigurationProperty(TargetDatabaseConnectionStringProperty, IsRequired = false)]
+        public string TargetDatabaseConnectionString => (string)this[TargetDatabaseConnectionStringProperty];
 
         public static CodeVisionConfigurationSection Load()
         {

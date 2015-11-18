@@ -43,11 +43,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoMapper.Net4">
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -200,11 +198,13 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Common\Converters.cs" />
     <Compile Include="Common\ErrorFilterHelper.cs" />
     <Compile Include="Common\ExceptionFilter.cs" />
     <Compile Include="Common\HtmlHelpers.cs" />
     <Compile Include="Common\Log4NetExceptionLogger.cs" />
     <Compile Include="Common\NinjectDependencyResolver.cs" />
+    <Compile Include="Controllers\Api\DatabaseObjectsGraphController.cs" />
     <Compile Include="Controllers\Api\DependencyGraphController.cs" />
     <Compile Include="Controllers\ContentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -212,6 +212,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\DatabaseObject.cs" />
+    <Compile Include="ViewModels\DatabaseObjectProperty.cs" />
     <Compile Include="ViewModels\Document.cs" />
     <Compile Include="ViewModels\Module.cs" />
     <Compile Include="ViewModels\SearchOffset.cs" />
@@ -219,6 +221,7 @@
     <Compile Include="ViewModels\SearchResult.cs" />
     <Compile Include="ViewModels\SearchResultsPagedList.cs" />
     <Compile Include="Common\WebConfiguration.cs" />
+    <Compile Include="ViewModels\StoredProcedure.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -234,7 +237,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="js\app\app.js" />
     <Content Include="js\app\directives\spinner.js" />
+    <Content Include="js\app\dictionary-controller.js" />
     <Content Include="js\app\graph-controller.js" />
+    <Content Include="js\app\dictionary-service.js" />
     <Content Include="js\app\graph-service.js" />
     <Content Include="parameters.xml" />
     <Content Include="Scripts\angular-mocks.js" />
@@ -302,6 +307,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Content\Details.cshtml" />
     <Content Include="Views\Home\Graph.cshtml" />
+    <Content Include="Views\Home\Dictionary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -351,7 +357,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using CodeVision.Dependencies;
+using CodeVision.Dependencies.Database;
 
 namespace CodeVision.Console
 {
@@ -17,15 +19,22 @@ namespace CodeVision.Console
             try
             {
                 var configFile = CodeVisionConfigurationSection.Load();
-                if (commandLine.SolutionPaths.Count == 0)
+                if (!string.IsNullOrEmpty(commandLine.ContentPath))
                 {
                     var indexer = new Indexer(logger, configFile);
                     indexer.Index(commandLine.ContentPath, commandLine.FoldersToExclude);
                 }
-                else
+                
+                if (commandLine.SolutionPaths != null)
                 {
                     var collector = new DependencyGraphCollector(configFile.DependencyGraphConnectionString, logger);
                     collector.CollectDependencies(commandLine.SolutionPaths);
+                }
+
+                if (commandLine.Databases != null)
+                {
+                    var collector = new DatabaseObjectGraphCollector(configFile.TargetDatabaseConnectionString, configFile.DependencyGraphConnectionString, logger);
+                    collector.CollectDependencies(commandLine.Databases);
                 }
             }
             catch (Exception ex)

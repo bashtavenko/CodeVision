@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace CodeVision.Dependencies
 {
@@ -41,8 +42,14 @@ namespace CodeVision.Dependencies
                     _logger.Log($"Failed to get modules for {Path.GetFileName(solutionPath)} solution - {ex.Message}", ex);
                 }
             }
-            var repository = new DependencyGraphRepository(_connectionString);
-            repository.SaveState(graph);
+
+            if (solutionPaths.Any())
+            {
+                _logger.Log("Saving graph...");
+                var repository = new DependencyGraphRepository(_connectionString);
+                repository.SaveState(graph);
+                _logger.Log("Done.");
+            }
         }
     }
 }

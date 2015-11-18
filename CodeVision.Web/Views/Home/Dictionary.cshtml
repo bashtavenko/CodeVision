@@ -1,0 +1,204 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Data Dictionary";
+}
+
+<style>
+    .form-control-inline {
+        display: inline !important;
+        width: auto !important;
+    }
+
+    input.form-control-inline {
+        display: inline !important;
+        width: 550px !important;
+    }
+
+    input.form-control-short {
+        width: 550px !important;
+    }
+
+    textarea {
+        width: 347px;
+        height: 200px;
+        vertical-align: bottom;
+    }
+</style>
+
+@section JavascriptInHead
+{
+    @Scripts.Render("~/js/app/dictionary-controller.js")
+    @Scripts.Render("~/js/app/dictionary-service.js")
+
+    <script type="text/javascript">
+        graphModule.factory("bootstrappedData", function () {
+            return @Html.Raw(Model);
+        });
+    </script>
+}
+
+<div ng-app="graphModule" ng-controller="DictionaryController">
+    
+    <div class="row">
+        <div class="col-sm-2"><label for="objectInput">Database Object</label></div>
+        <div class="col-sm-8">
+            <input id="objectInput" type="text" ng-model="selectedObject"
+                   typeahead="object as object.fullyQualifiedName for object in getObjectNames($viewValue)"
+                   typeahead-editable="false" typeahead-on-select="onSelected($item, $model, $label)"
+                   placeholder="Type in database.schema.object format" class="form-control form-control-short" autocomplete="off">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-link" ng-click="save()">Save all changes</button>
+        </div>
+    </div>
+    
+    <p></p>
+
+    <!--TODO: <tabset ng-show="selectedObject"> <tab heading="{{selectedObject.name}}"> -->
+
+    <div ng-show="selectedObject">
+        <div class="row">
+            <div class="col-sm-2">
+                <label>Object</label>
+            </div>
+            <div class="col-sm-6">{{selectedObject.name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <label>Object Type</label>
+            </div>
+            <div class="col-sm-6">{{selectedObject.objectTypeName}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <label>Fully Qualifed Name</label>
+            </div>
+            <div class="col-sm-6">{{selectedObject.fullyQualifiedName}}</div>
+        </div>
+
+        <!-- Column -->
+        <div ng-show="selectedObject.objectType == 3">
+            <h3>Properties</h3>
+
+            <div class="panel-footer">
+                <b>Add:</b>
+                <select ng-model="selectedProperty" class="form-control form-control-inline" ng-options="p as p.propertyName for p in properties | orderBy:'propertyType' track by p.propertyType"></select>
+                <button type="button" class="btn btn-primary" ng-click="addProperty()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+                <span class="text-danger">{{addPropertyError}}</span>
+            </div>
+
+            <p></p>
+
+            <div ng-repeat="property in selectedObject.properties">
+                <div class="object-property">
+                    <label>{{property.propertyName}}</label>
+                    <button type="button" title="Remove property" class="btn btn-primary" ng-click="deleteProperty(property.propertyType)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+
+                    <div ng-show="property.propertyType == 2">
+                        <p></p>
+                        <textarea ng-model="property.propertyValue"></textarea>
+                        <button type="button" title="Remove property" class="btn btn-primary" ng-click="updateComment(property)">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+
+            <div ng-show="sprocs.length > 0">
+                <h3>Dependencies</h3>
+                <p><small><em>Stored procedures that use this column</em></small></p>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Stored Procedure</th>
+                            <th>Fully Qualified Name</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="sproc in sprocs">
+                        <td>{{sproc.name}}</td>
+                        <td>{{sproc.fullyQualifiedName}}</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Sproc -->
+        <div ng-show="selectedObject.objectType == 4">
+            <h3>Columns</h3>
+            <p><small><em>Columns that are touched by this stored procedure</em></small></p>
+            <div class="panel-footer">
+                <b>Add:</b>
+                <input type="text" ng-model="selectedColumn"
+                        class="form-control form-control-inline" width="250"
+                        typeahead="object as object.fullyQualifiedName for object in getColumnNames($viewValue)"
+                        typeahead-editable="false" typeahead-on-select="onColumnSelected($item, $model, $label)"
+                        placeholder="Type column name in database.schema.object format" class="form-control" autocomplete="off">
+                <button type="button" class="btn btn-primary" ng-click="addColumn()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+            </div>
+
+            <div ng-repeat="column in selectedSproc.columns">
+                <div class="object-property">
+                    <label>{{column.fullyQualifiedName}}</label>
+                    <button type="button" title="Remove column" class="btn btn-primary" ng-click="deleteColumn(column.id)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div ng-show="selectedObject.objectType == 2">
+            <h3>Related tables</h3>
+
+            <div class="row">
+                <label class="col-sm-1 control-label" for="direction">Direction</label>
+                <div class="col-sm-5">
+                    <div>
+                        <input type="radio" id="direction" ng-model="direction" value="0" checked="checked" ng-change="getTableDependencies()" /> Downstream (dependent tables)
+                    </div>
+                    <div>
+                        <input type="radio" ng-model="direction" value="1" ng-change="getTableDependencies()" /> Upstream (what tables depend on this table)
+                    </div>
+                </div>
+
+                <label for="levels" class="col-sm-1 control-label">Levels</label>
+                <div class="col-sm-5">
+                    <div>
+                        <input type="radio" id="levels" ng-model="levels" value="1" checked="checked" ng-change="getTableDependencies()" /> Everything
+                    </div>
+                    <div>
+                        <input type="radio" ng-model="levels" value="0" ng-change="getTableDependencies()" /> One hop (direct only)
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+
+            <table ng-show="objects.length > 0" class="table">
+                <thead>
+                <tr>
+                    <th>Table</th>
+                    <th>Fully Qualified Name</th>
+                </tr>
+                </thead>
+                <tr ng-repeat="object in objects">
+                    <td>{{object.name}}</td>
+                    <td>{{object.fullyQualifiedName}}</td>
+                </tr>
+            </table>
+
+            <p ng-show="objects.length == 0"><strong>No related tables</strong></p>
+        </div>
+    </div>
+</div>

@@ -21,8 +21,11 @@ namespace CodeVision.Console
         [OptionList('e', "exclude", Required = false, HelpText = "Colon(:) separated folders within content path to exclude from indexing", MutuallyExclusiveSet = "index")]
         public List<string> FoldersToExclude { get; set; }
 
-        [OptionList('s', "solutions", Required = false, HelpText = "Colon(:) separated absolute path to the solutions for dependency graph", MutuallyExclusiveSet = "dependency")]
+        [OptionList('s', "solutions", Required = false, HelpText = "Colon(:) separated absolute path to the solutions for module dependency graph", MutuallyExclusiveSet = "ModuleGraph")]
         public List<string> SolutionPaths { get; set; }
+
+        [OptionList('d', "databases", Required = false, HelpText = "Colon(:) separated database names for database dependency graph", MutuallyExclusiveSet = "DatabseGraph")]
+        public List<string> Databases { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }

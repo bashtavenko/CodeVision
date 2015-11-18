@@ -3,13 +3,14 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace CodeVision.Dependencies.SqlStorage.Maps
 {
-    public class VertexConfiguration : EntityTypeConfiguration<Vertex>
+    public class ModuleVertexConfiguration : EntityTypeConfiguration<ModuleVertex>
     {
-        public VertexConfiguration()
+        public ModuleVertexConfiguration()
         {            
             HasKey(h => h.VertexId);
             Property(p => p.VertexId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            ToTable("DependencyGraph");
+            Property(p => p.AdjacencyListJson).IsUnicode(false);
+            ToTable("ModulesGraph");
         }
     }
 }

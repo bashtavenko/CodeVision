@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using CodeVision.Dependencies.SqlStorage;
 using CodeVision.Model;
 using CodeVision.Web.Common;
 using CodeVision.Web.ViewModels;
 using log4net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace CodeVision.Web.Controllers
 {
@@ -64,12 +68,22 @@ namespace CodeVision.Web.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Help()
+        public ActionResult Graph()
         {
             return View();
         }
 
-        public ActionResult Graph()
+        public ActionResult Dictionary()
+        {
+            var list = Enum.GetValues(typeof(DatabaseObjectPropertyType)).Cast<DatabaseObjectPropertyType>().ToList();
+            var properties = Mapper.Map<List<ViewModels.DatabaseObjectProperty>>(list);
+            var bootrsrapData = new {Properties = properties};
+            var jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var json = JsonConvert.SerializeObject(bootrsrapData, Formatting.None, jsonSettings);
+            return View((object)json);
+        }
+
+        public ActionResult Help()
         {
             return View();
         }

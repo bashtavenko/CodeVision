@@ -2,9 +2,15 @@
     ViewBag.Title = "Help";
 }
 
-<h1>How to search</h1>
+<h1>Help Topics</h1>
+<a href="#CodeSearch">Code Search</a><br/>
+<a href="#DependencyGraph">Dependency Graph</a><br/>
+<a href="#DataDictionary">Data Dictionary</a><br />
 
-<h2>Basics</h2>
+<h2>Code Search</h2>
+<a id="CodeSearch"></a>
+
+<h3>Basics</h3>
 Simply typing the word and clicking search button is often a good start. Surrond multiple words with double quotes, for example
 <blockquote>"Licensed to the Apache Software Foundation"</blockquote>. Boolean operators <mark>AND</mark>, <mark>OR</mark>, <mark>NOT</mark> and parenthesis
 are supported:
@@ -24,7 +30,7 @@ Use <mark>*</mark>, <mark>?</mark> for wildcard searches, for example:
 
 In these types of searches the content sources are treated as text and often produce quite a bit of hits.
 
-<h2>Beyond Basics</h2>
+<h4>Beyond Basics</h4>
 Search expression consists of <em>field</em> and <em>term</em> separated by colon (<mark>:</mark>), for example <mark>content:lucene</mark>. If field is ommitted,
 the default field of <mark>content</mark> is used. These are currently supported search fields:
 
@@ -77,3 +83,17 @@ the default field of <mark>content</mark> is used. These are currently supported
 </table>
 
 See Apache Lucene <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html">documentation</a> for more details.
+
+<h2>Dependency Graph</h2>
+<a id="DependencyGraph"></a>
+
+Dependency graph contains modules (dlls or exe) which were discovered during build, analysis and data collection of projects.
+Modules can be search upstream and downstream. Dependency graph can also be used to track Nuget package runtime dependencies
+since Nuget package is a contrainer and delivery mechanism of modules.
+
+
+<h2>Data Dictionary</h2>
+<a id="DataDictionary"></a>
+
+Data dictionary is a collection of SQL Server objects which are tables, columns and stored procedures. These objects were discovered
+from live version of SQL Server. Each object can be annotated with custom properties.

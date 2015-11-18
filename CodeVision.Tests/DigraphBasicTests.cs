@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using CodeVision.Dependencies;
 
 namespace CodeVision.Tests
@@ -76,6 +77,32 @@ namespace CodeVision.Tests
         }
 
         [Test]
+        public void Digraph_VertexWithGap()
+        {
+            var adj = new HashSet<int>[5];
+            
+            var digraph = new Digraph();
+            digraph.AddVertex(101);
+
+            // That is rather strange, we have 101 phantom vertices
+            Assert.That(digraph.V, Is.EqualTo(102)); 
+            var list = digraph.GetAdjList(0);
+            Assert.IsEmpty(list);
+        }
+
+        [Test]
+        public void Digraph_Memento_FromGraphWithGaps()
+        {
+            var digraph = new Digraph();
+            digraph.AddVertex(1);
+            int[][] adjacencyList = digraph.CreateMemento().State;
+
+            Assert.That(adjacencyList.Length, Is.EqualTo(2));
+            Assert.IsEmpty(adjacencyList[0]);
+            Assert.IsEmpty(adjacencyList[1]);
+        }
+
+        [Test]
         public void Digraph_Dups()
         {
             var digraph = new Digraph();
@@ -89,6 +116,23 @@ namespace CodeVision.Tests
             digraph.AddEdge(0, 2);
             Assert.That(digraph.E, Is.EqualTo(2));
             Assert.That(digraph.GetAdjList(0).Count, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Digraph_RemoveEdge()
+        {
+            var digraph = new Digraph();
+            digraph.AddVertex(0);
+            digraph.AddVertex(1);
+            digraph.AddVertex(2);
+            digraph.AddEdge(0, 1);
+            digraph.AddEdge(0, 2);
+
+            digraph.RemoveEdge(0, 1);
+
+            Assert.That(digraph.V, Is.EqualTo(3));
+            Assert.That(digraph.E, Is.EqualTo(1));
+            Assert.That(digraph.GetAdjList(0).Count(), Is.EqualTo(1));
         }
     }        
 }

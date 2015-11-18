@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
-using CodeVision.Dependencies;
+using CodeVision.Dependencies.Database;
+using CodeVision.Dependencies.SqlStorage;
 using CodeVision.Model;
+using DatabaseObject = CodeVision.Dependencies.Database.DatabaseObject;
+using DatabaseObjectProperty = CodeVision.Web.ViewModels.DatabaseObjectProperty;
+using Module = CodeVision.Dependencies.Module;
 
 namespace CodeVision.Web
 {
@@ -26,6 +31,13 @@ namespace CodeVision.Web
                 .ForMember(s => s.Name, opt => opt.MapFrom(src => src.FriendlyFileName));
 
             Mapper.CreateMap<Module, ViewModels.Module>();
+
+            Mapper.CreateMap<DatabaseObject, ViewModels.DatabaseObject>();
+            Mapper.CreateMap<ViewModels.DatabaseObject, DatabaseObject>();
+
+            Mapper.CreateMap<ObjectProperty, ViewModels.DatabaseObjectProperty>().ConvertUsing<ObjectPropertyTypeConverter>();
+            Mapper.CreateMap<ViewModels.DatabaseObjectProperty, ObjectProperty>().ConvertUsing<DatabaseObjectPropertyTypeConverter>();
+            Mapper.CreateMap<DatabaseObjectPropertyType, ViewModels.DatabaseObjectProperty>().ConvertUsing<DatabaseObjectPropertyTypeConverter2>();
         }
         
         private static List<Model.Offset> MapOffsets(List<ViewModels.SearchOffset> offsets)
@@ -48,6 +60,72 @@ namespace CodeVision.Web
                     default:
                         return "language-markup";
                 }
+            }
+        }
+
+        private class ObjectPropertyTypeConverter :  ITypeConverter<ObjectProperty, ViewModels.DatabaseObjectProperty>
+        {
+            public ViewModels.DatabaseObjectProperty Convert(ResolutionContext context)
+            {
+                var source = context.SourceValue as ObjectProperty;
+                var result = new ViewModels.DatabaseObjectProperty();
+
+                if (source is RelevantToFinancialReportingProperty)
+                {
+                    result.PropertyType = DatabaseObjectPropertyType.RelevantToFinancialReporting;
+                }
+
+                if (source is CommentProperty)
+                {
+                    result.PropertyType = DatabaseObjectPropertyType.Comment;
+                    result.PropertyValue = ((CommentProperty) source).Text;
+                }
+                result.PropertyName = ConvertDatabaseObjectPropertyToString(result.PropertyType);
+
+                return result;
+            }
+        }
+
+        private class DatabaseObjectPropertyTypeConverter : ITypeConverter<ViewModels.DatabaseObjectProperty, ObjectProperty>
+        {
+            public ObjectProperty Convert(ResolutionContext context)
+            {
+                var source = context.SourceValue as ViewModels.DatabaseObjectProperty;
+                switch (source.PropertyType)
+                {
+                    case DatabaseObjectPropertyType.RelevantToFinancialReporting:
+                        return new RelevantToFinancialReportingProperty();
+                    case DatabaseObjectPropertyType.Comment:
+                        return new CommentProperty(source.PropertyValue);
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        private class DatabaseObjectPropertyTypeConverter2 : ITypeConverter<DatabaseObjectPropertyType, ViewModels.DatabaseObjectProperty>
+        {
+            public DatabaseObjectProperty Convert(ResolutionContext context)
+            {
+                var source = (DatabaseObjectPropertyType) context.SourceValue;
+                return new DatabaseObjectProperty
+                {
+                    PropertyType = source,
+                    PropertyName = ConvertDatabaseObjectPropertyToString(source),
+                };
+            }
+        }
+
+        private static string ConvertDatabaseObjectPropertyToString(DatabaseObjectPropertyType source)
+        {
+            switch (source)
+            {
+                case DatabaseObjectPropertyType.RelevantToFinancialReporting:
+                    return "Relevant to Financial Reporting";
+                case DatabaseObjectPropertyType.Comment:
+                    return "Comment";
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }    

@@ -91,6 +91,7 @@ namespace CodeVision.Dependencies
                 .Where(w => w.Name.StartsWith(name, StringComparison.InvariantCultureIgnoreCase))
                 .OrderBy(o => o.Name)
                 .ThenBy(o => o.Version)
+                .Take(10)
                 .ToList();
         }
 

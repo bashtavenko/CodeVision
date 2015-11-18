@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using CodeVision.Web.Controllers;
 using log4net;
 using Ninject;
 using Ninject.Web.Common;
 using CodeVision.Dependencies;
+using CodeVision.Dependencies.Database;
 using Ninject.Activation;
 
 namespace CodeVision.Web.Common
@@ -36,10 +38,12 @@ namespace CodeVision.Web.Common
         {
             kernel.Bind<ILog>().ToMethod(ctx => LogManager.GetLogger(typeof(HomeController)));
             kernel.Bind<IExceptionLogger>().To<Log4NetExceptionLogger>().InRequestScope();            
+            kernel.Bind<DatabaseObjectsGraphRepository>().ToMethod(GetDatabaseObjectsGraphRepository).InRequestScope();
 
             // These are singletons, watch out..
             kernel.Bind<WebConfiguration>().ToMethod(GetWebConfiguration).InSingletonScope();
             kernel.Bind<DependencyGraph>().ToMethod(GetDependencyGraph).InSingletonScope();
+            kernel.Bind<DatabaseObjectsGraph>().ToMethod(GetDatabaseObjectsGraph).InSingletonScope();
         }
 
         private WebConfiguration GetWebConfiguration(IContext context)
@@ -48,16 +52,40 @@ namespace CodeVision.Web.Common
             return configuration;
         }
 
-        private DependencyGraph GetDependencyGraph (IContext context)
+        private DependencyGraph GetDependencyGraph(IContext context)
         {
-            var configuration = GetWebConfiguration(context);
-            var repository = new DependencyGraphRepository(configuration.DependencyGraphConnectionString);
-            if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
-            {
-                throw new ArgumentNullException("Must have DependencyGraphConnectionString in web.config");
-            }
+            var repository = GetDependencyGraphRepository(context);
             var graph = repository.LoadState();
             return graph;
+        }
+
+        private DatabaseObjectsGraph GetDatabaseObjectsGraph(IContext context)
+        {
+            var repository = GetDatabaseObjectsGraphRepository(context);
+            var graph = repository.LoadState();
+            return graph;
+        }
+
+        private DependencyGraphRepository GetDependencyGraphRepository(IContext context)
+        {
+            var configuration = WebConfiguration.Load(new HttpServerUtilityWrapper(HttpContext.Current.Server));
+            if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
+            {
+                throw new ArgumentException("Must have DependencyGraphConnectionString in web.config");
+            }
+            var repository = new DependencyGraphRepository(configuration.DependencyGraphConnectionString);
+            return repository;;
+        }
+
+        private DatabaseObjectsGraphRepository GetDatabaseObjectsGraphRepository(IContext context)
+        {
+            var configuration = WebConfiguration.Load(new HttpServerUtilityWrapper(HttpContext.Current.Server));
+            if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
+            {
+                throw new ArgumentException("Must have DependencyGraphConnectionString in web.config");
+            }
+            var repository = new DatabaseObjectsGraphRepository(configuration.DependencyGraphConnectionString);
+            return repository; ;
         }
     }
 }

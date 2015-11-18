@@ -13,8 +13,8 @@ graphModule.controller("GraphController", function ($scope, graphService, $log) 
             });
     };
 
-    $scope.getDependencies = function () {
-        graphService.getDependencies($scope.selectedModule.id, $scope.direction, $scope.levels)
+    $scope.getTableDependencies = function () {
+        graphService.getTableDependencies($scope.selectedModule.id, $scope.direction, $scope.levels)
             .$promise.then(function (response) {
                 $scope.modules = response;
         });
