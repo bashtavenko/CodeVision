@@ -7,8 +7,9 @@ namespace CodeVision.Dependencies.Database
         public int Id { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
-        public string Path { get; set; } // database.owner.sproc
+        public string FullyQualifiedName { get; set; } // database.owner.sproc
         public string TextBody { get; set; }
+        public string TextHeader { get; set; }
 
         public List<Column> Columns { get; set; }
     }

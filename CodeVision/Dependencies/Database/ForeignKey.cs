@@ -2,7 +2,6 @@
 {
     public class ForeignKey
     {
-        public string ReferencedTable { get; set; }
-        public string ReferencedTableSchema { get; set; }
+        public string FullyQualifiedReferencedTable { get; set; } // database.owner.sproc
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CodeVision.Dependencies.Database
 {
@@ -11,11 +7,17 @@ namespace CodeVision.Dependencies.Database
         public int Id { get; set; }
         public string Name { get; set; }
         public string Owner { get; set; }
-        public string Path { get; set; } // database.owner.table
+        public string FullyQualifiedName { get; set; } // database.owner.table
 
         public List<Column> Columns { get; set; }
         public List<ForeignKey> ForeignKeys { get; set; }
 
         public List<Table> DependentTables { get; set; }
+
+        public Table()
+        {
+            Columns = new List<Column>();
+            ForeignKeys = new List<ForeignKey>();
+        }
     }
 }
