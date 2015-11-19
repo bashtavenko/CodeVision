@@ -36,6 +36,7 @@ namespace CodeVision.Dependencies.Database
         public Database Collect(string databaseName)
         {
             var db = CollectDatabase(databaseName);
+            ResolveTableReferences(db);
             return db;
         }
 
@@ -78,13 +79,29 @@ namespace CodeVision.Dependencies.Database
             return dbToReturn;
         }
 
+        private void ResolveTableReferences(Database db)
+        {
+            foreach (var table in db.Tables)
+            {
+                foreach (var foreignKey in table.ForeignKeys)
+                {
+                    var referringTable = db.Tables.SingleOrDefault(s => s.FullyQualifiedName == foreignKey.FullyQualifiedReferencedTable);
+                    if (referringTable == null)
+                    {
+                        throw new ArgumentException($"Referring table {foreignKey.FullyQualifiedReferencedTable} not found."); // This should be impossible
+                    }
+                    referringTable.DependentTables.Add(table);
+                }
+            }
+        }
+
         private void CreateMaps(ConfigurationStore store)
         {
             store.CreateMap<Microsoft.SqlServer.Management.Smo.Database, Database>()
                 .ForMember(s => s.StoredProcedures, t => t.Ignore()); // We need to exclude system sprocs
 
             store.CreateMap<Microsoft.SqlServer.Management.Smo.Table, Table>()
-                .ForMember(s => s.FullyQualifiedName, t => t.MapFrom(m => $"{m.Parent.Name}.{m.Owner}.{m.Name}"));
+                .ForMember(s => s.FullyQualifiedName, t => t.MapFrom(m => $"{m.Parent.Name}.{m.Schema}.{m.Name}"));
 
             store.CreateMap<Microsoft.SqlServer.Management.Smo.Column, Column>()
                 .ForMember(s => s.FullyQualifiedName, t => t.ResolveUsing<ColumnFulllyQualifiedNameResolver>());
@@ -93,7 +110,7 @@ namespace CodeVision.Dependencies.Database
                 .ForMember(s => s.FullyQualifiedReferencedTable, t => t.MapFrom(m => $"{m.Parent.Parent.Name}.{m.ReferencedTableSchema}.{m.ReferencedTable}"));
 
             store.CreateMap<Microsoft.SqlServer.Management.Smo.StoredProcedure, StoredProcedure>()
-               .ForMember(s => s.FullyQualifiedName, t => t.MapFrom(m => $"{m.Parent.Name}.{m.Owner}.{m.Name}"));
+               .ForMember(s => s.FullyQualifiedName, t => t.MapFrom(m => $"{m.Parent.Name}.{m.Schema}.{m.Name}"));
         }
     }
 
@@ -106,7 +123,7 @@ namespace CodeVision.Dependencies.Database
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            return $"{parentTable.Parent.Name}.{parentTable.Owner}.{parentTable.Name}.{source.Name}";
+            return $"{parentTable.Parent.Name}.{parentTable.Schema}.{parentTable.Name}.{source.Name}";
         }
     }
 }

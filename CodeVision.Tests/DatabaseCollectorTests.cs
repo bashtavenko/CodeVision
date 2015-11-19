@@ -27,6 +27,10 @@ namespace CodeVision.Tests
             var db = _databaseCollector.Collect("AdventureWorks2012");
             Assert.That(db.StoredProcedures.Count, Is.EqualTo(10));
             Assert.That(db.Tables.Count, Is.EqualTo(71));
+
+            var countryRegionTable = db.Tables.Find(f => f.FullyQualifiedName == "AdventureWorks2012.Person.CountryRegion");
+            Assert.IsNotNull(countryRegionTable);
+            Assert.That(countryRegionTable.DependentTables.Count, Is.EqualTo(3));
         }
     }
 }
