@@ -21,6 +21,11 @@ namespace CodeVision.Dependencies
         
         private void Bfs(Digraph g, int s)
         {
+            if (g.V == 0)
+            {
+                return;
+            }
+
             var q = new Queue<int>();
             _marked[s] = true;
             q.Enqueue(s);

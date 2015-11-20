@@ -32,7 +32,7 @@ namespace CodeVision.Dependencies
                 for (int i = 0; i < jaggedArray.Length; i++)
                 {
                     var json = JsonConvert.SerializeObject(jaggedArray[i]);
-                    ctx.Vertices.Add(new Vertex { VertexId = i, AdjacencyListJson = json });
+                    ctx.ModuleVertices.Add(new ModuleVertex { VertexId = i, AdjacencyListJson = json });
                 }
                 ctx.SaveChanges();
             }
@@ -46,10 +46,10 @@ namespace CodeVision.Dependencies
             // Load
             using (var ctx = new DependencyGraphContext(_connectionString))
             {
-                jaggedArray = new int[ctx.Vertices.Count()][];                
+                jaggedArray = new int[ctx.ModuleVertices.Count()][];                
                 for (int i = 0; i < jaggedArray.Length; i++)
                 {
-                    var json = ctx.Vertices.Find(i).AdjacencyListJson;
+                    var json = ctx.ModuleVertices.Find(i).AdjacencyListJson;
                     int[] adjencencyList = JsonConvert.DeserializeObject<int[]>(json);
                     jaggedArray[i] = adjencencyList;                    
                 }

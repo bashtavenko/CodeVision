@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 
 namespace CodeVision.Dependencies.SqlStorage.Maps
 {
-    public class VertexConfiguration : EntityTypeConfiguration<Vertex>
+    public class DatabaseObjectVertexConfiguration : EntityTypeConfiguration<DatabaseObjectVertex>
     {
-        public VertexConfiguration()
+        public DatabaseObjectVertexConfiguration()
         {            
             HasKey(h => h.VertexId);
             Property(p => p.VertexId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            ToTable("DependencyGraph");
+            ToTable("DatabaseObjectGraph");
         }
     }
 }

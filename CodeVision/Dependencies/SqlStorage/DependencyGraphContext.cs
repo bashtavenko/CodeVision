@@ -18,7 +18,13 @@ namespace CodeVision.Dependencies.SqlStorage
         }
                         
         public DbSet<Module> Modules { get; set; }
-        public DbSet<Vertex> Vertices { get; set; }
+        public DbSet<ModuleVertex> ModuleVertices { get; set; }
+        public DbSet<DatabaseObjectVertex> DatabaseObjectVerticesVertices { get; set; }
+
+        public DbSet<DatabaseObjectType> DatabaseObjectTypes { get; set; }
+        public DbSet<DatabaseObjectPropertyType> DatabaseObjectPropertyTypes { get; set; }
+        public DbSet<DatabaseObject> DatabaseObjects { get; set; }
+        public DbSet<DatabaseObjectProperty> DatabaseObjectProperties { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -26,7 +32,9 @@ namespace CodeVision.Dependencies.SqlStorage
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             modelBuilder.Configurations.Add(new ModuleConfiguration());
-            modelBuilder.Configurations.Add(new VertexConfiguration());
+            modelBuilder.Configurations.Add(new ModuleVertexConfiguration());
+
+            modelBuilder.Configurations.Add(new DatabaseObjectVertexConfiguration());
         }
     }
 }

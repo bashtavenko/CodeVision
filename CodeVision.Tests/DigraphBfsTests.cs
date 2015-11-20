@@ -40,5 +40,14 @@ namespace CodeVision.Tests
             bfs = new DigraphBfs(g, 9);
             CollectionAssert.AreEqual(new int[] { 11, 10, 12 }, bfs.Preorder);
         }
+
+        [Test]
+        public void DigraphBfs_EmptyGraph()
+        {
+            var g = new Digraph();
+            g = new Digraph();
+            var bfs = new DigraphBfs(g, 0);
+            Assert.IsEmpty(bfs.Preorder);
+        }
     }
 }
