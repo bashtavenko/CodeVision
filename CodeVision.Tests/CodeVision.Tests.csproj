@@ -157,6 +157,7 @@
     <Compile Include="CSharpSemanticModelTests.cs" />
     <Compile Include="DatabaseCollectorTests.cs" />
     <Compile Include="DatabaseObjectGraphTests.cs" />
+    <Compile Include="DatabaseObjectsGraphRepositoryTests.cs" />
     <Compile Include="DependencyGraphTests.cs" />
     <Compile Include="DigraphBfsTests.cs" />
     <Compile Include="DigraphDfsTests.cs" />

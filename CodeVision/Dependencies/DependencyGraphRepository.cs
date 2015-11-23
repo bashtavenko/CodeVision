@@ -21,8 +21,8 @@ namespace CodeVision.Dependencies
             // Save
             using (var ctx = new DependencyGraphContext(_connectionString))
             {
-                ctx.Database.ExecuteSqlCommand("TRUNCATE TABLE DependencyGraphModule;");
-                ctx.Database.ExecuteSqlCommand("TRUNCATE TABLE DependencyGraph;");
+                ctx.Database.ExecuteSqlCommand("TRUNCATE TABLE ModuleGraphModule;");
+                ctx.Database.ExecuteSqlCommand("TRUNCATE TABLE ModuleGraph;");
 
                 foreach (var module in symbolTable)
                 {

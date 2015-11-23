@@ -2,7 +2,7 @@
 
 namespace CodeVision.Dependencies.SqlStorage
 {
-    public class DatabaseObjectType
+    public class DatabaseObjectTypeLookup
     {
         public int DatabaseObjectTypeId { get; set; }
         public string Name { get; set; }

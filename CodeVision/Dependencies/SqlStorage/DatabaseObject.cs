@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using CodeVision.Dependencies.Database;
 
 namespace CodeVision.Dependencies.SqlStorage
 {
@@ -10,6 +7,12 @@ namespace CodeVision.Dependencies.SqlStorage
     {
         public int DatabaseObjectId { get; set; }
         public string FullyQualifiedName { get; set; }
+        public DatabaseObjectType ObjectType { get; set; }
         public virtual List<DatabaseObjectProperty> Properties { get; set; }
+
+        public DatabaseObject()
+        {
+            Properties = new List<DatabaseObjectProperty>();
+        }
     }
 }

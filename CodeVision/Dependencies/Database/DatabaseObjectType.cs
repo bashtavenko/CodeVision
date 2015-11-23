@@ -2,9 +2,9 @@
 {
     public enum DatabaseObjectType
     {
-        Database,
-        Table,
-        Column,
-        StoredProcedure
+        Database = 1, // These values match database values
+        Table = 2,
+        Column = 3,
+        StoredProcedure = 4
     }
 }

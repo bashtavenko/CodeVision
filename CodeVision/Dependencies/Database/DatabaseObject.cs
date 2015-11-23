@@ -10,11 +10,21 @@ namespace CodeVision.Dependencies.Database
         public List<ObjectProperty> Properties { get; }
 
         public DatabaseObject(DatabaseObjectType objectType, string fullyQualifiedName)
+            : this (objectType, fullyQualifiedName, null)
+        {
+        }
+
+        public DatabaseObject(DatabaseObjectType objectType, string fullyQualifiedName, int? id)
         {
             ObjectType = objectType;
             FullyQualifiedName = fullyQualifiedName;
             Properties = new List<ObjectProperty>();
-            Id = null;
+            Id = id;
+        }
+
+        public override int GetHashCode()
+        {
+            return FullyQualifiedName.GetHashCode();
         }
     }
 }

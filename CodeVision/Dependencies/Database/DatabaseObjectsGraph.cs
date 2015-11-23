@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeVision.Dependencies.Database;
 
-namespace CodeVision.Dependencies
+namespace CodeVision.Dependencies.Database
 {
     public class DatabaseObjectsGraph
     {
@@ -22,7 +21,7 @@ namespace CodeVision.Dependencies
         {
         }
 
-        private DatabaseObjectsGraph(Memento<DatabaseObject[]> memento, Digraph g)
+        public DatabaseObjectsGraph(Memento<DatabaseObject[]> memento, Digraph g)
         {
             _st = new Dictionary<DatabaseObject, int>();
             _keys = new Dictionary<int, DatabaseObject>();

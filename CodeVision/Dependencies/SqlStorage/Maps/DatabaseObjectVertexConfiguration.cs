@@ -9,7 +9,8 @@ namespace CodeVision.Dependencies.SqlStorage.Maps
         {            
             HasKey(h => h.VertexId);
             Property(p => p.VertexId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
-            ToTable("DatabaseObjectGraph");
+            Property(p => p.AdjacencyListJson).IsUnicode(false);
+            ToTable("DatabaseObjectsGraph");
         }
     }
 }

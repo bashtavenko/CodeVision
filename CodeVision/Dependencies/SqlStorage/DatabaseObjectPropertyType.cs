@@ -1,11 +1,8 @@
-using System.Collections.Generic;
-
-namespace CodeVision.Dependencies.SqlStorage
+﻿namespace CodeVision.Dependencies.SqlStorage
 {
-    public class DatabaseObjectPropertyType
+    public enum DatabaseObjectPropertyType
     {
-        public int DatabaseObjectPropertyTypeId { get; set; }
-        public string Name { get; set; }
-        public virtual List<DatabaseObjectProperty> DatabaseObjectProperties { get; set; }
+        RelevantToFinancialReporting = 1,
+        Comment = 2
     }
 }
