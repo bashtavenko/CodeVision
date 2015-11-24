@@ -15,7 +15,7 @@ namespace CodeVision.Dependencies.SqlStorage
         public DependencyGraphContext(string connectionString)
             : base(connectionString)
         {
-            System.Data.Entity.Database.SetInitializer<DependencyGraphContext>(new CreateDatabaseIfNotExists<DependencyGraphContext>());
+            System.Data.Entity.Database.SetInitializer<DependencyGraphContext>(new DependencyGraphCreateDatabaseIfNotExists());
         }
 
         public DependencyGraphContext() 
