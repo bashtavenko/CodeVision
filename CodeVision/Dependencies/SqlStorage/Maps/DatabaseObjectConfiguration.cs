@@ -8,7 +8,7 @@ namespace CodeVision.Dependencies.SqlStorage.Maps
         public DatabaseObjectConfiguration()
         {            
             HasKey(h => h.DatabaseObjectId);
-            Ignore(t => t.ObjectType);
+            Property(t => t.ObjectType).HasColumnName("DatabaseObjectTypeId");
 
             Property(p => p.FullyQualifiedName)
                 .HasMaxLength(500)

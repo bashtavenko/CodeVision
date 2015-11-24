@@ -6,8 +6,8 @@ namespace CodeVision.Dependencies.SqlStorage.Maps
     {
         public DatabaseObjectPropertyConfiguration()
         {            
-            HasKey(h => new {h.DatabaseObjectId, h.DatabaseObjectPropertyTypeId});
-            Ignore(h => h.PropertyType);
+            HasKey(h => new {h.DatabaseObjectId, h.PropertyType});
+            Property(h => h.PropertyType).HasColumnName("DatabaseObjectPropertyTypeId");
             ToTable("DatabaseObjectProperty");
         }
     }

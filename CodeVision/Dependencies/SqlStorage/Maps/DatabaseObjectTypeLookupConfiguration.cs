@@ -7,8 +7,11 @@ namespace CodeVision.Dependencies.SqlStorage.Maps
     {
         public DatabaseObjectTypeLookupConfiguration()
         {            
-            HasKey(h => h.DatabaseObjectTypeId);
-            Property(h => h.DatabaseObjectTypeId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            HasKey(h => h.ObjectType);
+
+            Property(h => h.ObjectType)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)
+                .HasColumnName("DatabaseObjectTypeId");
 
             Property(p => p.Name)
                 .HasMaxLength(100)
