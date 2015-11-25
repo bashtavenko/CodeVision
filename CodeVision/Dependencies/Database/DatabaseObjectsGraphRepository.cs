@@ -35,8 +35,21 @@ namespace CodeVision.Dependencies.Database
 
                 foreach (var databaseObject in symbolTable)
                 {
-                    // TODO: Use DatabaseObject change tracking to figure out what objects to add, delete or update.
-                    ctx.DatabaseObjects.Add(_engine.Map<SqlStorage.DatabaseObject>(databaseObject));
+                    var sqlStorageDatabaseObject = _engine.Map<SqlStorage.DatabaseObject>(databaseObject);
+                    switch (databaseObject.ObjectState)
+                    {
+                        case ObjectState.Added:
+                            ctx.DatabaseObjects.Add(sqlStorageDatabaseObject);
+                            break;
+                        case ObjectState.Modified:
+                            var objectInDatabase = ctx.DatabaseObjects.SingleOrDefault(f => f.FullyQualifiedName == databaseObject.FullyQualifiedName);
+                            if (objectInDatabase == null)
+                            {
+                                throw new ArgumentException(nameof(objectInDatabase));
+                            }
+                            objectInDatabase = sqlStorageDatabaseObject;
+                            break;
+                    }
                 }
 
                 for (int i = 0; i < jaggedArray.Length; i++)
@@ -107,7 +120,7 @@ namespace CodeVision.Dependencies.Database
                 throw new ArgumentException(nameof(context));
             }
 
-            var databaseObject = new DatabaseObject(source.ObjectType, source.FullyQualifiedName);
+            var databaseObject = new DatabaseObject(source.ObjectType, source.FullyQualifiedName, source.DatabaseObjectId);
 
             foreach (var objectProperty in source.Properties)
             {

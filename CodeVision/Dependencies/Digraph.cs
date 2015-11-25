@@ -20,12 +20,22 @@ namespace CodeVision.Dependencies
         public Digraph(Memento<int[][]> memento)
         {
             _adj = new HashSet<int>[InitalCapacity];
+            // We don't want to initialize individual arrays here because
+            // it is done in AddVertexInternal and if we rather do it here, 
+            // we would also need to initiaze those arrays after resizing.
+            // The downside is that adjacency list can be null as opposed to HashSet with zero elements
+            // for the vertices that have gaps (adding verex 10 to an empty graph).
+
             if (memento != null)
             {
                 SetMemento(memento);
             }
         }
 
+        /// <summary>
+        /// Adds vertex with a given index to the graph.
+        /// </summary>
+        /// <param name="v">Vertex index. It can be anything, not neccessarly sequential 0,1,2... but if it is not, graph will have phantom vertices.</param>
         public void AddVertex (int v)
         {            
             AddVertexInternal(v);
@@ -54,14 +64,7 @@ namespace CodeVision.Dependencies
                 throw new ArgumentException(nameof(v));
             }
 
-            if (_adj[v] != null)
-            {
-                return _adj[v].AsEnumerable();
-            }
-            else
-            {
-                return null;
-            }           
+            return _adj[v] ?.AsEnumerable() ?? Enumerable.Empty<int>();
         }
 
         public Digraph Reverse()
@@ -82,7 +85,7 @@ namespace CodeVision.Dependencies
             var jaggedArray = new int[V][];
             for (int i = 0; i < V; i++)
             {
-                jaggedArray[i] = _adj[i].ToArray();
+                jaggedArray[i] = _adj[i]?.ToArray() ?? Enumerable.Empty<int>().ToArray();
             }            
             return new Memento<int[][]>(jaggedArray);
         }

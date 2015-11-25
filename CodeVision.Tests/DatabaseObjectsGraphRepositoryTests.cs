@@ -1,6 +1,10 @@
-﻿using CodeVision.Dependencies;
+﻿using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using CodeVision.Dependencies;
 using CodeVision.Dependencies.Database;
 using CodeVision.Dependencies.SqlStorage;
+using Dapper;
 using NUnit.Framework;
 using DatabaseObject = CodeVision.Dependencies.Database.DatabaseObject;
 
@@ -13,6 +17,7 @@ namespace CodeVision.Tests
         
         private DatabaseObjectsGraphRepository _repository;
         private DatabaseObjectsGraph _g;
+        private IDbConnection _connection;
 
         //       D1
         //  T1   T2  S1   
@@ -30,11 +35,17 @@ namespace CodeVision.Tests
             var configuration = CodeVisionConfigurationSection.Load();
             _connectionString = configuration.DependencyGraphConnectionString;
             _repository = new DatabaseObjectsGraphRepository(_connectionString);
+            _connection = new SqlConnection(_connectionString);
         }
 
         [Test]
-        public void DatabaseObjectsGraphRepository_CanSaveAndLoad()
+        public void DatabaseObjectsGraphRepository_BasicSave()
         {
+            // Arrange
+            _connection.Execute(@"truncate table DatabaseObjectProperty;
+                                  delete from DatabaseObject;");
+
+            // Act 
             var databaseObjects = _repository.GetDatabaseObjects();
             _g = new DatabaseObjectsGraph(new Memento<DatabaseObject[]>(databaseObjects));
 
@@ -54,6 +65,10 @@ namespace CodeVision.Tests
             _D1.Properties.Add(new CommentProperty("Comment"));
 
             _repository.SaveState(_g);
+
+            // Assert
+            Assert.That(_connection.ExecuteScalar("select count(*) from DatabaseObject;"), Is.EqualTo(5));
+            Assert.That(_connection.ExecuteScalar("select count(*) from DatabaseObjectProperty;"), Is.EqualTo(2));
         }
     }
 }

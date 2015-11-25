@@ -2,13 +2,12 @@
 {
     public class CommentProperty : ObjectProperty
     {
-        public string Text { get; set; }
-
-        public override ObjectPropertyType PropertyType => ObjectPropertyType.String;
-
+        public string Text { get; private set; }
+        
         public CommentProperty(string text)
         {
             Text = text;
+            PropertyType = ObjectPropertyType.String;
         }
     }
 }

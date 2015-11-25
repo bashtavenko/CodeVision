@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using CodeVision.Dependencies;
 using CodeVision.Dependencies.Database;
 using NUnit.Framework;
@@ -92,10 +93,13 @@ namespace CodeVision.Tests
             DatabaseObject[] st = memento.State;
             Assert.That(st.Count(), Is.EqualTo(5));
 
-            var anotherGraph = new DatabaseObjectsGraph();
-            anotherGraph.SetMemento(memento);
+            var anotherGraph = new DatabaseObjectsGraph(memento);
             Assert.That(anotherGraph.ObjectsCount, Is.EqualTo(5));
-            // This only tests objects part, and not the graph which is not initialized yet.
+            var anotherSproc = new DatabaseObject(DatabaseObjectType.StoredProcedure, "C1");
+            anotherGraph.AddDependency(_T1, anotherSproc);
+
+            var anotherMemento =  anotherGraph.CreateMemento();
+            int[][] jaggedArray = anotherGraph.Digraph.CreateMemento().State;
         }
 
         [Test]
@@ -108,7 +112,7 @@ namespace CodeVision.Tests
         }
         
         [Test]
-        public void DependencyGraph_OutOfRange()
+        public void DatabaseObjectsGraph_OutOfRange()
         {
             Assert.Throws<ArgumentException>(() => _g.GetDependencies(-1, DependencyDirection.Downstream, DependencyLevel.DirectOnly));
             Assert.Throws<ArgumentException>(() => _g.GetDependencies(100, DependencyDirection.Downstream, DependencyLevel.DirectOnly));

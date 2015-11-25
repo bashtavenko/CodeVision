@@ -2,6 +2,9 @@
 {
     public class RelevantToFinancialReportingProperty : ObjectProperty
     {
-        public override ObjectPropertyType PropertyType => ObjectPropertyType.Flag;
+        public RelevantToFinancialReportingProperty()
+        {
+            PropertyType = ObjectPropertyType.Flag;
+        }
     }
 }

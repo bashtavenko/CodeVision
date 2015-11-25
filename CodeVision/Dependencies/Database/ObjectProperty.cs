@@ -2,6 +2,6 @@
 {
     public abstract class ObjectProperty
     {
-        public virtual ObjectPropertyType PropertyType { get; }
+        public ObjectPropertyType PropertyType { get; protected set; }
     }
 }
