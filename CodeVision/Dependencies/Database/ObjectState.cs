@@ -2,9 +2,8 @@
 {
     public enum ObjectState
     {
-        Added,
-        Deleted,
-        Modified,
+        VertexAdded,
+        PropertiesModified,
         Unchanged
     }
 }

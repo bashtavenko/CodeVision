@@ -115,7 +115,7 @@ namespace CodeVision.Dependencies.Database
             if (!_st.ContainsKey(v))
             {
                 vertexIndex = AddKey(v);
-                v.ObjectState = ObjectState.Added;
+                v.ObjectState = ObjectState.VertexAdded;
             }
             else
             {

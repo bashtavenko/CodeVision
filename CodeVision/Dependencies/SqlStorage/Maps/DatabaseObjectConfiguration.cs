@@ -8,6 +8,7 @@ namespace CodeVision.Dependencies.SqlStorage.Maps
         public DatabaseObjectConfiguration()
         {            
             HasKey(h => h.DatabaseObjectId);
+            Property(t => t.DatabaseObjectId).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             Property(t => t.ObjectType).HasColumnName("DatabaseObjectTypeId");
 
             Property(p => p.FullyQualifiedName)

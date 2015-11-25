@@ -158,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\AnotherCSharpProjectDuplicateTest\Lucene.Net.Memory\HashMapHelperClass.cs" />
+    <Compile Include="ContextSmokeTests.cs" />
     <Compile Include="CSharpSemanticModelTests.cs" />
     <Compile Include="DatabaseCollectorTests.cs" />
     <Compile Include="DatabaseObjectGraphTests.cs" />

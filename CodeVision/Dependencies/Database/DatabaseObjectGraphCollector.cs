@@ -16,8 +16,7 @@ namespace CodeVision.Dependencies.Database
             _repository = new DatabaseObjectsGraphRepository(repositoryConnectionString);
 
             // We want graph with pre-initialized database objects / symbol table because we don't want to overwrite existing objects properties or create duplicated objects.
-            DatabaseObject[] databaseObjects = _repository.GetDatabaseObjects();
-            _graph = new DatabaseObjectsGraph(new Memento<DatabaseObject[]>(databaseObjects));
+            _graph = _repository.LoadState();
 
             _logger = logger;
         }
