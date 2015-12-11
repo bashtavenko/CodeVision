@@ -1,4 +1,4 @@
-﻿var graphModule = angular.module("graphModule", ['ngResource', 'ui.bootstrap'])
+﻿var graphModule = angular.module("graphModule", ['ngResource', 'ui.bootstrap']);
 
 graphModule.config(function ($httpProvider) {
     $httpProvider.interceptors.push('myInterceptor');

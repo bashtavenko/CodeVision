@@ -9,7 +9,7 @@ graphModule.factory("graphService", function ($resource) {
             return $resource("/api/modules", { name: "@name" })
                 .query(params);
         },
-        getTableDependencies (moduleId, direction, level) {
+        getDependencies (moduleId, direction, level) {
             var params = {
                 moduleId: moduleId,
                 direction: direction,

@@ -42,12 +42,13 @@
     
     <div class="row">
         <div class="col-sm-2"><label for="objectInput">Database Object</label></div>
-        <div class="col-sm-8">
+        <div class="col-sm-6">
             <input id="objectInput" type="text" ng-model="selectedObject"
                    typeahead="object as object.fullyQualifiedName for object in getObjectNames($viewValue)"
                    typeahead-editable="false" typeahead-on-select="onSelected($item, $model, $label)"
                    placeholder="Type in database.schema.object format" class="form-control form-control-short" autocomplete="off">
         </div>
+        <div class="col-sm-1"><spinner></spinner></div>
         <div class="col-sm-2">
             <button type="button" class="btn btn-link" ng-click="save()">Save all changes</button>
         </div>
