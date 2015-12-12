@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Configuration;
+using System.Linq;
 using CodeVision.Dependencies.Database;
 using Dapper;
 using NUnit.Framework;
@@ -252,6 +253,14 @@ namespace CodeVision.Tests
             // Assert
             var udpatedComment = Connection.ExecuteScalar("select top(1) PropertyValue from DatabaseObjectProperty") as string;
             Assert.That(udpatedComment, Is.EqualTo(newCommentText));
+        }
+
+        // Load from another database to track performance
+        //[Test]
+        public void DataBaseObjectsGraphRepository_LoadState()
+        {
+            var repository = new DatabaseObjectsGraphRepository(ConfigurationManager.ConnectionStrings["ReadOnlyDatabase"].ToString());
+            DatabaseObjectsGraph graph = repository.LoadState();
         }
     }
 }

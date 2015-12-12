@@ -79,10 +79,11 @@ namespace CodeVision.Dependencies.Database
             // Load
             using (var ctx = new DependencyGraphContext(_connectionString))
             {
-                jaggedArray = new int[ctx.DatabaseObjectVertices.Count()][];                
+                var vertices = ctx.DatabaseObjectVertices.ToList();
+                jaggedArray = new int[vertices.Count()][];                
                 for (int i = 0; i < jaggedArray.Length; i++)
                 {
-                    var json = ctx.DatabaseObjectVertices.Find(i).AdjacencyListJson;
+                    var json = vertices[i].AdjacencyListJson;
                     int[] adjencencyList = JsonConvert.DeserializeObject<int[]>(json);
                     jaggedArray[i] = adjencencyList;                    
                 }
