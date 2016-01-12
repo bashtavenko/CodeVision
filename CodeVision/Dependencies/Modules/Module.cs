@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace CodeVision.Dependencies
+namespace CodeVision.Dependencies.Modules
 {
-    public class Module
+    public class Module : Symbol
     {
-        public int? Id { get; set; }
         public string Name { get; }      
         public string Version { get; }        
         public string Description { get; }        

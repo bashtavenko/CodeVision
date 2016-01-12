@@ -1,39 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CodeVision.Dependencies.SqlStorage;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace CodeVision.Dependencies.Database
 {
-    public class DatabaseObjectsGraph
+    public class DatabaseObjectsGraph : SymbolGraph<DatabaseObject>
     {
-        public Digraph Digraph { get; }
-        public bool IsModified { get; private set; }
-        public int ObjectsCount => _keys.Count;
-
-        private readonly Dictionary<DatabaseObject, int> _st;
-        private readonly Dictionary<int, DatabaseObject> _keys;
-
-        public DatabaseObjectsGraph() : this (null, new Digraph())
+        public int ObjectsCount => Keys.Count;
+        
+        public DatabaseObjectsGraph() 
         {            
         }
 
-        public DatabaseObjectsGraph(Memento<DatabaseObject[]> memento) : this(memento, new Digraph())
+        public DatabaseObjectsGraph(Memento<DatabaseObject[]> memento) : base(memento)
         {
         }
 
-        public DatabaseObjectsGraph(Memento<DatabaseObject[]> memento, Digraph g)
+        public DatabaseObjectsGraph(Memento<DatabaseObject[]> memento, Digraph g) : base (memento, g)
         {
-            _st = new Dictionary<DatabaseObject, int>();
-            _keys = new Dictionary<int, DatabaseObject>();
-
-            if (memento != null)
-            {
-                SetMemento(memento);
-            }
-            Digraph = g;
-            IsModified = false;
         }
         
         public List<DatabaseObject> GetDatabaseObjectsBeginsWith(string name)
@@ -43,7 +27,7 @@ namespace CodeVision.Dependencies.Database
 
         public List<DatabaseObject> GetDatabaseObjectsBeginsWith (string name, DatabaseObjectType[] onlyTheseTypes)
         {
-            IEnumerable<DatabaseObject> items = _st.Keys
+            IEnumerable<DatabaseObject> items = SymbolTable.Keys
                 .Where(w => w.FullyQualifiedName.StartsWith(name, StringComparison.InvariantCultureIgnoreCase));
 
             if (onlyTheseTypes ?.Length > 0)
@@ -61,28 +45,27 @@ namespace CodeVision.Dependencies.Database
         public DatabaseObject GetDatabaseObject(int databaseObjectId)
         {
             EnforceDatabaseObjectId(databaseObjectId);
-            return _keys[databaseObjectId];
+            return Keys[databaseObjectId];
         }
 
         public int AddDatabaseObject(DatabaseObject databaseObject)
         {
-            int vertexIndex = AddVertexInternal(databaseObject);
-            Digraph.AddVertex(vertexIndex);
-            return vertexIndex;
+            UpdateObjectState(databaseObject);
+            return AddSymbol(databaseObject);
         }
 
         public void AddDependency(int fromObjectId, int toObjectId)
         {
             EnforceDatabaseObjectId(fromObjectId);
             EnforceDatabaseObjectId(toObjectId);
-            AddDependency(_keys[fromObjectId], _keys[toObjectId]);
+            AddDependency(Keys[fromObjectId], Keys[toObjectId]);
         }
-        
+
         public void AddDependency(DatabaseObject fromObject, DatabaseObject toObject)
         {
-            int vi = AddVertexInternal(fromObject);
-            int wi = AddVertexInternal(toObject);
-            Digraph.AddEdge(vi, wi);
+            UpdateObjectState(fromObject);
+            UpdateObjectState(toObject);
+            AddEdge(fromObject, toObject);
             // Since graph is overwritten completely in repository, there's no need to set object state
             // which supports adding new objects to a previously loaded graph.
         }
@@ -104,7 +87,7 @@ namespace CodeVision.Dependencies.Database
             }
 
             EnforceDatabaseObjectId(databaseObjectId);
-            DatabaseObject databaseObject = _keys[databaseObjectId];
+            DatabaseObject databaseObject = Keys[databaseObjectId];
 
             if (databaseObject.Properties.Contains(property))
             {
@@ -118,7 +101,7 @@ namespace CodeVision.Dependencies.Database
         public void RemoveProperty(int databaseObjectId, ObjectProperty property)
         {
             EnforceDatabaseObjectId(databaseObjectId);
-            DatabaseObject databaseObject = _keys[databaseObjectId];
+            DatabaseObject databaseObject = Keys[databaseObjectId];
             RemoveProperty(databaseObject, property);
         }
 
@@ -148,11 +131,11 @@ namespace CodeVision.Dependencies.Database
         {
             EnforceDatabaseObjectId(storedProcedureId);
             EnforceDatabaseObjectId(columnId);
-            if (_keys[storedProcedureId].ObjectType != DatabaseObjectType.StoredProcedure)
+            if (Keys[storedProcedureId].ObjectType != DatabaseObjectType.StoredProcedure)
             {
                 throw new ArgumentException(nameof(storedProcedureId));
             }
-            if (_keys[columnId].ObjectType != DatabaseObjectType.Column)
+            if (Keys[columnId].ObjectType != DatabaseObjectType.Column)
             {
                 throw new ArgumentException(nameof(storedProcedureId));
             }
@@ -162,7 +145,7 @@ namespace CodeVision.Dependencies.Database
         public void UpdatedCommentText (int databaseObjectId, string text)
         {
             EnforceDatabaseObjectId(databaseObjectId);
-            DatabaseObject databaseObject = _keys[databaseObjectId];
+            DatabaseObject databaseObject = Keys[databaseObjectId];
             UpdatedCommentText(databaseObject, text);
         }
 
@@ -190,50 +173,25 @@ namespace CodeVision.Dependencies.Database
         public List<DatabaseObject> GetDependencies(int databaseObjectId, DependencyDirection direction, DependencyLevel level, DatabaseObjectType? objectsType)
         {
             EnforceDatabaseObjectId(databaseObjectId);
-            DatabaseObject databaseObject = _keys[databaseObjectId];
+            DatabaseObject databaseObject = Keys[databaseObjectId];
             return GetDependencies(databaseObject, direction, level, objectsType);
         }
 
-
         public List<DatabaseObject> GetDependencies (DatabaseObject databaseObject, DependencyDirection direction, DependencyLevel level, DatabaseObjectType? objectsType = null)
         {
-            if (!_st.ContainsKey(databaseObject))
+            if (!SymbolTable.ContainsKey(databaseObject))
             {
                 throw new ArgumentException(nameof(databaseObject));
             }
 
-            var items = GetDependencies(_st[databaseObject], direction, level);
+            var items = GetDependencies(SymbolTable[databaseObject], direction, level);
             return objectsType == null ? items : items.Where(w => w.ObjectType == objectsType).ToList();
-        }
-
-        public List<DatabaseObject> GetDependencies (int databaseObjectId, DependencyDirection direction, DependencyLevel level)
-        {
-            EnforceDatabaseObjectId(databaseObjectId);
-            Digraph g = direction == DependencyDirection.Downstream ? Digraph : Digraph.Reverse();
-            IEnumerable<int> moduleIndices;
-            if (level == DependencyLevel.DirectOnly)
-            {
-                // That's easy
-                moduleIndices = g.GetAdjList(databaseObjectId);
-            }
-            else
-            {
-                // Run BFS to find out
-                var bfs = new DigraphBfs(g, databaseObjectId);
-                moduleIndices = bfs.Preorder;
-            }
-
-            List<DatabaseObject> databaseObjects = moduleIndices
-                .Select(i => _keys[i])
-                .ToList();
-
-            return databaseObjects;
         }
 
         public List<DatabaseObject> GetColumnsForStoredProcedure(int databaseObjectId)
         {
             EnforceDatabaseObjectId(databaseObjectId);
-            if (_keys[databaseObjectId].ObjectType != DatabaseObjectType.StoredProcedure)
+            if (Keys[databaseObjectId].ObjectType != DatabaseObjectType.StoredProcedure)
             {
                 throw new ArgumentOutOfRangeException(nameof(databaseObjectId));
             }
@@ -241,54 +199,19 @@ namespace CodeVision.Dependencies.Database
             return items.Where(w => w.ObjectType == DatabaseObjectType.Column).ToList();
         }
 
-        public Memento<DatabaseObject[]> CreateMemento()
-        {            
-            return new Memento<DatabaseObject[]>(_st.Keys.ToArray());
-        }
-
-        public void SetMemento(Memento<DatabaseObject[]> memento)
-        {   
-            if (memento == null)
-            {
-                throw new ArgumentNullException(nameof(memento));
-            }
-                     
-            foreach (DatabaseObject databaseObject in memento.State)
-            {
-                AddKey(databaseObject);
-            }
-        }
-
-        private int AddVertexInternal (DatabaseObject v)
-        {
-            int vertexIndex;
-            if (!_st.ContainsKey(v))
-            {
-                vertexIndex = AddKey(v);
-                v.ObjectState = ObjectState.VertexAdded;
-            }
-            else
-            {
-                vertexIndex = _st[v];
-            }
-            return vertexIndex;
-        }
-
-        private int AddKey(DatabaseObject v)
-        {
-            int vertexIndex = _st.Count;
-            v.Id = vertexIndex;
-            _st.Add(v, vertexIndex);
-            _keys.Add(vertexIndex, v);
-            IsModified = true;
-            return vertexIndex;
-        }
-
         private void EnforceDatabaseObjectId(int databaseObjectId)
         {
-            if (databaseObjectId < 0 || databaseObjectId >= _keys.Count)
+            if (databaseObjectId < 0 || databaseObjectId >= Keys.Count)
             {
                 throw new ArgumentException(nameof(databaseObjectId));
+            }
+        }
+
+        private void UpdateObjectState(DatabaseObject databaseObject)
+        {
+            if (!SymbolTable.ContainsKey(databaseObject))
+            {
+                databaseObject.ObjectState = ObjectState.VertexAdded;
             }
         }
     }

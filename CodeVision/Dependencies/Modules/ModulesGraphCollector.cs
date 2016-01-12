@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace CodeVision.Dependencies
+namespace CodeVision.Dependencies.Modules
 {
-    public class DependencyGraphCollector
+    public class ModulesGraphCollector
     {
         private readonly string _connectionString;
         private readonly ILogger _logger;
 
-        public DependencyGraphCollector(string connectionString, ILogger logger)
+        public ModulesGraphCollector(string connectionString, ILogger logger)
         {
             _connectionString = connectionString;
             _logger = logger;
@@ -18,7 +18,7 @@ namespace CodeVision.Dependencies
 
         public void CollectDependencies (List<string> solutionPaths)
         {
-            var graph = new DependencyGraph();
+            var graph = new ModulesGraph();
             var collector = new ModuleCollector();
 
             foreach (var solutionPath in solutionPaths)
@@ -46,7 +46,7 @@ namespace CodeVision.Dependencies
             if (solutionPaths.Any())
             {
                 _logger.Log("Saving graph...");
-                var repository = new DependencyGraphRepository(_connectionString);
+                var repository = new ModulesGraphRepository(_connectionString);
                 repository.SaveState(graph);
                 _logger.Log("Done.");
             }

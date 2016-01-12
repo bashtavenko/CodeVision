@@ -2,6 +2,7 @@
 using System.Linq;
 using CodeVision.Dependencies;
 using CodeVision.Dependencies.Database;
+using CodeVision.Dependencies.Modules;
 
 namespace CodeVision.Console
 {
@@ -27,7 +28,7 @@ namespace CodeVision.Console
                 
                 if (commandLine.SolutionPaths != null)
                 {
-                    var collector = new DependencyGraphCollector(configFile.DependencyGraphConnectionString, logger);
+                    var collector = new ModulesGraphCollector(configFile.DependencyGraphConnectionString, logger);
                     collector.CollectDependencies(commandLine.SolutionPaths);
                 }
 

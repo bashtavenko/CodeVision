@@ -10,6 +10,7 @@ using Ninject;
 using Ninject.Web.Common;
 using CodeVision.Dependencies;
 using CodeVision.Dependencies.Database;
+using CodeVision.Dependencies.Modules;
 using Ninject.Activation;
 
 namespace CodeVision.Web.Common
@@ -42,7 +43,7 @@ namespace CodeVision.Web.Common
 
             // These are singletons, watch out..
             kernel.Bind<WebConfiguration>().ToMethod(GetWebConfiguration).InSingletonScope();
-            kernel.Bind<DependencyGraph>().ToMethod(GetDependencyGraph).InSingletonScope();
+            kernel.Bind<ModulesGraph>().ToMethod(GetDependencyGraph).InSingletonScope();
             kernel.Bind<DatabaseObjectsGraph>().ToMethod(GetDatabaseObjectsGraph).InSingletonScope();
         }
 
@@ -52,7 +53,7 @@ namespace CodeVision.Web.Common
             return configuration;
         }
 
-        private DependencyGraph GetDependencyGraph(IContext context)
+        private ModulesGraph GetDependencyGraph(IContext context)
         {
             var repository = GetDependencyGraphRepository(context);
             var graph = repository.LoadState();
@@ -66,14 +67,14 @@ namespace CodeVision.Web.Common
             return graph;
         }
 
-        private DependencyGraphRepository GetDependencyGraphRepository(IContext context)
+        private ModulesGraphRepository GetDependencyGraphRepository(IContext context)
         {
             var configuration = WebConfiguration.Load(new HttpServerUtilityWrapper(HttpContext.Current.Server));
             if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
             {
                 throw new ArgumentException("Must have DependencyGraphConnectionString in web.config");
             }
-            var repository = new DependencyGraphRepository(configuration.DependencyGraphConnectionString);
+            var repository = new ModulesGraphRepository(configuration.DependencyGraphConnectionString);
             return repository;;
         }
 

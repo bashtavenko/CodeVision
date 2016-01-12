@@ -3,14 +3,15 @@ using System.Web.Http;
 
 using AutoMapper;
 using CodeVision.Dependencies;
+using CodeVision.Dependencies.Modules;
 
 namespace CodeVision.Web.Controllers.Api
 {
     public class DependencyGraphController : ApiController
     {
-        private readonly DependencyGraph _graph;        
+        private readonly ModulesGraph _graph;        
 
-        public DependencyGraphController(DependencyGraph graph)
+        public DependencyGraphController(ModulesGraph graph)
         {
             _graph = graph;
         }

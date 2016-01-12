@@ -2,18 +2,18 @@
 using CodeVision.Dependencies.SqlStorage;
 using Newtonsoft.Json;
 
-namespace CodeVision.Dependencies
+namespace CodeVision.Dependencies.Modules
 {
-    public class DependencyGraphRepository
+    public class ModulesGraphRepository
     {
         private readonly string _connectionString;
 
-        public DependencyGraphRepository(string connectionString)
+        public ModulesGraphRepository(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public void SaveState(DependencyGraph dg)
+        public void SaveState(ModulesGraph dg)
         {
             Module[] symbolTable = dg.CreateMemento().State;
             int[][] jaggedArray = dg.Digraph.CreateMemento().State;
@@ -38,7 +38,7 @@ namespace CodeVision.Dependencies
             }
         }
 
-        public DependencyGraph LoadState()
+        public ModulesGraph LoadState()
         {
             int[][] jaggedArray;
             Module[] symbolTable;
@@ -60,7 +60,7 @@ namespace CodeVision.Dependencies
             }
             
             var g = new Digraph(new Memento<int[][]>(jaggedArray));
-            var dg = new DependencyGraph(new Memento<Module[]>(symbolTable), g);
+            var dg = new ModulesGraph(new Memento<Module[]>(symbolTable), g);
             return dg;
         }
     }

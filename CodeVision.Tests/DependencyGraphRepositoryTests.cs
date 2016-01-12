@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 using CodeVision.Dependencies;
+using CodeVision.Dependencies.Modules;
 
 namespace CodeVision.Tests
 {
@@ -9,20 +10,20 @@ namespace CodeVision.Tests
     {
         private string _connectionString;
         
-        private DependencyGraphRepository _repository;
-        private DependencyGraph _g;
+        private ModulesGraphRepository _repository;
+        private ModulesGraph _g;
 
         [TestFixtureSetUp]
         public void Setup()
         {
             var configuration = CodeVisionConfigurationSection.Load();
             _connectionString = configuration.DependencyGraphConnectionString;
-            _repository = new DependencyGraphRepository(_connectionString);
+            _repository = new ModulesGraphRepository(_connectionString);
 
             //       A
             //  B1   B2  B3   
             //  C1    
-            _g = new DependencyGraph();
+            _g = new ModulesGraph();
             var moduleA = new Module("A", "1");
             var moduleB1 = new Module("B1", "1");
             var moduleB2 = new Module("B2", "1");

@@ -6,7 +6,7 @@ using CodeVision.Dependencies.SqlStorage;
 using CodeVision.Model;
 using DatabaseObject = CodeVision.Dependencies.Database.DatabaseObject;
 using DatabaseObjectProperty = CodeVision.Web.ViewModels.DatabaseObjectProperty;
-using Module = CodeVision.Dependencies.Module;
+using Module = CodeVision.Dependencies.Modules.Module;
 
 namespace CodeVision.Web
 {

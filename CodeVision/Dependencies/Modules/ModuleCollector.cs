@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis.MSBuild;
 
-namespace CodeVision.Dependencies
+namespace CodeVision.Dependencies.Modules
 {
     public class ModuleCollector
     {

@@ -170,7 +170,7 @@
     <Compile Include="DatabaseObjectsGraphCollectorTests.cs" />
     <Compile Include="DatabaseObjectsGraphRepositoryTests.cs" />
     <Compile Include="DatabaseTest.cs" />
-    <Compile Include="DependencyGraphTests.cs" />
+    <Compile Include="ModulesGraphTests.cs" />
     <Compile Include="DigraphBfsTests.cs" />
     <Compile Include="DigraphDfsTests.cs" />
     <Compile Include="DigraphBasicTests.cs" />

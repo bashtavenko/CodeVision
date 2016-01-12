@@ -2,9 +2,8 @@
 
 namespace CodeVision.Dependencies.Database
 {
-    public class DatabaseObject
+    public class DatabaseObject : Symbol
     {
-        public int? Id { get; set; }
         public string FullyQualifiedName { get; }
         public DatabaseObjectType ObjectType { get; }
         public List<ObjectProperty> Properties { get; }
