@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
-using CodeVision.Dependencies;
 using CodeVision.Dependencies.Database;
 using CodeVision.Dependencies.Modules;
+using CodeVision.Dependencies.Nugets;
 
 namespace CodeVision.Console
 {
@@ -28,8 +27,8 @@ namespace CodeVision.Console
                 
                 if (commandLine.SolutionPaths != null)
                 {
-                    var collector = new ModulesGraphCollector(configFile.DependencyGraphConnectionString, logger);
-                    collector.CollectDependencies(commandLine.SolutionPaths);
+                    new ModulesGraphCollector(configFile.DependencyGraphConnectionString, logger).CollectDependencies(commandLine.SolutionPaths);
+                    new NugetCollector(configFile.DependencyGraphConnectionString, logger).CollectNugets(commandLine.SolutionPaths);
                 }
 
                 if (commandLine.Databases != null)

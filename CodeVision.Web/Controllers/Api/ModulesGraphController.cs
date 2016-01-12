@@ -7,11 +7,11 @@ using CodeVision.Dependencies.Modules;
 
 namespace CodeVision.Web.Controllers.Api
 {
-    public class DependencyGraphController : ApiController
+    public class ModulesGraphController : ApiController
     {
         private readonly ModulesGraph _graph;        
 
-        public DependencyGraphController(ModulesGraph graph)
+        public ModulesGraphController(ModulesGraph graph)
         {
             _graph = graph;
         }

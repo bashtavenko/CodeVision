@@ -11,6 +11,7 @@ using Ninject.Web.Common;
 using CodeVision.Dependencies;
 using CodeVision.Dependencies.Database;
 using CodeVision.Dependencies.Modules;
+using CodeVision.Dependencies.Nugets;
 using Ninject.Activation;
 
 namespace CodeVision.Web.Common
@@ -40,6 +41,7 @@ namespace CodeVision.Web.Common
             kernel.Bind<ILog>().ToMethod(ctx => LogManager.GetLogger(typeof(HomeController)));
             kernel.Bind<IExceptionLogger>().To<Log4NetExceptionLogger>().InRequestScope();            
             kernel.Bind<DatabaseObjectsGraphRepository>().ToMethod(GetDatabaseObjectsGraphRepository).InRequestScope();
+            kernel.Bind<ProjectRepository>().ToMethod(GetProjectRepository).InRequestScope();
 
             // These are singletons, watch out..
             kernel.Bind<WebConfiguration>().ToMethod(GetWebConfiguration).InSingletonScope();
@@ -69,24 +71,27 @@ namespace CodeVision.Web.Common
 
         private ModulesGraphRepository GetDependencyGraphRepository(IContext context)
         {
-            var configuration = WebConfiguration.Load(new HttpServerUtilityWrapper(HttpContext.Current.Server));
-            if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
-            {
-                throw new ArgumentException("Must have DependencyGraphConnectionString in web.config");
-            }
-            var repository = new ModulesGraphRepository(configuration.DependencyGraphConnectionString);
-            return repository;;
+            return new ModulesGraphRepository(GetConnectionString());
         }
 
         private DatabaseObjectsGraphRepository GetDatabaseObjectsGraphRepository(IContext context)
+        {
+            return new DatabaseObjectsGraphRepository(GetConnectionString());
+        }
+
+        private ProjectRepository GetProjectRepository(IContext context)
+        {
+            return new ProjectRepository(GetConnectionString());
+        }
+
+        private static string GetConnectionString()
         {
             var configuration = WebConfiguration.Load(new HttpServerUtilityWrapper(HttpContext.Current.Server));
             if (string.IsNullOrEmpty(configuration.DependencyGraphConnectionString))
             {
                 throw new ArgumentException("Must have DependencyGraphConnectionString in web.config");
             }
-            var repository = new DatabaseObjectsGraphRepository(configuration.DependencyGraphConnectionString);
-            return repository; ;
+            return configuration.DependencyGraphConnectionString;
         }
     }
 }

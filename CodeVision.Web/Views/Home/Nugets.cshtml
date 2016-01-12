@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Nugets";
+}
+
+@section JavascriptInHead
+{
+    @Scripts.Render("~/js/app/nuget-controller.js")
+    @Scripts.Render("~/js/app/nuget-service.js")
+}
+
+<div ng-app="graphModule" ng-controller="NugetController">
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label for="packageInput" class="col-sm-1 control-label">Package</label>
+            <div class="col-sm-5">
+                <input id="packageInput" autocomplete="off" type="text" ng-model="selectedPackage"
+                       typeahead="package as package.name + ' ' + package.version for package in getPackages($viewValue)"
+                       typeahead-editable="false" typeahead-on-select="onSelected()"
+                       placeholder="Start typing nuget package name here" class="form-control">
+            </div>
+        </div>
+    </form>
+    
+    <div class="row" ng-show="selectedPackage">
+        <div class="col-sm-1">
+            <img ng-show="selectedPackage.iconUrl" ng-src="{{selectedPackage.iconUrl}}" height="50" width="50"/>
+            <img ng-show="!selectedPackage.iconUrl" src="~/Images/packageDefaultIcon-50x50.png" height="50" width="50" />
+        </div>
+        <div class="col-sm-8">
+            <strong>{{selectedPackage.name}}</strong> <span ng-show="selectedPackage.authors">by</span> {{selectedPackage.authors}}
+            <br/>
+            {{selectedPackage.summary}}
+        </div>
+        <div class="col-sm-1">
+            v{{selectedPackage.version}}
+        </div>
+    </div>
+
+    <p></p>
+    <div ng-show="projects.length > 0"><h3>Projects</h3></div>
+    <table ng-show="projects" class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Platform</th>
+            </tr>
+        </thead>
+        <tr ng-repeat="project in projects">
+            <td>{{project.name}}</td>
+            <td>{{project.outputKind}}</td>
+            <td>{{project.platform}}</td>
+        </tr>
+    </table>
+</div>

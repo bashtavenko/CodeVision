@@ -15,6 +15,21 @@ classes, methods, parameters and comments
 * JavaScript files indexed as text. Common third party libraries are excluded
 * SQL files indexed as text
 
+##Dependency Graph
+This part of the solution helps answering question of what dependencies a given module has and what other modules depend on it. Modules are collectied by using Roslyn,
+then added to digraph that is searched through front end. 
+
+Digraph is persisted in SQL database.
+
+##Nugets
+View projects in which a given Nuget package is installed. Nuget - project dependencies are discovered during code analysis of master source tree.
+
+
+##Data Dictionary
+Data dictionary is digraph of SQL Server objects (databases, tables, columns and stored procedures.) These objects are discovered from
+live version of SQL Server, addeded to digraph which then is persisted in database. Objects can be searched, but most importantly,
+they can be annotated with custom properties like comments and flags. 
+
 ###Local Setup
 
 1. Run all unit tests. This will build the search index based on the included sample files
@@ -42,15 +57,3 @@ $console='C:\CodeVision\Bin\CodeVision.Console.exe'
 with source files and index
 
 
-##Dependency Graph
-
-This part of the solution helps answering question of what dependencies a given module has and what other modules depend on it. Modules are collectied by using Roslyn,
-then added to digraph that is searched through front end. 
-
-Digraph is persisted in SQL database.
-
-
-##Data Dictionary
-Data dictionary is digraph of SQL Server objects (databases, tables, columns and stored procedures.) These objects are discovered from
-live version of SQL Server, addeded to digraph which then is persisted in database. Objects can be searched, but most importantly,
-they can be annotated with custom properties like comments and flags. 

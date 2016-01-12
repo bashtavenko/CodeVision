@@ -49,6 +49,12 @@ namespace CodeVision.Dependencies.Modules
                         module.AddReference(new Module(fileName, reflectionProperties.Version, reflectionProperties.Description));                                                
                     }
                     modules.Add(module);
+
+                    var packageConfig = project.Documents.SingleOrDefault(w => w.Name == "packages.config");
+                    if (packageConfig != null)
+                    {
+                        object p = null;
+                    }
                 }
                 
                 return modules;

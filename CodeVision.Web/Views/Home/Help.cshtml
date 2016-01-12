@@ -5,6 +5,7 @@
 <h1>Help Topics</h1>
 <a href="#CodeSearch">Code Search</a><br/>
 <a href="#DependencyGraph">Dependency Graph</a><br/>
+<a href="#Nugets">Nugets</a><br />
 <a href="#DataDictionary">Data Dictionary</a><br />
 
 <h2>Code Search</h2>
@@ -89,7 +90,13 @@ See Apache Lucene <a href="https://lucene.apache.org/core/2_9_4/queryparsersynta
 
 Dependency graph contains modules (dlls or exe) which were discovered during build, analysis and data collection of projects.
 Modules can be search upstream and downstream. Dependency graph can also be used to track Nuget package runtime dependencies
-since Nuget package is a contrainer and delivery mechanism of modules.
+since Nuget package is a contrainer and delivery mechanism of modules. It works if nuget package contains one dll and every time nuget
+package version is incremented, the dll version is incremented as well.
+
+<h2>Nugets</h2>
+<a id="Nugets"></a>
+In addition to tracking dependencies between modulues, it is also possible to understand dependencies between nuget packages and projects.
+These dependencies are collected in the batch mode at same time with module dependencies.
 
 
 <h2>Data Dictionary</h2>

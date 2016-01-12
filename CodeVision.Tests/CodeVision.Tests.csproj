@@ -178,6 +178,10 @@
     <Compile Include="JavaScriptFileIndexerTests.cs" />
     <Compile Include="DependencyGraphCollectorTests.cs" />
     <Compile Include="ModuleCollectorTests.cs" />
+    <Compile Include="NugetCollectorTests.cs" />
+    <Compile Include="ProjectPackagesCollectorTests.cs" />
+    <Compile Include="ProjectCollectorTests.cs" />
+    <Compile Include="ProjectRepositoryTests.cs" />
     <Compile Include="SearcherTests.cs" />
     <Compile Include="Web\IntegrationTests.cs" />
     <None Include="App.config" />

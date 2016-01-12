@@ -38,6 +38,11 @@ namespace CodeVision.Web
             Mapper.CreateMap<ObjectProperty, ViewModels.DatabaseObjectProperty>().ConvertUsing<ObjectPropertyTypeConverter>();
             Mapper.CreateMap<ViewModels.DatabaseObjectProperty, ObjectProperty>().ConvertUsing<DatabaseObjectPropertyTypeConverter>();
             Mapper.CreateMap<DatabaseObjectPropertyType, ViewModels.DatabaseObjectProperty>().ConvertUsing<DatabaseObjectPropertyTypeConverter2>();
+
+            Mapper.CreateMap<Dependencies.SqlStorage.Package, ViewModels.Package>()
+                .ForMember(s => s.Id, opt => opt.MapFrom(src => src.PackageId));
+
+            Mapper.CreateMap<Dependencies.SqlStorage.Project, ViewModels.Project>();
         }
         
         private static List<Model.Offset> MapOffsets(List<ViewModels.SearchOffset> offsets)

@@ -83,6 +83,11 @@ namespace CodeVision.Web.Controllers
             return View((object)json);
         }
 
+        public ActionResult Nugets()
+        {
+            return View();
+        }
+
         public ActionResult Help()
         {
             return View();

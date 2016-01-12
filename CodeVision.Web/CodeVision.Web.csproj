@@ -59,6 +59,10 @@
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -205,7 +209,8 @@
     <Compile Include="Common\Log4NetExceptionLogger.cs" />
     <Compile Include="Common\NinjectDependencyResolver.cs" />
     <Compile Include="Controllers\Api\DatabaseObjectsGraphController.cs" />
-    <Compile Include="Controllers\Api\DependencyGraphController.cs" />
+    <Compile Include="Controllers\Api\ModulesGraphController.cs" />
+    <Compile Include="Controllers\Api\NugetsController.cs" />
     <Compile Include="Controllers\ContentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -216,6 +221,8 @@
     <Compile Include="ViewModels\DatabaseObjectProperty.cs" />
     <Compile Include="ViewModels\Document.cs" />
     <Compile Include="ViewModels\Module.cs" />
+    <Compile Include="ViewModels\Package.cs" />
+    <Compile Include="ViewModels\Project.cs" />
     <Compile Include="ViewModels\SearchOffset.cs" />
     <Compile Include="ViewModels\SearchHit.cs" />
     <Compile Include="ViewModels\SearchResult.cs" />
@@ -235,11 +242,14 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\packageDefaultIcon-50x50.png" />
     <Content Include="js\app\app.js" />
     <Content Include="js\app\directives\spinner.js" />
     <Content Include="js\app\dictionary-controller.js" />
+    <Content Include="js\app\nuget-controller.js" />
     <Content Include="js\app\graph-controller.js" />
     <Content Include="js\app\dictionary-service.js" />
+    <Content Include="js\app\nuget-service.js" />
     <Content Include="js\app\graph-service.js" />
     <Content Include="parameters.xml" />
     <Content Include="Scripts\angular-mocks.js" />
@@ -308,6 +318,7 @@
     <Content Include="Views\Content\Details.cshtml" />
     <Content Include="Views\Home\Graph.cshtml" />
     <Content Include="Views\Home\Dictionary.cshtml" />
+    <Content Include="Views\Home\Nugets.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

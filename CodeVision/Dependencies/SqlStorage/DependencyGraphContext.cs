@@ -32,6 +32,9 @@ namespace CodeVision.Dependencies.SqlStorage
         public DbSet<DatabaseObject> DatabaseObjects { get; set; }
         public DbSet<DatabaseObjectProperty> DatabaseObjectProperties { get; set; }
 
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Package> Packages { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
@@ -45,6 +48,9 @@ namespace CodeVision.Dependencies.SqlStorage
             modelBuilder.Configurations.Add(new DatabaseObjectPropertyTypeLookupConfiguration());
             modelBuilder.Configurations.Add(new DatabaseObjectConfiguration());
             modelBuilder.Configurations.Add(new DatabaseObjectPropertyConfiguration());
+
+            modelBuilder.Configurations.Add(new ProjectConfiguration());
+            modelBuilder.Configurations.Add(new PackageConfiguration());
         }
     }
 }

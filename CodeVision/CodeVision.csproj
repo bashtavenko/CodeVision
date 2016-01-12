@@ -147,8 +147,16 @@
       <HintPath>..\packages\Shared.Management.Objects.for.SQL.Server.2012.SP1.11.0.3000.0\lib\Microsoft.SqlServer.SqlEnum.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.10.1.766, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\NuGet.Core.2.10.1\lib\net40-Client\NuGet.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -206,6 +214,16 @@
     <Compile Include="Dependencies\Database\StoredProcedure.cs" />
     <Compile Include="Dependencies\Database\Table.cs" />
     <Compile Include="Dependencies\DependencyDirection.cs" />
+    <Compile Include="Dependencies\Nugets\ProjectRepository.cs" />
+    <Compile Include="Dependencies\Nugets\NugetCollector.cs" />
+    <Compile Include="Dependencies\Nugets\ProjectPackagesCollector.cs" />
+    <Compile Include="Dependencies\Nugets\ProjectCollector.cs" />
+    <Compile Include="Dependencies\Nugets\Package.cs" />
+    <Compile Include="Dependencies\Nugets\Project.cs" />
+    <Compile Include="Dependencies\SqlStorage\Maps\PackageConfiguration.cs" />
+    <Compile Include="Dependencies\SqlStorage\Maps\ProjectConfiguration.cs" />
+    <Compile Include="Dependencies\SqlStorage\Package.cs" />
+    <Compile Include="Dependencies\SqlStorage\Project.cs" />
     <Compile Include="Dependencies\Symbol.cs" />
     <Compile Include="Dependencies\SymbolGraph.cs" />
     <Compile Include="Dependencies\Modules\ModulesGraphCollector.cs" />
