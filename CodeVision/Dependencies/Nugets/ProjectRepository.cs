@@ -51,6 +51,39 @@ namespace CodeVision.Dependencies.Nugets
             return _context.Projects.Where(w => w.Packages.Any(a => a.PackageId == packageId)).ToList();
         }
 
+        public DependencyMatrix GetDependencyMatrix()
+        {
+            return GetDependencyMatrix(null, null);
+        }
+
+        public DependencyMatrix GetDependencyMatrix(string projectStartsWith, string packageStartsWith)
+        {
+            var dependencyMatrix = new DependencyMatrix();
+
+            var packages = _context.Packages.AsQueryable();
+            if (!string.IsNullOrEmpty(packageStartsWith))
+            {
+                packages = packages.Where(s => s.Name.StartsWith(packageStartsWith));
+            }
+
+            foreach (var package in packages)
+            {
+                var projects = package.Projects.AsQueryable();
+                if (!string.IsNullOrEmpty(projectStartsWith))
+                {
+                    // Here we need StringComparison.InvariantCultureIgnoreCase because this goes against in-memory collection and
+                    // not SQL which is case-sensitive by default.
+                    projects = projects.Where(s => s.Name.StartsWith(projectStartsWith, StringComparison.InvariantCultureIgnoreCase));
+                }
+                foreach (var project in projects) // This requires MARS MultipleActiveResultSets=True in connection string
+                {
+                    dependencyMatrix.AddDependency($"{package.Name} {package.Version}", project.Name);
+                }
+            }
+            dependencyMatrix.Sort();
+            return dependencyMatrix;
+        }
+
         ~ProjectRepository()
         {
             Dispose(false);

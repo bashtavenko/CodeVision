@@ -210,7 +210,7 @@
     <Compile Include="Common\NinjectDependencyResolver.cs" />
     <Compile Include="Controllers\Api\DatabaseObjectsGraphController.cs" />
     <Compile Include="Controllers\Api\ModulesGraphController.cs" />
-    <Compile Include="Controllers\Api\NugetsController.cs" />
+    <Compile Include="Controllers\Api\NuGetsController.cs" />
     <Compile Include="Controllers\ContentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -219,6 +219,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\DatabaseObject.cs" />
     <Compile Include="ViewModels\DatabaseObjectProperty.cs" />
+    <Compile Include="ViewModels\DependencyMatrix.cs" />
     <Compile Include="ViewModels\Document.cs" />
     <Compile Include="ViewModels\Module.cs" />
     <Compile Include="ViewModels\Package.cs" />
@@ -246,9 +247,11 @@
     <Content Include="js\app\app.js" />
     <Content Include="js\app\directives\spinner.js" />
     <Content Include="js\app\dictionary-controller.js" />
+    <Content Include="js\app\nuget-matrix-controller.js" />
     <Content Include="js\app\nuget-controller.js" />
     <Content Include="js\app\graph-controller.js" />
     <Content Include="js\app\dictionary-service.js" />
+    <Content Include="js\app\nuget-matrix-service.js" />
     <Content Include="js\app\nuget-service.js" />
     <Content Include="js\app\graph-service.js" />
     <Content Include="parameters.xml" />
@@ -319,6 +322,7 @@
     <Content Include="Views\Home\Graph.cshtml" />
     <Content Include="Views\Home\Dictionary.cshtml" />
     <Content Include="Views\Home\Nugets.cshtml" />
+    <Content Include="Views\Home\DependencyMatrix.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

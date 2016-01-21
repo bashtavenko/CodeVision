@@ -1,0 +1,44 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "NuGets Dependency Matrix";
+}
+
+
+@section JavascriptInHead
+{
+    @Scripts.Render("~/js/app/nuget-matrix-controller.js")
+    @Scripts.Render("~/js/app/nuget-matrix-service.js")
+    
+    <script type="text/javascript">
+            graphModule.factory("bootstrap", function () {
+                return @Html.Raw(Model);
+            });
+    </script>
+}
+
+<div ng-app="graphModule" ng-controller="NugetMatrixController">
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="package">Package</label>
+            <input id="package" class="form-control" placeholder="Starts with" ng-model="packages" ng-change="refresh()" />
+        </div>
+        <div class="form-group">
+            <label for="project">Project</label>
+            <input id="project" class="form-control" placeholder="Starts with" ng-model="projects" ng-change="refresh()" />
+        </div>
+    </form>
+    <p></p>
+    <table class="table table-striped table-bordered">
+        <tr class="success">
+            <td></td>
+            <th ng-repeat="project in dm.projects">{{project.value}}</th>
+        </tr>
+        <tr ng-repeat="package in dm.packages">
+            <th class="success">{{package.value}}</th>
+            <td ng-repeat="project in dm.projects">
+                <span ng-if="dm.matrix[package.id][project.id]" class="glyphicon glyphicon-ok"></span>
+            </td>
+        </tr>
+    </table>
+</div>

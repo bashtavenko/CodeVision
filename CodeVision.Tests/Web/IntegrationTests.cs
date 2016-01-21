@@ -1,5 +1,6 @@
 using System.Web;
 using System.Web.Mvc;
+using CodeVision.Dependencies.Nugets;
 using CodeVision.Web;
 using CodeVision.Web.Controllers;
 using CodeVision.Web.ViewModels;
@@ -24,8 +25,8 @@ namespace CodeVision.Tests.Web
             var server = new Mock<HttpServerUtilityBase>();
             server.Setup(s => s.MapPath(It.IsAny<string>())).Returns<string>(x => x);
             var configuration = WebConfiguration.Load(server.Object);
-            
-            _homeController = new HomeController(configuration, new Mock<ILog>().Object);
+
+            _homeController = new HomeController(configuration, new Mock<ILog>().Object, null);
             _contentController = new ContentController(configuration);
         }
 

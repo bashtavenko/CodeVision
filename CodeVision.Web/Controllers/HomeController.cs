@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using CodeVision.Dependencies.Nugets;
 using CodeVision.Dependencies.SqlStorage;
 using CodeVision.Model;
 using CodeVision.Web.Common;
@@ -19,13 +20,15 @@ namespace CodeVision.Web.Controllers
     {        
         private readonly ILog _log;
         private readonly WebConfiguration _configuration;
+        private readonly ProjectRepository _projectRepository;
 
-        const int PageSize = 10;        
+        private const int PageSize = 10;        
 
-        public HomeController(WebConfiguration configuration, ILog log)
+        public HomeController(WebConfiguration configuration, ILog log, ProjectRepository projectRepository)
         {
             _configuration = configuration;
             _log = log;
+            _projectRepository = projectRepository;
         }
 
         public ActionResult Index()
@@ -77,15 +80,25 @@ namespace CodeVision.Web.Controllers
         {
             var list = Enum.GetValues(typeof(DatabaseObjectPropertyType)).Cast<DatabaseObjectPropertyType>().ToList();
             var properties = Mapper.Map<List<ViewModels.DatabaseObjectProperty>>(list);
-            var bootrsrapData = new {Properties = properties};
+            var bootstrap = new {Properties = properties};
             var jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-            var json = JsonConvert.SerializeObject(bootrsrapData, Formatting.None, jsonSettings);
+            var json = JsonConvert.SerializeObject(bootstrap, Formatting.None, jsonSettings);
             return View((object)json);
         }
 
         public ActionResult Nugets()
         {
             return View();
+        }
+
+        public ActionResult DependencyMatrix()
+        {
+            var dependencyMatrix = _projectRepository.GetDependencyMatrix();
+            var model = Mapper.Map<ViewModels.DependencyMatrix>(dependencyMatrix);
+            var bootstrap = new {DependencyMatrix = model};
+            var jsonSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            var json = JsonConvert.SerializeObject(bootstrap, Formatting.None, jsonSettings);
+            return View((object)json);
         }
 
         public ActionResult Help()

@@ -7,6 +7,7 @@ using CodeVision.Model;
 using DatabaseObject = CodeVision.Dependencies.Database.DatabaseObject;
 using DatabaseObjectProperty = CodeVision.Web.ViewModels.DatabaseObjectProperty;
 using Module = CodeVision.Dependencies.Modules.Module;
+using System.Linq;
 
 namespace CodeVision.Web
 {
@@ -43,6 +44,10 @@ namespace CodeVision.Web
                 .ForMember(s => s.Id, opt => opt.MapFrom(src => src.PackageId));
 
             Mapper.CreateMap<Dependencies.SqlStorage.Project, ViewModels.Project>();
+
+            Mapper.CreateMap<Dependencies.DependencyMatrix, ViewModels.DependencyMatrix>()
+                .ForMember(s => s.Packages, opt => opt.MapFrom(src => src.Rows))
+                .ForMember(s => s.Projects, opt => opt.MapFrom(src => src.Columns));
         }
         
         private static List<Model.Offset> MapOffsets(List<ViewModels.SearchOffset> offsets)

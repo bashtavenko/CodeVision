@@ -214,6 +214,8 @@
     <Compile Include="Dependencies\Database\StoredProcedure.cs" />
     <Compile Include="Dependencies\Database\Table.cs" />
     <Compile Include="Dependencies\DependencyDirection.cs" />
+    <Compile Include="Dependencies\DependencyMatrix.cs" />
+    <Compile Include="Dependencies\DependencyMatrixItem.cs" />
     <Compile Include="Dependencies\Nugets\ProjectRepository.cs" />
     <Compile Include="Dependencies\Nugets\NugetCollector.cs" />
     <Compile Include="Dependencies\Nugets\ProjectPackagesCollector.cs" />

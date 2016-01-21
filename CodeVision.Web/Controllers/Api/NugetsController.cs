@@ -5,11 +5,11 @@ using CodeVision.Dependencies.Nugets;
 
 namespace CodeVision.Web.Controllers.Api
 {
-    public class NugetsController : ApiController
+    public class NuGetsController : ApiController
     {
         private readonly ProjectRepository _repository;
 
-        public NugetsController(ProjectRepository repository)
+        public NuGetsController(ProjectRepository repository)
         {
             _repository = repository;
         }
@@ -26,6 +26,13 @@ namespace CodeVision.Web.Controllers.Api
         {
             var items = _repository.GetProjects(packageId);
             return Mapper.Map<List<ViewModels.Project>>(items);
+        }
+
+        [Route("api/nugets/matrix")]
+        public ViewModels.DependencyMatrix GetDependencyMatrix(string project = null, string package = null)
+        {
+            var dm = _repository.GetDependencyMatrix(project, package);
+            return Mapper.Map<ViewModels.DependencyMatrix>(dm);
         }
     }
 }
