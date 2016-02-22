@@ -6,6 +6,7 @@ using System.Linq;
 using AutoMapper;
 using AutoMapper.Mappers;
 using CodeVision.Dependencies.SqlStorage;
+using NuGet;
 
 namespace CodeVision.Dependencies.Nugets
 {
@@ -27,6 +28,7 @@ namespace CodeVision.Dependencies.Nugets
         {
             SqlStorage.Project sqlProject = _engine.Map<SqlStorage.Project>(project);
             sqlProject = GetOrAddEntity(_context.Projects, sqlProject, m => m.Name == project.Name);
+            sqlProject.Packages.Clear(); // This project can have fewer nugets than project in db
             foreach (var nugetPackage in project.Packages)
             {
                 SqlStorage.Package sqlPackage = _engine.Map<SqlStorage.Package>(nugetPackage);

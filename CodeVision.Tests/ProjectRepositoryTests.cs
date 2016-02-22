@@ -76,6 +76,7 @@ namespace CodeVision.Tests
             Assert.That(GetTableRowCount("Package"), Is.EqualTo(2));
             Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(3));
 
+            // Meaning Nuget1 and Nuget2 are no longer part of this project
             var sameProjectNewNuget = new Project
             {
                 Name = "Console App",
@@ -94,7 +95,7 @@ namespace CodeVision.Tests
 
             Assert.That(GetTableRowCount("Project"), Is.EqualTo(2));
             Assert.That(GetTableRowCount("Package"), Is.EqualTo(3));
-            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(4));
+            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(2)); // SomeDll has one and Console App has one
 
             var duplicateProject = new Project
             {
@@ -114,7 +115,7 @@ namespace CodeVision.Tests
 
             Assert.That(GetTableRowCount("Project"), Is.EqualTo(2));
             Assert.That(GetTableRowCount("Package"), Is.EqualTo(3));
-            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(4));
+            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(2)); // just like one above
         }
 
         [Test]
@@ -151,7 +152,8 @@ namespace CodeVision.Tests
                 Packages = new List<Package>
                 {
                     new Package { Name = "Nuget1", TargetFramework = "4.5", Version  = "1.0" },
-                    new Package { Name = "Nuget2", TargetFramework = "4.5", Version  = "1.0" }
+                    new Package { Name = "Nuget2", TargetFramework = "4.5", Version  = "1.0" },
+                    new Package { Name = "Nuget3", TargetFramework = "4.6.1", Version  = "1.1" },
                 }
             };
 
@@ -175,23 +177,11 @@ namespace CodeVision.Tests
             {
                 repository.SaveProject(anotherProjectThatUsesTheSameNuget);
             }
-
-            var sameProjectNewNuget = new Project
-            {
-                Name = "Console App",
-                OutputKind = "Console",
-                Platform = "Any",
-                Packages = new List<Package>
-                {
-                    new Package { Name = "Nuget3", TargetFramework = "4.6.1", Version  = "1.1" },
-                }
-            };
+            
 
             DependencyMatrix dm;
             using (var repository = new ProjectRepository(_connectionString))
             {
-                repository.SaveProject(sameProjectNewNuget);
-
                 //           ConsoleApp SomeDll
                 // Nuget1        x         x
                 // Nuget2        x
@@ -204,6 +194,57 @@ namespace CodeVision.Tests
             Assert.IsTrue(dm.Matrix[dm.Rows[0].Id, dm.Columns[0].Id]);
             Assert.IsTrue(dm.Matrix[dm.Rows[0].Id, dm.Columns[1].Id]);
             Assert.IsTrue(dm.Matrix[dm.Rows[1].Id, dm.Columns[0].Id]);
+        }
+
+        [Test]
+        public void ProjectRepository_NuGetRemoved()
+        {
+            CleanUpDatabase();
+
+            // Suppose we have project with two nugets
+            var project = new Project
+            {
+                Name = "Console App",
+                OutputKind = "Console",
+                Platform = "Any",
+                Packages = new List<Package>
+                {
+                    new Package { Name = "Nuget1", TargetFramework = "4.5", Version  = "1.0" },
+                    new Package { Name = "Nuget2", TargetFramework = "4.5", Version  = "1.0" }
+                }
+            };
+
+            // We save it
+            using (var repository = new ProjectRepository(_connectionString))
+            {
+                repository.SaveProject(project);
+            }
+
+            Assert.That(GetTableRowCount("Project"), Is.EqualTo(1));
+            Assert.That(GetTableRowCount("Package"), Is.EqualTo(2));
+            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(2));
+
+            // .. and than Nuget2 gets removed from this project and we load this project with just one NuGet:
+            var sameProjectOneNugetLess = new Project
+            {
+                Name = "Console App",
+                OutputKind = "Console",
+                Platform = "Any",
+                Packages = new List<Package>
+                {
+                    new Package { Name = "Nuget1", TargetFramework = "4.5", Version  = "1.0" }
+                }
+            };
+
+            using (var repository = new ProjectRepository(_connectionString))
+            {
+                repository.SaveProject(sameProjectOneNugetLess);
+            }
+
+            // Now there should be only one nuget
+            Assert.That(GetTableRowCount("Project"), Is.EqualTo(1));
+            Assert.That(GetTableRowCount("Package"), Is.EqualTo(2)); // There are still two packages
+            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(1)); // but only one package left in this project
         }
 
         protected int GetTableRowCount(string tableName)
