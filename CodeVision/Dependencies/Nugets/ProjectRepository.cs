@@ -23,7 +23,9 @@ namespace CodeVision.Dependencies.Nugets
             CreateMaps(store);
             _context = new DependencyGraphContext(connectionString);
         }
-        
+
+        // TODO: The problem is that projects and packages never get deleted
+        // We can either truncate the tables or remove orphants before each run.
         public void SaveProject(Project project)
         {
             SqlStorage.Project sqlProject = _engine.Map<SqlStorage.Project>(project);
@@ -32,7 +34,7 @@ namespace CodeVision.Dependencies.Nugets
             foreach (var nugetPackage in project.Packages)
             {
                 SqlStorage.Package sqlPackage = _engine.Map<SqlStorage.Package>(nugetPackage);
-                sqlPackage = GetOrAddEntity(_context.Packages, sqlPackage, m => m.Name == nugetPackage.Name);
+                sqlPackage = GetOrAddEntity(_context.Packages, sqlPackage, m => m.Name == nugetPackage.Name && m.Version == nugetPackage.Version); // There can be more than one NuGet version
                 sqlPackage.Projects.Add(sqlProject);
             }
             _context.SaveChanges();

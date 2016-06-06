@@ -247,6 +247,47 @@ namespace CodeVision.Tests
             Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(1)); // but only one package left in this project
         }
 
+
+        [Test]
+        public void ProjectRepository_MultipleNugetVersions()
+        {
+            CleanUpDatabase();
+
+            // Suppose we have projects with with the same nuget name, but different versions
+            var project1 = new Project
+            {
+                Name = "Console App",
+                OutputKind = "Console",
+                Platform = "Any",
+                Packages = new List<Package>
+                {
+                    new Package { Name = "Nuget1", TargetFramework = "4.5", Version  = "1.0" },
+                }
+            };
+
+            var project2 = new Project
+            {
+                Name = "Console App2",
+                OutputKind = "Console",
+                Platform = "Any",
+                Packages = new List<Package>
+                {
+                    new Package { Name = "Nuget1", TargetFramework = "4.5", Version  = "2.0" },
+                }
+            };
+
+            // We save both of them
+            using (var repository = new ProjectRepository(_connectionString))
+            {
+                repository.SaveProject(project1);
+                repository.SaveProject(project2);
+            }
+
+            Assert.That(GetTableRowCount("Project"), Is.EqualTo(2));
+            Assert.That(GetTableRowCount("Package"), Is.EqualTo(2)); // That's the whole point
+            Assert.That(GetTableRowCount("ProjectPackage"), Is.EqualTo(2));
+        }
+
         protected int GetTableRowCount(string tableName)
         {
             return Convert.ToInt32(_connection.ExecuteScalar($"select count(*) from {tableName};"));
