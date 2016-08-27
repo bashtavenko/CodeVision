@@ -91,7 +91,21 @@ namespace CodeVision.Web.Controllers.Api
             response.Headers.Location = new Uri(uri);
             return response;
         }
-        
+
+        [HttpPut]
+        [Route("api/object/{objectId}/{dependentObjectId}")]
+        // This is PUT and not POST because we don't know what kind of dependencies to return
+        public void AddDependentObject(int objectId, int dependentObjectId)
+        {
+            _graph.AddDependency(objectId, dependentObjectId);
+        }
+
+        [Route("api/object/{objectId}/{dependentObjectId}")]
+        public void DeleteEdge(int objectId, int dependentObjectId)
+        {
+            _graph.RemoveEdge(objectId, dependentObjectId);
+        }
+
         [Route("api/object/{objectId}/property/{propertyType}")]
         // Return DatabaseObject to make easier for UI to show updated state
         public ViewModels.DatabaseObject Delete(int objectId, DatabaseObjectPropertyType propertyType)

@@ -21,7 +21,8 @@ graphModule.factory("dictionaryService", function ($resource) {
             return $resource("/api/properties")
                 .query();
         },
-        addProperty: function(objectId, property) {
+        // TODO: shouldn't be string concat
+        addProperty: function (objectId, property) {
             var params = { objectId: objectId };
             var url = "/api/object/" + objectId + "/property";
             return $resource(url).save(property);
@@ -57,6 +58,18 @@ graphModule.factory("dictionaryService", function ($resource) {
         addColumn: function (objectId, columnId) {
             return $resource("/api/sproc/" + objectId + "/columns/" + columnId).save();
         },
+        addDependentObject: function (objectId, dependentObjectId) {
+            var params = { objectId: objectId, dependentObjectId: dependentObjectId };
+            var url = "/api/object/:objectId/:dependentObjectId";
+            var r = $resource(url, params, { "update": { method: "PUT" } });
+            return r.update().$promise;
+        },
+        deleteDependentColumn: function (columnId, dependentColumnId) {
+            var params = { objectId: columnId, dependentObjectId: dependentColumnId };
+            var url = "/api/object/:objectId/:dependentObjectId";
+            return $resource(url, { object: "@objectId", dependentObjectId: "@dependentObjectId" })
+                .delete(params).$promise;
+        },
         getDependencies: function (objectId, direction, level, objectsType) {
             var params = {
                 objectId: objectId,
@@ -71,7 +84,8 @@ graphModule.factory("dictionaryService", function ($resource) {
                     level: "@level",
                     objectsType: "@objectsType"
                 })
-                .query(params);
+                .query(params)
+                .$promise;
         },
         save: function() {
             return $resource("/api/objects/save", null, { "update": { method: "PUT" } }).update();

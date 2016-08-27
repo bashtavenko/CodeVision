@@ -142,6 +142,13 @@ namespace CodeVision.Dependencies.Database
             Digraph.RemoveEdge(storedProcedureId, columnId);
         }
 
+        public void RemoveEdge(int v, int w)
+        {
+            EnforceDatabaseObjectId(v);
+            EnforceDatabaseObjectId(w);
+            Digraph.RemoveEdge(v, w);
+        }
+
         public void UpdatedCommentText (int databaseObjectId, string text)
         {
             EnforceDatabaseObjectId(databaseObjectId);

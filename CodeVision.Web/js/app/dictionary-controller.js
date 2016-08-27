@@ -66,19 +66,47 @@ graphModule.controller("DictionaryController", function ($scope, bootstrappedDat
             });
     };
 
-    $scope.getTableDependencies = function () {
-        dictionaryService.getDependencies($scope.selectedObject.id, $scope.direction, $scope.levels, 2)
-            .$promise.then(function (response) {
-                $scope.objects = response;
-        });
-    }
-
-    $scope.getColumnDependencies = function () {
-        dictionaryService.getDependencies($scope.selectedObject.id, 1, 0, 4)
-            .$promise.then(function (response) {
-                $scope.sprocs = response;
+    $scope.addDependentColumn = function() {
+        dictionaryService.addDependentObject($scope.selectedObject.id, $scope.dependentColumn.id)
+            .then(function() {
+                dictionaryService.getDependencies($scope.selectedObject.id, 0, 0, 3)
+                    .then(function(response) {
+                        $scope.columns = response;
+                    });
             });
-    }
+    };
+
+    $scope.deleteDependentColumn = function (columnId) {
+        dictionaryService.deleteDependentColumn($scope.selectedObject.id, columnId)
+            .then(function () {
+                dictionaryService.getDependencies($scope.selectedObject.id, 0, 0, 3)
+                    .then(function (response) {
+                        $scope.columns = response;
+                    });
+            });
+    };
+
+
+    $scope.getTableDependencies = function() {
+        dictionaryService.getDependencies($scope.selectedObject.id, $scope.direction, $scope.levels, 2)
+            .then(function(response) {
+                $scope.objects = response;
+            });
+    };
+
+    // Get dependend sprocs and columns in one call
+    $scope.getColumnDependencies = function() {
+        dictionaryService.getDependencies($scope.selectedObject.id, 1, 0, 4)
+            .then(function(response) {
+                $scope.sprocs = response;
+            })
+            .then(function() {
+                dictionaryService.getDependencies($scope.selectedObject.id, 0, 0, 3)
+                    .then(function(response) {
+                        $scope.columns = response;
+                    });
+            });
+    };
 
     $scope.onSelected = function (item, model, label) {
         $scope.addPropertyError = null;

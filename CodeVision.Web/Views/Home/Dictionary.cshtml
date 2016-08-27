@@ -96,7 +96,7 @@
             <div ng-repeat="property in selectedObject.properties">
                 <div class="object-property">
                     <label>{{property.propertyName}}</label>
-                    <button type="button" title="Remove property" class="btn btn-primary" ng-click="deleteProperty(property.propertyType)">
+                    <button type="button" title="Delete property" class="btn btn-primary" ng-click="deleteProperty(property.propertyType)">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button>
 
@@ -111,9 +111,44 @@
             </div>
 
             <p></p>
+            
+            <h3>Dependent Columns</h3>
+            <p><small><em>Columns that depended on <strong>{{selectedObject.name}}</strong></em></small>
+            </p>
+
+            <div class="panel-footer">
+                <b>Add:</b>
+                <input id="dependetColumnInput" type="text" ng-model="dependentColumn"
+                       typeahead="object as object.fullyQualifiedName for object in getColumnNames($viewValue)"
+                       typeahead-editable="false"
+                       placeholder="Column in database.schema.object format" class="form-control form-control-inline" autocomplete="off">
+                        <button type="button" class="btn btn-primary" ng-click="addDependentColumn()">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+            </div>
+            
+            <div ng-show="columns.length > 0">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Fully Qualified Name</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="column in columns">
+                        <td>{{column.name}}</td>
+                        <td>{{column.fullyQualifiedName}}</td>
+                        <td>
+                            <button type="button" title="Delete column dependency" class="btn btn-primary" ng-click="deleteDependentColumn(column.id)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
             <div ng-show="sprocs.length > 0">
-                <h3>Dependencies</h3>
+                <h3>Dependend Stored Procedures</h3>
                 <p><small><em>Stored procedures that use this column</em></small></p>
 
                 <table class="table">
